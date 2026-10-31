@@ -1,5 +1,5 @@
 # A Cloudflare beállításai
-name = "rodom"
+name = "roman"
 main = "src/worker.js"
 compatibility_date = "2025-09-01"
 

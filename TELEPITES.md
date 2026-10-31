@@ -26,7 +26,7 @@ Kb. 15 perc, ingyenes, bankkártya nem kell. Semmit nem kell telepítened a gép
 1. Cloudflare bal menü: **Compute (Workers)** → **Workers & Pages** → **Create**.
 2. **Import a repository** → **Connect GitHub** → engedélyezd → válaszd az **elso-projektem** repót.
 3. Beállítások:
-   - Project name: `rodom`
+   - Project name: `roman`
    - Build command: *(hagyd üresen)*
    - Deploy command: `npx wrangler deploy`
 4. **Create and deploy** / **Deploy**. Várj 1–2 percet, amíg zöld pipa lesz.
@@ -43,7 +43,7 @@ Kb. 15 perc, ingyenes, bankkártya nem kell. Semmit nem kell telepítened a gép
 
 ## 6. Kész! 🎉
 
-Az oldal címe: **`https://rodom.<a-te-fiokneved>.workers.dev`**
+Az oldal címe: **`https://roman.<a-te-fiokneved>.workers.dev`**
 (a pontos címet a Worker oldalán, a **Visit** gomb mellett látod).
 
 Tedd a könyvjelzők közé otthon és a munkahelyen is.
