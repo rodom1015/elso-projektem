@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+  1. LECKE: A HTML
+  ================
+  A HTML írja le, MI van az oldalon (címek, gombok, szövegek).
+  Minden elem "címkékből" (tag) áll:  <valami> tartalom </valami>
+  Ez a rész itt egy megjegyzés: a böngésző nem mutatja meg.
+  (A megjegyzés "kisebb-jel, felkiáltójel, két kötőjel" jellel kezdődik,
+  és "két kötőjel, nagyobb-jel" jellel zárul.)
+-->
+<html lang="hu">
+<head>
+  <!-- A <head> részben vannak a beállítások, ezek nem látszanak az oldalon -->
+  <meta charset="UTF-8">                                     <!-- ékezetes betűk (á, é, ő...) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- jól nézzen ki telefonon is -->
+  <title>Fájltárolóm</title>                                 <!-- ez a böngésző fülén látszik -->
+  <link rel="stylesheet" href="style.css">                   <!-- a kinézet egy külön fájlban van -->
+</head>
+
+<body>
+  <!-- A <body> részben van minden, ami látszik -->
+
+  <header>
+    <h1>📁 Fájltárolóm</h1>
+    <p>Otthon feltöltöm, munkában letöltöm.</p>
+  </header>
+
+  <main>
+    <!-- 1. doboz: feltöltés -->
+    <section class="doboz">
+      <h2>⬆️ Feltöltés</h2>
+      <label for="fajl">Válassz egy Excel fájlt:</label>
+      <input type="file" id="fajl" accept=".xlsx,.xls,.csv">
+
+      <label for="jelszo-fel">Jelszó:</label>
+      <input type="password" id="jelszo-fel" placeholder="••••••••">
+
+      <button id="feltolt-gomb">Feltöltés</button>
+      <p class="uzenet" id="feltolt-uzenet"></p>
+    </section>
+
+    <!-- 2. doboz: letöltés -->
+    <section class="doboz">
+      <h2>⬇️ Letöltés</h2>
+      <label for="jelszo-le">Jelszó:</label>
+      <input type="password" id="jelszo-le" placeholder="••••••••">
+
+      <button id="lista-gomb">Fájljaim mutatása</button>
+      <ul id="fajl-lista"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Az első projektem 🙂</p>
+  </footer>
+
+  <!-- A JavaScript adja majd az "életet" a gomboknak (2. lecke) -->
+  <script src="app.js"></script>
+</body>
+</html>

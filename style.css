@@ -1,0 +1,83 @@
+/*
+  1. LECKE: A CSS
+  ===============
+  A CSS írja le, HOGYAN nézzen ki az oldal (színek, méretek, elrendezés).
+  Felépítése:   kiválasztó { tulajdonság: érték; }
+  Próbáld ki: írd át az egyik színt, mentsd el, és frissítsd az oldalt!
+*/
+
+/* Színek egy helyen, hogy könnyű legyen átírni */
+:root {
+  --hatter: #f4f6fb;
+  --doboz: #ffffff;
+  --szoveg: #1f2937;
+  --fo-szin: #2563eb;      /* kék - ezt próbáld átírni pl. #16a34a-ra (zöld) */
+  --keret: #d1d5db;
+}
+
+/* Sötét téma, ha a gépeden sötét mód van bekapcsolva */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hatter: #111827;
+    --doboz: #1f2937;
+    --szoveg: #f3f4f6;
+    --fo-szin: #60a5fa;
+    --keret: #374151;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--hatter);
+  color: var(--szoveg);
+}
+
+header, footer {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+main {
+  max-width: 520px;        /* ne legyen túl széles nagy képernyőn */
+  margin: 0 auto;          /* középre igazítás */
+  padding: 0 16px;
+  display: grid;
+  gap: 20px;               /* távolság a dobozok között */
+}
+
+.doboz {
+  background: var(--doboz);
+  border: 1px solid var(--keret);
+  border-radius: 12px;     /* lekerekített sarkok */
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.doboz h2 { margin: 0 0 6px; }
+
+input {
+  padding: 10px;
+  border: 1px solid var(--keret);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--hatter);
+  color: var(--szoveg);
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--fo-szin);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;         /* kéz ikon, ha fölé viszed az egeret */
+}
+
+button:hover { opacity: 0.9; }
+
+.uzenet { margin: 0; min-height: 1.2em; }
+
+#fajl-lista { padding-left: 20px; margin: 0; }
