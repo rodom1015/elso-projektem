@@ -14,6 +14,11 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    nav_macros: "Makrók", quick_mac_sub: "{n} kész makró másolásra",
+    mac_title: "Hasznos makrók", mac_sub: "{n} kész VBA makró, amit csak be kell másolnod. Mindegyik a magyar, szlovák és angol Excelben is működik.",
+    mac_howto: "🛠️ Így használd", mac_tip: "💡 Tipp: ha a menüszalagon nem látod a Fejlesztőeszközök fület, kapcsold be: Fájl → Beállítások → Menüszalag testreszabása → Fejlesztőeszközök.",
+    show_code: "Kód megjelenítése", hide_code: "Kód elrejtése", copy_macro: "Makró másolása",
+    macro_copied: "📋 Makró kimásolva – illeszd be a VBA szerkesztőbe (Alt+F11 → Insert → Module)",
     title: "Rodom – Excel központ",
     brand_sub: "Excel központ",
     nav_home: "Kezdőlap", nav_files: "Fájljaim", nav_functions: "Függvények", nav_shortcuts: "Billentyűk",
@@ -67,6 +72,11 @@ const SZOVEGEK = {
   },
 
   sk: {
+    nav_macros: "Makrá", quick_mac_sub: "{n} hotových makier na skopírovanie",
+    mac_title: "Užitočné makrá", mac_sub: "{n} hotových makier VBA, ktoré stačí skopírovať. Všetky fungujú v slovenskom, maďarskom aj anglickom Exceli.",
+    mac_howto: "🛠️ Ako na to", mac_tip: "💡 Tip: ak na páse s nástrojmi nevidíš kartu Vývojár, zapni ju: Súbor → Možnosti → Prispôsobiť pás s nástrojmi → Vývojár.",
+    show_code: "Zobraziť kód", hide_code: "Skryť kód", copy_macro: "Kopírovať makro",
+    macro_copied: "📋 Makro skopírované – vlož ho do editora VBA (Alt+F11 → Insert → Module)",
     title: "Rodom – Excel centrum",
     brand_sub: "Excel centrum",
     nav_home: "Domov", nav_files: "Moje súbory", nav_functions: "Funkcie", nav_shortcuts: "Skratky",
@@ -120,6 +130,11 @@ const SZOVEGEK = {
   },
 
   en: {
+    nav_macros: "Macros", quick_mac_sub: "{n} ready-made macros to copy",
+    mac_title: "Useful macros", mac_sub: "{n} ready-made VBA macros – just copy and paste. They all work in Hungarian, Slovak and English Excel.",
+    mac_howto: "🛠️ How to use", mac_tip: "💡 Tip: if you don't see the Developer tab on the ribbon, turn it on: File → Options → Customize Ribbon → Developer.",
+    show_code: "Show code", hide_code: "Hide code", copy_macro: "Copy macro",
+    macro_copied: "📋 Macro copied – paste it into the VBA editor (Alt+F11 → Insert → Module)",
     title: "Rodom – Excel hub",
     brand_sub: "Excel hub",
     nav_home: "Home", nav_files: "My files", nav_functions: "Functions", nav_shortcuts: "Shortcuts",

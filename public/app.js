@@ -77,6 +77,8 @@ function forditasAlkalmaz() {
   $("sc-alcim").textContent = t("sc_sub", { n: billentyuDarab() });
   $("gyors-fv-sub").textContent = t("quick_fn_sub", { n: FUGGVENYEK.length });
   $("gyors-sc-sub").textContent = t("quick_sc_sub", { n: billentyuDarab() });
+  $("gyors-mac-sub").textContent = t("quick_mac_sub", { n: MAKROK.length });
+  $("mac-alcim").textContent = t("mac_sub", { n: MAKROK.length });
 
   nyelvValtoRajzol();
   koszontes();
@@ -86,6 +88,7 @@ function forditasAlkalmaz() {
   kategoriakRajzol();
   fuggvenyekRajzol();
   billentyukRajzol();
+  makrokRajzol();
   if (elonezetFajl) $("elonezet-info").textContent = meret(elonezetFajl.meret) + " · " + datum(elonezetFajl.ido);
 }
 
@@ -93,7 +96,7 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "fuggvenyek", "billentyuk"];
+const OLDALAK = ["kezdolap", "fajlok", "fuggvenyek", "billentyuk", "makrok"];
 
 function oldalValtas() {
   let oldal = location.hash.replace("#/", "");
@@ -739,10 +742,10 @@ function fuggvenyekRajzol() {
 }
 $("fv-kereses").addEventListener("input", fuggvenyekRajzol);
 
-async function masol(szoveg) {
+async function masol(szoveg, uzenetKulcs = "copied") {
   try {
     await navigator.clipboard.writeText(szoveg);
-    ertesit(t("copied"));
+    ertesit(t(uzenetKulcs));
   } catch {
     ertesit(t("copy_failed"), true);
   }
@@ -823,6 +826,57 @@ function billentyukRajzol() {
   $("sc-ures").hidden = osszes > 0;
 }
 $("sc-kereses").addEventListener("input", billentyukRajzol);
+
+/* ======================================================
+   MAKRÓK
+   ====================================================== */
+
+// A makró kódja az aktuális nyelv szövegeivel ({1}, {2} … helyére)
+const makroKod = (m) => m.kod.replace(/\{(\d+)\}/g, (_, n) => m.s[nyelv][n - 1] ?? "");
+
+function makrokRajzol() {
+  $("mac-lepesek").innerHTML = "";
+  for (const lepes of MAKRO_UTMUTATO[nyelv]) {
+    const li = document.createElement("li");
+    li.textContent = lepes;
+    $("mac-lepesek").appendChild(li);
+  }
+  $("mac-figyelmeztetes").textContent = MAKRO_FIGYELMEZTETES[nyelv];
+
+  const doboz = $("makro-lista");
+  doboz.innerHTML = "";
+  for (const m of MAKROK) {
+    const kod = makroKod(m);
+    const kartya = document.createElement("article");
+    kartya.className = "kartya makro";
+    kartya.innerHTML = `
+      <div class="makro-fej">
+        <span class="makro-ikon ${m.szin}"></span>
+        <div class="makro-cim"><h2></h2><code class="makro-nev"></code></div>
+      </div>
+      <p class="makro-leiras"></p>
+      <div class="makro-gombok">
+        <button class="gomb fo kicsi masol-makro">${MASOL_IKON}<span></span></button>
+        <button class="gomb masodlagos kicsi kod-gomb"><span></span></button>
+      </div>
+      <pre class="makro-kod" hidden><code></code></pre>`;
+    kartya.querySelector(".makro-ikon").textContent = m.ikon;
+    kartya.querySelector("h2").textContent = m.cim[nyelv];
+    kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^Sub (\w+)/gm)].map((x) => x[1]).join(" · ");
+    kartya.querySelector(".makro-leiras").textContent = m.leiras[nyelv];
+    kartya.querySelector("pre code").textContent = kod;
+    kartya.querySelector(".masol-makro span").textContent = t("copy_macro");
+    const kodGomb = kartya.querySelector(".kod-gomb");
+    const pre = kartya.querySelector("pre");
+    kodGomb.querySelector("span").textContent = t("show_code");
+    kodGomb.addEventListener("click", () => {
+      pre.hidden = !pre.hidden;
+      kodGomb.querySelector("span").textContent = pre.hidden ? t("show_code") : t("hide_code");
+    });
+    kartya.querySelector(".masol-makro").addEventListener("click", () => masol(kod, "macro_copied"));
+    doboz.appendChild(kartya);
+  }
+}
 
 /* ======================================================
    SEGÉDFÜGGVÉNYEK

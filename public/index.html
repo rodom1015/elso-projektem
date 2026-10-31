@@ -44,6 +44,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span data-i18n="nav_shortcuts">Billentyűk</span>
       </a>
+      <a href="#/makrok" data-oldal="makrok" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span data-i18n="nav_macros">Makrók</span>
+      </a>
     </nav>
 
     <div class="oldalsav-alja">
@@ -152,6 +156,11 @@
           <span class="gyors-ikon lila">⌨️</span>
           <strong data-i18n="quick_sc_title"></strong>
           <span id="gyors-sc-sub"></span>
+        </a>
+        <a href="#/makrok" class="gyors-kartya">
+          <span class="gyors-ikon narancs">⚙️</span>
+          <strong data-i18n="nav_macros"></strong>
+          <span id="gyors-mac-sub"></span>
         </a>
       </div>
     </section>
@@ -272,6 +281,27 @@
       <p class="halvany-szoveg kozep" id="sc-ures" hidden data-i18n="sc_none"></p>
     </section>
 
+    <!-- ========== MAKRÓK ========== -->
+    <section class="oldal" id="oldal-makrok" hidden>
+      <header class="oldal-fej">
+        <div>
+          <h1 data-i18n="mac_title"></h1>
+          <p class="hos-alcim" id="mac-alcim"></p>
+        </div>
+      </header>
+      <div class="racs-2 makro-bevezeto">
+        <div class="kartya">
+          <div class="kartya-fej"><h2 data-i18n="mac_howto"></h2></div>
+          <ol class="lepesek" id="mac-lepesek"></ol>
+        </div>
+        <div class="kartya figyelmeztetes">
+          <p id="mac-figyelmeztetes"></p>
+          <p class="halvany-szoveg" data-i18n="mac_tip"></p>
+        </div>
+      </div>
+      <div class="makro-lista" id="makro-lista"></div>
+    </section>
+
   </main>
 </div>
 
@@ -303,6 +333,7 @@
 
 <script src="i18n.js"></script>
 <script src="excel-adatok.js"></script>
+<script src="makrok.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

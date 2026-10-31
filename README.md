@@ -8,6 +8,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 👁️ **Előnézet**: Excel fájl megnézése a böngészőben, letöltés nélkül (munkalapokkal)
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
 - 📚 Excel súgó: 97 függvény példákkal és 93 billentyűparancs, kereshetően
+- ⚙️ 15 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
 - 🌍 Három nyelv: magyar (alap), szlovák, angol
 - 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés
 - 🌙 Sötét mód, telefonon is működik
@@ -24,6 +25,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/app.js` | a böngésző oldali logika: menü, nyelvváltás, titkosítás, előnézet (JavaScript) |
 | `public/i18n.js` | a felület szövegei magyarul, szlovákul és angolul |
 | `public/excel-adatok.js` | az Excel súgó tartalma: függvények, billentyűparancsok |
+| `public/makrok.js` | a kész VBA makrók és a használati útmutató |
 | `public/vendor/` | SheetJS – az Excel fájlok előnézetéhez (Apache-2.0 licenc) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |
