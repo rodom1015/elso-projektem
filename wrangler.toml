@@ -10,7 +10,7 @@ binding = "ASSETS"
 run_worker_first = ["/api/*"]
 
 # A tárhely, ahová a titkosított fájlok kerülnek.
-# FONTOS: az "id" értékét cseréld le a saját KV tárhelyed azonosítójára (lásd TELEPITES.md)!
+# A "fajltarolo-fajlok" KV tárhely azonosítója a Cloudflare-en
 [[kv_namespaces]]
 binding = "FILES"
-id = "IDE_JON_A_KV_AZONOSITO"
+id = "a0de692d02fd419f827a899563ebe34d"
