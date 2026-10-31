@@ -1,0 +1,16 @@
+# A Cloudflare beállításai
+name = "fajltarolo"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+# A weboldal fájljai (HTML, CSS, JS)
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# A tárhely, ahová a titkosított fájlok kerülnek.
+# FONTOS: az "id" értékét cseréld le a saját KV tárhelyed azonosítójára (lásd TELEPITES.md)!
+[[kv_namespaces]]
+binding = "FILES"
+id = "IDE_JON_A_KV_AZONOSITO"

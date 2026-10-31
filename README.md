@@ -1,26 +1,40 @@
-# elso-projektem – Fájltárolóm
+# 📁 Fájltárolóm
 
-Saját weboldal, ahová otthon Excel fájlokat töltök fel, és munkában jelszóval letöltöm őket.
-Közben programozni tanulok. 🙂
+Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munkában letöltöm őket.
 
-## Tanulási terv
+- 🔒 **Titkosítás a böngészőben**: a fájlok és a nevük AES-256 titkosítással mennek fel; a szerver csak olvashatatlan adatot lát
+- ⬆️ **Fogd és vidd feltöltés**, több fájl egyszerre, max. 20 MB / fájl
+- 🔎 Keresés, letöltés, törlés
+- 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés
+- 🌙 Sötét mód, telefonon is működik
+- 💸 **Ingyenes** (Cloudflare Workers + KV, bankkártya nélkül)
 
-| Lecke | Téma | Mit tanulok | Állapot |
-|---|---|---|---|
-| 1 | Az oldal váza és kinézete | HTML, CSS | ✅ kész |
-| 2 | Életre keltjük a gombokat | JavaScript alapok | ⏳ |
-| 3 | Szerver és tárhely | Cloudflare Workers + KV, fájl feltöltés/letöltés | ⏳ |
-| 4 | Jelszó és titkosítás | jelszavas védelem, titkosítás a böngészőben | ⏳ |
-| 5 | Kitesszük az internetre | GitHub + Cloudflare Pages, saját webcím | ⏳ |
-
-## Hogyan nézem meg az oldalt?
-
-1. Töltsd le a fájlokat (GitHubon: zöld **Code** gomb → **Download ZIP**), és csomagold ki.
-2. Kattints duplán az `index.html` fájlra, és megnyílik a böngészőben.
-3. Írj át valamit a `style.css` fájlban (pl. a `--fo-szin` színt), mentsd el, és frissítsd az oldalt (F5).
+👉 **Telepítés: [TELEPITES.md](TELEPITES.md)**
 
 ## A fájlok
 
-- `index.html` – **mi** van az oldalon (HTML)
-- `style.css` – **hogyan** néz ki (CSS)
-- `app.js` – **mit csinál** (JavaScript)
+| Fájl | Mi ez |
+|---|---|
+| `public/index.html` | az oldal szerkezete (HTML) |
+| `public/style.css` | a kinézet (CSS) |
+| `public/app.js` | a böngésző oldali logika és a titkosítás (JavaScript) |
+| `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
+| `wrangler.toml` | a Cloudflare beállításai |
+
+## Hogyan működik a védelem?
+
+1. A jelszavadból a böngésző két dolgot számol ki:
+   - egy **belépési kulcsot** (SHA-256) – ezt küldi el, ezzel ellenőrzi a szerver, hogy te vagy-e;
+   - egy **titkosító kulcsot** (PBKDF2, 250 000 kör) – ez **soha nem hagyja el** a böngészőt.
+2. Feltöltéskor a fájl tartalma és neve titkosítva kerül fel (AES-GCM).
+3. Letöltéskor a böngésző visszafejti.
+
+## Helyi kipróbálás (fejlesztőknek)
+
+```bash
+npm install
+echo "JELSZO=teszt123" > .dev.vars
+npm run dev
+```
+
+Utána: http://localhost:8787
