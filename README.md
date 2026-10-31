@@ -7,8 +7,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 🔎 Keresés, rendezés, letöltés, törlés
 - 👁️ **Előnézet**: Excel fájl megnézése a böngészőben, letöltés nélkül (munkalapokkal)
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
-- 📚 Excel súgó: 114 függvény (köztük 17 új Excel 2024 függvény) példákkal és 93 billentyűparancs, kereshetően
-- ⚙️ 26 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
+- 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 26 makró és 15 tipp – közös keresővel
 - 🧮 Kalkulátorok (fülekre rendezve): pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
 - 💱 Napi árfolyamok az Európai Központi Banktól, 90 napos EUR/HUF grafikonnal

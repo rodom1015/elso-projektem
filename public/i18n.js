@@ -14,6 +14,10 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    quick_excel_sub: "{f} függvény, {b} billentyű, makrók, tippek",
+    nav_excel: "Excel", excel_title: "Excel súgó", excel_sub: "{f} függvény, {b} billentyűparancs, {m} kész makró és {t} hasznos tipp. Kereshetsz is bennük.",
+    excel_tab_fn: "ƒx Függvények", excel_tab_sc: "⌨️ Billentyűparancsok", excel_tab_mac: "⚙️ Makrók", excel_tab_tips: "💡 Tippek",
+    excel_search: "Keresés: pl. FKERES, mentés, PDF, szűrő…",
     word_tab_macros: "⚙️ Makrók", word_sub2: "{n} Word billentyűparancs, {t} hasznos tipp és {m} kész makró. Kereshetsz is bennük.", cp_word_macros: "Word makrók",
     date_title_short: "📅 Dátumok",
     xt_pivot: "📊 Kimutatás", xt_pivot_desc: "Összesítés pár kattintással, mint egy kimutatás (pivot): pl. városonként az összeg, havonta a darabszám – grafikonnal és Excel letöltéssel.",
@@ -138,6 +142,10 @@ const SZOVEGEK = {
   },
 
   sk: {
+    quick_excel_sub: "{f} funkcií, {b} skratiek, makrá, tipy",
+    nav_excel: "Excel", excel_title: "Pomocník pre Excel", excel_sub: "{f} funkcií, {b} klávesových skratiek, {m} hotových makier a {t} užitočných tipov. Môžeš v nich aj hľadať.",
+    excel_tab_fn: "ƒx Funkcie", excel_tab_sc: "⌨️ Skratky", excel_tab_mac: "⚙️ Makrá", excel_tab_tips: "💡 Tipy",
+    excel_search: "Hľadať: napr. VLOOKUP, uložiť, PDF, filter…",
     word_tab_macros: "⚙️ Makrá", word_sub2: "{n} klávesových skratiek, {t} užitočných tipov a {m} hotových makier pre Word. Môžeš v nich aj hľadať.", cp_word_macros: "Word makrá",
     date_title_short: "📅 Dátumy",
     xt_pivot: "📊 Kontingenčná tabuľka", xt_pivot_desc: "Súhrn na pár kliknutí ako kontingenčná tabuľka: napr. súčet podľa miest, počet podľa mesiacov – s grafom a stiahnutím do Excelu.",
@@ -262,6 +270,10 @@ const SZOVEGEK = {
   },
 
   en: {
+    quick_excel_sub: "{f} functions, {b} shortcuts, macros, tips",
+    nav_excel: "Excel", excel_title: "Excel help", excel_sub: "{f} functions, {b} keyboard shortcuts, {m} ready-made macros and {t} useful tips. You can search them too.",
+    excel_tab_fn: "ƒx Functions", excel_tab_sc: "⌨️ Shortcuts", excel_tab_mac: "⚙️ Macros", excel_tab_tips: "💡 Tips",
+    excel_search: "Search: e.g. VLOOKUP, save, PDF, filter…",
     word_tab_macros: "⚙️ Macros", word_sub2: "{n} Word keyboard shortcuts, {t} useful tips and {m} ready-made macros. You can search them too.", cp_word_macros: "Word macros",
     date_title_short: "📅 Dates",
     xt_pivot: "📊 Pivot summary", xt_pivot_desc: "Summarise in a few clicks, like a pivot table: e.g. total per city, count per month – with a chart and Excel download.",

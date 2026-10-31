@@ -76,8 +76,7 @@ function forditasAlkalmaz() {
   });
   $("fv-alcim").textContent = t("fn_sub", { n: FUGGVENYEK.length });
   $("sc-alcim").textContent = t("sc_sub", { n: billentyuDarab() });
-  $("gyors-fv-sub").textContent = t("quick_fn_sub", { n: FUGGVENYEK.length });
-  $("gyors-sc-sub").textContent = t("quick_sc_sub", { n: billentyuDarab() });
+  $("gyors-excel-sub").textContent = t("quick_excel_sub", { f: FUGGVENYEK.length, b: billentyuDarab() });
   $("gyors-mac-sub").textContent = t("quick_mac_sub", { n: MAKROK.length });
   $("mac-alcim").textContent = t("mac_sub", { n: MAKROK.length });
 
@@ -90,6 +89,7 @@ function forditasAlkalmaz() {
   fuggvenyekRajzol();
   billentyukRajzol();
   makrokRajzol();
+  excelRajzol();
   wordRajzol();
   naptarRajzol();
   arfolyamRajzol();
@@ -104,8 +104,10 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "fuggvenyek", "billentyuk", "makrok", "word"];
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", word: "word_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
+const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "word"];
+// A régi címek (pl. a gyorskeresőből) az Excel oldal megfelelő fülére visznek
+const OLDAL_ALIASOK = { fuggvenyek: ["excel", "fuggvenyek"], billentyuk: ["excel", "billentyuk"], makrok: ["excel", "makrok"] };
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", word: "word_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
 
 // A többi modul (időjárás, eszközök…) ide teszi a függvényét, ami nyelvváltáskor lefut
 const forditasHookok = [];
@@ -133,8 +135,13 @@ function oldalValtas() {
     return;
   }
   $("oldal-megosztas").hidden = true;
-  let oldal = location.hash.replace("#/", "");
+  let [oldal, al] = location.hash.replace("#/", "").split("/");
+  if (OLDAL_ALIASOK[oldal]) [oldal, al] = OLDAL_ALIASOK[oldal];
   if (!OLDALAK.includes(oldal)) oldal = "kezdolap";
+  if (oldal === "excel") {
+    if (["fuggvenyek", "billentyuk", "makrok", "tippek"].includes(al)) excelFul = al;
+    excelRajzol();
+  }
   aktivOldal = oldal;
   $("morzsa-oldal").textContent = t(OLDAL_NEVEK[oldal]);
   OLDALAK.forEach((o) => ($("oldal-" + o).hidden = o !== oldal));
@@ -811,7 +818,7 @@ function fvKartya(fv) {
 }
 
 function fuggvenyekRajzol() {
-  const szuro = $("fv-kereses").value.trim().toLowerCase();
+  const szuro = $("excel-kereses").value.trim().toLowerCase();
   const lista = FUGGVENYEK.filter((fv) =>
     (aktivKategoria === "mind" || fv.kat === aktivKategoria) &&
     [fv.hu, fv.en, fv.leiras[nyelv]].join(" ").toLowerCase().includes(szuro)
@@ -821,7 +828,7 @@ function fuggvenyekRajzol() {
   lista.forEach((fv) => doboz.appendChild(fvKartya(fv)));
   $("fv-ures").hidden = lista.length > 0;
 }
-$("fv-kereses").addEventListener("input", fuggvenyekRajzol);
+
 
 async function masol(szoveg, uzenetKulcs = "copied") {
   try {
@@ -906,10 +913,54 @@ function billentyuCsoportokRajzol(adat, doboz, szuro) {
 }
 
 function billentyukRajzol() {
-  const db = billentyuCsoportokRajzol(BILLENTYUK, $("billentyu-lista"), $("sc-kereses").value.trim().toLowerCase());
+  const db = billentyuCsoportokRajzol(BILLENTYUK, $("billentyu-lista"), $("excel-kereses").value.trim().toLowerCase());
   $("sc-ures").hidden = db > 0;
 }
-$("sc-kereses").addEventListener("input", billentyukRajzol);
+
+/* ======================================================
+   EXCEL OLDAL: fülek (függvények, billentyűk, makrók, tippek) és közös kereső
+   ====================================================== */
+let excelFul = "fuggvenyek";
+try { excelFul = localStorage.getItem("excelFul") || excelFul; } catch {}
+
+function excelRajzol() {
+  $("excel-alcim").textContent = t("excel_sub", { f: FUGGVENYEK.length, b: billentyuDarab(), m: MAKROK.length, t: EXCEL_TIPPEK.length });
+  document.querySelectorAll("#excel-fulek button").forEach((g) => g.classList.toggle("aktiv", g.dataset.ful === excelFul));
+  for (const f of ["fuggvenyek", "billentyuk", "makrok", "tippek"]) $(`excel-${f}-doboz`).hidden = f !== excelFul;
+  if (excelFul === "tippek") excelTippekRajzol();
+}
+
+function excelTippekRajzol() {
+  const szuro = $("excel-kereses").value.trim().toLowerCase();
+  const lista = EXCEL_TIPPEK.filter((tp) => !szuro || (tp.cim[nyelv] + " " + tp.szoveg[nyelv]).toLowerCase().includes(szuro));
+  const doboz = $("excel-tippek");
+  doboz.innerHTML = "";
+  for (const tp of lista) {
+    const k = document.createElement("article");
+    k.className = "kartya word-tipp excel-tipp";
+    k.innerHTML = `<div class="word-tipp-ikon"></div><div><h2></h2><p></p></div>`;
+    k.querySelector(".word-tipp-ikon").textContent = tp.ikon;
+    k.querySelector("h2").textContent = tp.cim[nyelv];
+    k.querySelector("p").textContent = tp.szoveg[nyelv];
+    doboz.appendChild(k);
+  }
+  $("tip-ures").hidden = lista.length > 0;
+}
+
+document.querySelectorAll("#excel-fulek button").forEach((g) =>
+  g.addEventListener("click", () => {
+    excelFul = g.dataset.ful;
+    try { localStorage.setItem("excelFul", excelFul); } catch {}
+    excelRajzol();
+  })
+);
+// A kereső mindig az aktív fület szűri (a többit is frissítjük, hogy fülváltáskor is stimmeljen)
+$("excel-kereses").addEventListener("input", () => {
+  fuggvenyekRajzol();
+  billentyukRajzol();
+  makrokRajzol();
+  if (excelFul === "tippek") excelTippekRajzol();
+});
 
 /* ======================================================
    WORD SÚGÓ
@@ -1127,7 +1178,10 @@ function makrokRajzol() {
 
   const doboz = $("makro-lista");
   doboz.innerHTML = "";
-  MAKROK.forEach((m) => doboz.appendChild(makroKartya(m)));
+  const szuro = $("excel-kereses").value.trim().toLowerCase();
+  const lista = MAKROK.filter((m) => !szuro || (m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod).toLowerCase().includes(szuro));
+  lista.forEach((m) => doboz.appendChild(makroKartya(m)));
+  $("mac-ures").hidden = lista.length > 0;
 }
 
 // Egy makró kártyája (az Excel és a Word makróknál is ezt használjuk)

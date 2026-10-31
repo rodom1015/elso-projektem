@@ -1171,3 +1171,11 @@ body.megosztas-mod .tartalom { padding: 0 16px; }
 #oldal-szamolas .oldal-fej { max-width: 820px; margin-left: auto; margin-right: auto; }
 .word-fulek { grid-template-columns: auto auto auto; }
 @media (max-width: 520px) { .word-fulek { grid-template-columns: repeat(3, 1fr); } .word-fulek button { padding: 9px 6px; font-size: .8rem; } }
+
+/* ================= EXCEL OLDAL ================= */
+.excel-fulek { flex: 0 0 auto; grid-template-columns: repeat(4, auto); }
+.excel-fulek button { padding: 9px 14px; }
+.panel-megj { margin: 0 0 14px; color: var(--halvany); font-size: .9rem; line-height: 1.5; }
+.excel-tipp .word-tipp-ikon { background: var(--zold-h); }
+@media (max-width: 860px) { .excel-fulek { width: 100%; grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 520px) { .excel-fulek { grid-template-columns: 1fr 1fr; } .excel-fulek button { font-size: .8rem; padding: 9px 6px; } }

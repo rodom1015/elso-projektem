@@ -774,3 +774,84 @@ const EXTRA_FUGGVENYNEVEK = {
 };
 const HIBAERTEKEK = { "#N/A": "#HIÁNYZIK", "#VALUE!": "#ÉRTÉK!", "#DIV/0!": "#ZÉRÓOSZTÓ!", "#REF!": "#HIV!", "#NAME?": "#NÉV?", "#NUM!": "#SZÁM!", "#NULL!": "#NULLA!" };
 const LOGIKAI = { TRUE: "IGAZ", FALSE: "HAMIS" };
+
+/* ======================================================
+   EXCEL TIPPEK (ugyanolyan felépítés, mint a Word tippeknél)
+   ====================================================== */
+const EXCEL_TIPPEK = [
+  { ikon: "📋", cim: { hu: "Alakítsd táblázattá (Ctrl + T)", sk: "Preveď na tabuľku (Ctrl + T)", en: "Turn it into a table (Ctrl + T)" },
+    szoveg: {
+      hu: "Az adatokra kattintva nyomd meg a Ctrl + T-t. Kapsz szűrőt, csíkozást, és ha új sort írsz alá, a képletek, diagramok és kimutatások automatikusan kiterjednek rá.",
+      sk: "Klikni do údajov a stlač Ctrl + T. Dostaneš filter, prúžkovanie a keď pripíšeš nový riadok, vzorce, grafy aj kontingenčné tabuľky sa naň automaticky rozšíria.",
+      en: "Click in your data and press Ctrl + T. You get filters and banding, and when you add a row below, formulas, charts and pivots extend to it automatically." } },
+  { ikon: "🎯", cim: { hu: "Pontos keresés FKERES-sel", sk: "Presné vyhľadávanie s VLOOKUP", en: "Exact match with VLOOKUP" },
+    szoveg: {
+      hu: "Az FKERES utolsó paramétere legyen mindig 0 vagy HAMIS – különben „közeli” értéket is visszaadhat, és hibás lesz az eredmény. Még jobb: XKERES.",
+      sk: "Posledný parameter VLOOKUP nastav vždy na 0 alebo FALSE – inak môže vrátiť „približnú“ hodnotu a výsledok bude chybný. Ešte lepšie: XLOOKUP.",
+      en: "Always set VLOOKUP's last argument to 0 or FALSE – otherwise it may return an \"approximate\" match and a wrong result. Even better: XLOOKUP." } },
+  { ikon: "💲", cim: { hu: "Rögzített hivatkozás: F4", sk: "Absolútny odkaz: F4", en: "Fixed reference: F4" },
+    szoveg: {
+      hu: "Képlet írásakor a cellára állva nyomd meg az F4-et: A1 → $A$1 → A$1 → $A1. Így másoláskor nem csúszik el a hivatkozás (pl. egy árfolyam- vagy ÁFA-cellára).",
+      sk: "Pri písaní vzorca stlač na bunke F4: A1 → $A$1 → A$1 → $A1. Pri kopírovaní sa odkaz neposunie (napr. na bunku s kurzom alebo DPH).",
+      en: "While writing a formula, press F4 on a cell: A1 → $A$1 → A$1 → $A1. The reference then stays put when copied (e.g. to a rate or VAT cell)." } },
+  { ikon: "⚡", cim: { hu: "Villámkitöltés (Ctrl + E)", sk: "Dynamické dopĺňanie (Ctrl + E)", en: "Flash Fill (Ctrl + E)" },
+    szoveg: {
+      hu: "Írj be egy mintát a szomszéd oszlopba (pl. „Kovács Anna” → „Anna”), és nyomj Ctrl + E-t. Az Excel felismeri a szabályt, és kitölti a többi sort – képlet nélkül.",
+      sk: "Napíš vzor do susedného stĺpca (napr. „Kováč Anna“ → „Anna“) a stlač Ctrl + E. Excel rozpozná pravidlo a doplní ostatné riadky – bez vzorca.",
+      en: "Type one example in the next column (e.g. \"Smith Anna\" → \"Anna\") and press Ctrl + E. Excel spots the pattern and fills the rest – no formula needed." } },
+  { ikon: "🎨", cim: { hu: "Feltételes formázás", sk: "Podmienené formátovanie", en: "Conditional formatting" },
+    szoveg: {
+      hu: "Kezdőlap → Feltételes formázás: kiemelheted az ismétlődéseket, a határidő előtti dátumokat, vagy adatsávokkal és színskálával egy pillantás alatt láthatóvá teheted a számokat.",
+      sk: "Domov → Podmienené formátovanie: zvýrazníš duplicity, blížiace sa termíny, alebo pomocou údajových pruhov a farebnej škály uvidíš čísla na prvý pohľad.",
+      en: "Home → Conditional Formatting: highlight duplicates or upcoming deadlines, or use data bars and colour scales to read numbers at a glance." } },
+  { ikon: "🔽", cim: { hu: "Legördülő lista egy cellában", sk: "Rozbaľovací zoznam v bunke", en: "Drop-down list in a cell" },
+    szoveg: {
+      hu: "Adatok → Érvényesítés → Megengedve: Lista, és add meg a tartományt (pl. =$H$2:$H$10). Így csak a megadott értékek választhatók – nincs több elgépelés.",
+      sk: "Údaje → Overenie údajov → Povoliť: Zoznam a zadaj rozsah (napr. =$H$2:$H$10). Vybrať sa dajú len zadané hodnoty – žiadne preklepy.",
+      en: "Data → Data Validation → Allow: List, and enter the range (e.g. =$H$2:$H$10). Only those values can be chosen – no more typos." } },
+  { ikon: "📌", cim: { hu: "Fejléc rögzítése görgetéskor", sk: "Ukotvenie hlavičky pri posúvaní", en: "Keep the header visible" },
+    szoveg: {
+      hu: "Nézet → Ablaktábla rögzítése → Felső sor rögzítése. Hosszú táblázatban görgetéskor is látszanak az oszlopcímek.",
+      sk: "Zobraziť → Ukotviť priečky → Ukotviť horný riadok. V dlhej tabuľke uvidíš nadpisy stĺpcov aj pri posúvaní.",
+      en: "View → Freeze Panes → Freeze Top Row. Column headers stay visible while you scroll a long table." } },
+  { ikon: "📊", cim: { hu: "Kimutatás (pivot) pár kattintással", sk: "Kontingenčná tabuľka na pár klikov", en: "PivotTable in a few clicks" },
+    szoveg: {
+      hu: "Beszúrás → Kimutatás. Húzd a mezőket a Sorok és az Értékek közé: másodpercek alatt kész a városonkénti, havonkénti összesítés – képlet nélkül.",
+      sk: "Vložiť → Kontingenčná tabuľka. Presuň polia do Riadkov a Hodnôt: súhrn podľa miest či mesiacov máš za pár sekúnd – bez vzorcov.",
+      en: "Insert → PivotTable. Drag fields into Rows and Values: totals per city or month in seconds – no formulas." } },
+  { ikon: "📋", cim: { hu: "Beillesztés értékként és transzponálva", sk: "Prilepiť hodnoty a transponovať", en: "Paste values and transpose" },
+    szoveg: {
+      hu: "Ctrl + Alt + V (Irányított beillesztés): az „Értékek” csak az eredményt illeszti be képletek nélkül, a „Transzponálás” a sorokból oszlopot csinál.",
+      sk: "Ctrl + Alt + V (Prilepiť špeciálne): „Hodnoty“ vloží len výsledky bez vzorcov, „Transponovať“ zmení riadky na stĺpce.",
+      en: "Ctrl + Alt + V (Paste Special): \"Values\" pastes only the results without formulas, \"Transpose\" turns rows into columns." } },
+  { ikon: "🧹", cim: { hu: "Ismétlődések eltávolítása", sk: "Odstránenie duplicít", en: "Remove duplicates" },
+    szoveg: {
+      hu: "Adatok → Ismétlődések eltávolítása: kiválasztod, mely oszlopok alapján, és az Excel kitörli a dupla sorokat. Előtte készíts másolatot!",
+      sk: "Údaje → Odstrániť duplikáty: vyberieš stĺpce a Excel odstráni duplicitné riadky. Predtým si urob kópiu!",
+      en: "Data → Remove Duplicates: choose the columns to compare and Excel deletes duplicate rows. Make a copy first!" } },
+  { ikon: "✂️", cim: { hu: "Szövegből oszlopok", sk: "Text na stĺpce", en: "Text to Columns" },
+    szoveg: {
+      hu: "Adatok → Szövegből oszlopok: egy oszlopnyi „Név; Város; Irányítószám” szöveget külön oszlopokra bont. Újabb Excelben képlettel is: SZÖVEGFELOSZTÁS.",
+      sk: "Údaje → Text na stĺpce: rozdelí stĺpec textu „Meno; Mesto; PSČ“ do samostatných stĺpcov. V novšom Exceli aj vzorcom: TEXTSPLIT.",
+      en: "Data → Text to Columns: splits a column of \"Name; City; Postcode\" text into separate columns. In newer Excel also as a formula: TEXTSPLIT." } },
+  { ikon: "🔍", cim: { hu: "Képlet lépésenkénti kiértékelése", sk: "Vyhodnotenie vzorca krok za krokom", en: "Evaluate a formula step by step" },
+    szoveg: {
+      hu: "Képletek → Képlet kiértékelése: lépésről lépésre megmutatja, mi történik a képletben – így könnyen megtalálod, hol a hiba. Szerkesztés közben egy részt kijelölve az F9 is kiszámolja.",
+      sk: "Vzorce → Vyhodnotiť vzorec: krok za krokom ukáže, čo sa vo vzorci deje – ľahko nájdeš chybu. Pri úprave označ časť a F9 ju vypočíta.",
+      en: "Formulas → Evaluate Formula: shows step by step what happens in the formula – an easy way to find the error. While editing, select a part and F9 calculates it." } },
+  { ikon: "🏷️", cim: { hu: "Nevesített tartományok", sk: "Pomenované rozsahy", en: "Named ranges" },
+    szoveg: {
+      hu: "Jelölj ki egy tartományt, és a bal felső Névmezőbe írj nevet (pl. Arfolyam). Utána a képletben =B2*Arfolyam olvashatóbb, mint =B2*$H$1. Kezelés: Ctrl + F3.",
+      sk: "Označ rozsah a do poľa Názov vľavo hore napíš názov (napr. Kurz). Vo vzorci je potom =B2*Kurz čitateľnejšie ako =B2*$H$1. Správa: Ctrl + F3.",
+      en: "Select a range and type a name in the Name Box (top left), e.g. Rate. Then =B2*Rate is far clearer than =B2*$H$1. Manage them with Ctrl + F3." } },
+  { ikon: "🔄", cim: { hu: "Power Query: ismétlődő adattisztítás", sk: "Power Query: opakované čistenie údajov", en: "Power Query: repeatable data cleaning" },
+    szoveg: {
+      hu: "Adatok → Adatok beolvasása: CSV-t, mappát vagy másik munkafüzetet töltesz be, egyszer megtisztítod (oszlopok, típusok, szűrés), és legközelebb csak a Frissítés gombot kell megnyomni.",
+      sk: "Údaje → Získať údaje: načítaš CSV, priečinok alebo iný zošit, raz ho vyčistíš (stĺpce, typy, filter) a nabudúce stačí stlačiť Obnoviť.",
+      en: "Data → Get Data: load a CSV, a folder or another workbook, clean it once (columns, types, filters) and next time just press Refresh." } },
+  { ikon: "🖨️", cim: { hu: "Nyomtatás egy oldal szélességben", sk: "Tlač na šírku jednej strany", en: "Print on one page wide" },
+    szoveg: {
+      hu: "Oldalelrendezés → Méretezés: Szélesség = 1 oldal. A „Nyomtatandó címek” résznél megadhatod, hogy a fejlécsor minden oldalon megjelenjen.",
+      sk: "Rozloženie strany → Prispôsobiť: Šírka = 1 strana. V časti „Tlačiť nadpisy“ nastavíš, aby sa hlavička tlačila na každej strane.",
+      en: "Page Layout → Scale to Fit: Width = 1 page. Under \"Print Titles\" you can repeat the header row on every page." } },
+];

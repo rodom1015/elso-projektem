@@ -59,17 +59,9 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span data-i18n="nav_calc">Számolás</span>
       </a>
-      <a href="#/fuggvenyek" data-oldal="fuggvenyek" class="menu-pont">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h-2a3 3 0 0 0-3 3v13M6 11h7M15 13l5 6M20 13l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span data-i18n="nav_functions">Függvények</span>
-      </a>
-      <a href="#/billentyuk" data-oldal="billentyuk" class="menu-pont">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span data-i18n="nav_shortcuts">Billentyűk</span>
-      </a>
-      <a href="#/makrok" data-oldal="makrok" class="menu-pont">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        <span data-i18n="nav_macros">Makrók</span>
+      <a href="#/excel" data-oldal="excel" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M3 15h18M9 3v18" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-i18n="nav_excel">Excel</span>
       </a>
       <a href="#/word" data-oldal="word" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 12.5l1.3 5 1.7-4 1.7 4 1.3-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -268,22 +260,17 @@
           <strong data-i18n="calc_title"></strong>
           <span data-i18n="quick_calc_sub"></span>
         </a>
-        <a href="#/fuggvenyek" class="gyors-kartya">
-          <span class="gyors-ikon kek">ƒx</span>
-          <strong data-i18n="quick_fn_title"></strong>
-          <span id="gyors-fv-sub"></span>
-        </a>
-        <a href="#/billentyuk" class="gyors-kartya">
-          <span class="gyors-ikon lila">⌨️</span>
-          <strong data-i18n="quick_sc_title"></strong>
-          <span id="gyors-sc-sub"></span>
+        <a href="#/excel" class="gyors-kartya">
+          <span class="gyors-ikon zold">X</span>
+          <strong data-i18n="excel_title"></strong>
+          <span id="gyors-excel-sub"></span>
         </a>
         <a href="#/word" class="gyors-kartya">
           <span class="gyors-ikon kek">W</span>
           <strong data-i18n="word_title"></strong>
           <span data-i18n="quick_word_sub"></span>
         </a>
-        <a href="#/makrok" class="gyors-kartya">
+        <a href="#/excel/makrok" class="gyors-kartya">
           <span class="gyors-ikon narancs">⚙️</span>
           <strong data-i18n="nav_macros"></strong>
           <span id="gyors-mac-sub"></span>
@@ -582,41 +569,60 @@
       </div>
     </section>
 
-    <!-- ========== FÜGGVÉNYEK ========== -->
-    <section class="oldal" id="oldal-fuggvenyek" hidden>
+    <!-- ========== EXCEL SÚGÓ (függvények, billentyűk, makrók, tippek) ========== -->
+    <section class="oldal" id="oldal-excel" hidden>
       <header class="oldal-fej">
         <div>
-          <h1 data-i18n="fn_title"></h1>
-          <p class="hos-alcim" id="fv-alcim"></p>
+          <h1 data-i18n="excel_title"></h1>
+          <p class="hos-alcim" id="excel-alcim"></p>
         </div>
       </header>
-      <div class="eszkoztar szabad">
+      <div class="eszkoztar szabad word-eszkoztar">
+        <div class="kapcsolo excel-fulek" id="excel-fulek">
+          <button type="button" class="aktiv" data-ful="fuggvenyek" data-i18n="excel_tab_fn"></button>
+          <button type="button" data-ful="billentyuk" data-i18n="excel_tab_sc"></button>
+          <button type="button" data-ful="makrok" data-i18n="excel_tab_mac"></button>
+          <button type="button" data-ful="tippek" data-i18n="excel_tab_tips"></button>
+        </div>
         <div class="kereso szeles">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input type="search" id="fv-kereses" data-i18n-ph="fn_search">
+          <input type="search" id="excel-kereses" data-i18n-ph="excel_search">
         </div>
       </div>
-      <div class="cimkek" id="fv-kategoriak"></div>
-      <div class="fv-racs" id="fv-lista"></div>
-      <p class="halvany-szoveg kozep" id="fv-ures" hidden data-i18n="fn_none"></p>
-    </section>
 
-    <!-- ========== BILLENTYŰK ========== -->
-    <section class="oldal" id="oldal-billentyuk" hidden>
-      <header class="oldal-fej">
-        <div>
-          <h1 data-i18n="sc_title"></h1>
-          <p class="hos-alcim" id="sc-alcim"></p>
-        </div>
-      </header>
-      <div class="eszkoztar szabad">
-        <div class="kereso szeles">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input type="search" id="sc-kereses" data-i18n-ph="sc_search">
-        </div>
+      <div id="excel-fuggvenyek-doboz">
+        <p class="panel-megj" id="fv-alcim"></p>
+        <div class="cimkek" id="fv-kategoriak"></div>
+        <div class="fv-racs" id="fv-lista"></div>
+        <p class="halvany-szoveg kozep" id="fv-ures" hidden data-i18n="fn_none"></p>
       </div>
-      <div class="billentyu-racs" id="billentyu-lista"></div>
-      <p class="halvany-szoveg kozep" id="sc-ures" hidden data-i18n="sc_none"></p>
+
+      <div id="excel-billentyuk-doboz" hidden>
+        <p class="panel-megj" id="sc-alcim"></p>
+        <div class="billentyu-racs" id="billentyu-lista"></div>
+        <p class="halvany-szoveg kozep" id="sc-ures" hidden data-i18n="sc_none"></p>
+      </div>
+
+      <div id="excel-makrok-doboz" hidden>
+        <p class="panel-megj" id="mac-alcim"></p>
+        <div class="racs-2 makro-bevezeto">
+          <div class="kartya">
+            <div class="kartya-fej"><h2 data-i18n="mac_howto"></h2></div>
+            <ol class="lepesek" id="mac-lepesek"></ol>
+          </div>
+          <div class="kartya figyelmeztetes">
+            <p id="mac-figyelmeztetes"></p>
+            <p class="halvany-szoveg" data-i18n="mac_tip"></p>
+          </div>
+        </div>
+        <div class="makro-lista" id="makro-lista"></div>
+        <p class="halvany-szoveg kozep" id="mac-ures" hidden data-i18n="sc_none"></p>
+      </div>
+
+      <div id="excel-tippek-doboz" hidden>
+        <div class="tipp-racs" id="excel-tippek"></div>
+        <p class="halvany-szoveg kozep" id="tip-ures" hidden data-i18n="sc_none"></p>
+      </div>
     </section>
 
     <!-- ========== WORD ========== -->
@@ -651,27 +657,6 @@
         <div class="makro-lista" id="word-makro-lista"></div>
       </div>
       <p class="halvany-szoveg kozep" id="word-ures" hidden data-i18n="sc_none"></p>
-    </section>
-
-    <!-- ========== MAKRÓK ========== -->
-    <section class="oldal" id="oldal-makrok" hidden>
-      <header class="oldal-fej">
-        <div>
-          <h1 data-i18n="mac_title"></h1>
-          <p class="hos-alcim" id="mac-alcim"></p>
-        </div>
-      </header>
-      <div class="racs-2 makro-bevezeto">
-        <div class="kartya">
-          <div class="kartya-fej"><h2 data-i18n="mac_howto"></h2></div>
-          <ol class="lepesek" id="mac-lepesek"></ol>
-        </div>
-        <div class="kartya figyelmeztetes">
-          <p id="mac-figyelmeztetes"></p>
-          <p class="halvany-szoveg" data-i18n="mac_tip"></p>
-        </div>
-      </div>
-      <div class="makro-lista" id="makro-lista"></div>
     </section>
 
   </main>

@@ -16,18 +16,20 @@ function palettaElemek() {
     if (mezo) setTimeout(() => { $(mezo).value = ertek; $(mezo).dispatchEvent(new Event("input")); }, 30);
   };
 
-  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", fuggvenyek: "ƒx", billentyuk: "⌨️", makrok: "⚙️", word: "📄" };
+  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", word: "W" };
   for (const o of OLDALAK) add("cp_pages", ikonok[o], t(OLDAL_NEVEK[o]), "", t(OLDAL_NEVEK[o]) + " " + o, ugras(o));
 
   if (titkositoKulcs) for (const f of fajlok)
     add("cp_files", "📎", f.nev, meret(f.meret) + " · " + datum(f.ido), f.nev, () => (tablazatE(f.nev) ? elonezet(f) : letolt(f)));
 
   for (const fv of FUGGVENYEK)
-    add("cp_functions", "ƒx", fvNev(fv), (nyelv === "hu" ? fv.en : fv.hu) + " · " + fv.leiras[nyelv], `${fv.hu} ${fv.en} ${fv.leiras[nyelv]}`, ugras("fuggvenyek", "fv-kereses", fvNev(fv)));
+    add("cp_functions", "ƒx", fvNev(fv), (nyelv === "hu" ? fv.en : fv.hu) + " · " + fv.leiras[nyelv], `${fv.hu} ${fv.en} ${fv.leiras[nyelv]}`, ugras("excel/fuggvenyek", "excel-kereses", fvNev(fv)));
 
   for (const m of MAKROK)
     add("cp_macros", m.ikon, m.cim[nyelv], m.leiras[nyelv], m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod.match(/(?:Sub|Function) (\w+)/)[1], () => {
-      location.hash = "#/makrok";
+      $("excel-kereses").value = "";
+      makrokRajzol();
+      location.hash = "#/excel/makrok";
       setTimeout(() => {
         const k = [...document.querySelectorAll(".makro")].find((x) => x.querySelector("h2").textContent === m.cim[nyelv]);
         if (k) { k.scrollIntoView({ behavior: "smooth", block: "center" }); k.classList.add("villan"); setTimeout(() => k.classList.remove("villan"), 1600); }
@@ -51,7 +53,7 @@ function palettaElemek() {
       add(csoport, "⌨️", leiras[nyelv], komb, leiras[nyelv] + " " + komb, ugras(oldal, mezo, leiras[nyelv]));
     }
   };
-  billentyuk(BILLENTYUK, "cp_shortcuts", "billentyuk", "sc-kereses");
+  billentyuk(BILLENTYUK, "cp_shortcuts", "excel/billentyuk", "excel-kereses");
   billentyuk(WORD_BILLENTYUK, "cp_word", "word", "word-kereses");
   return elemek;
 }
