@@ -18,6 +18,8 @@
     DELETE /api/shares/:id   -> megosztás visszavonása
     GET    /api/s/:id/info   -> megosztott fájl adatai (NYILVÁNOS – a linkkel bárki)
     GET    /api/s/:id        -> megosztott fájl letöltése (NYILVÁNOS)
+    POST   /api/qr/:id       -> QR belépés jóváhagyása a telefonról (bejelentkezve)
+    GET    /api/qr/:id       -> a QR-t mutató gép ezzel kérdezi le a jóváhagyást (NYILVÁNOS, egyszer olvasható)
 
   Megosztásnál a böngésző egy ÚJ, véletlen kulccsal titkosítja újra a fájlt.
   Ez a kulcs csak a linkben van (a # után), azt a böngésző sosem küldi el a szervernek.
@@ -41,6 +43,7 @@ export default {
     try {
       if (url.pathname === "/api/arfolyam" && request.method === "GET") return await arfolyam(env, ctx);
       if (url.pathname.startsWith("/api/s/") && request.method === "GET") return await megosztottFajl(env, url);
+      if (url.pathname.startsWith("/api/qr/") && request.method === "GET") return await qrLekeres(env, url);
       return await api(request, env, url);
     } catch (e) {
       console.error(e);
@@ -73,6 +76,7 @@ async function api(request, env, url) {
 
   const resz = url.pathname.split("/").filter(Boolean); // pl. ["api", "files", "abc123"]
   if (resz[1] === "shares") return megosztasok(request, env, resz[2]);
+  if (resz[1] === "qr") return qrJovahagyas(request, env, resz[2]);
   if (resz[1] !== "files") return valasz({ hiba: "Nincs ilyen oldal." }, 404);
   const id = resz[2];
 
@@ -220,6 +224,30 @@ async function megosztottFajl(env, url) {
   if (!value || !metadata || metadata.lejar < Date.now()) return lejart();
   if (metadata.egyszeri) await env.FILES.delete("s:" + id); // egyszeri link: letöltés után törlődik
   return new Response(value, { headers: { "Content-Type": "application/octet-stream", "Cache-Control": "no-store" } });
+}
+
+/* ---------------- Belépés QR kóddal ----------------
+   1. A gép (pl. munkahelyi) készít egy egyszeri ECDH kulcspárt, és QR kódot mutat:
+      /#/qr/<azonosító>.<a gép nyilvános kulcsa>
+   2. A telefon (ahol jelszóval be vagy lépve) beolvassa, és jóváhagyáskor a belépési adatokat
+      a gép nyilvános kulcsával titkosítva ide küldi (ehhez a telefonnak be kell lennie lépve).
+   3. A gép lekérdezi, kibontja a saját titkos kulcsával – a szerver a tartalmat nem látja.
+   A jóváhagyás 2 percig él, és csak egyszer olvasható ki. */
+async function qrJovahagyas(request, env, id) {
+  if (request.method !== "POST" || !/^[0-9a-f-]{36}$/.test(id || "")) return valasz({ hiba: "Hibás kérés." }, 400);
+  const adat = await request.text();
+  if (adat.length > 2000) return valasz({ hiba: "Túl nagy." }, 413);
+  await env.FILES.put("q:" + id, adat, { expirationTtl: 120 });
+  return valasz({ ok: true });
+}
+
+async function qrLekeres(env, url) {
+  const id = url.pathname.split("/")[3];
+  if (!/^[0-9a-f-]{36}$/.test(id || "")) return valasz({ hiba: "Hibás kérés." }, 400);
+  const adat = await env.FILES.get("q:" + id);
+  if (!adat) return valasz({ varakozas: true }, 404);
+  await env.FILES.delete("q:" + id); // egyszer olvasható
+  return new Response(adat, { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
 }
 
 // A titkosítás "sója": egy véletlen szám, egyszer jön létre, utána mindig ugyanaz.

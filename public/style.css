@@ -1111,3 +1111,38 @@ body.megosztas-mod .tartalom { padding: 0 16px; }
   .sav-chipek .chip:nth-child(3), .sav-chipek .chip:nth-child(4) { display: none; }  /* dátum, hét elrejtve */
 }
 .forditó, .excel-eszkozok, .kis-ablak[open] { grid-template-columns: minmax(0, 1fr); }
+.uj-cimke { font-size: .68rem; font-weight: 800; padding: 3px 8px; border-radius: 99px; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; letter-spacing: .03em; }
+.fv-figyelmeztetes { margin: 0; padding: 8px 10px; border-radius: 9px; background: var(--narancs-h); color: var(--narancs); font-size: .78rem !important; line-height: 1.45; }
+
+/* ================= QR BELÉPÉS ================= */
+.vagy-elvalaszto { display: flex; align-items: center; gap: 12px; color: var(--halvany); font-size: .8rem; margin: -6px 0; }
+.vagy-elvalaszto::before, .vagy-elvalaszto::after { content: ""; flex: 1; height: 1px; background: var(--mezo-keret); }
+.qr-kartya { gap: 14px; }
+.qr-lepesek { text-align: left; font-size: .86rem; }
+.qr-kep { width: 230px !important; padding: 12px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: var(--arnyek); transition: opacity .3s, filter .3s; }
+.qr-kep svg { display: block; width: 100%; height: auto; }
+.qr-kep.lejart { opacity: .25; filter: blur(3px); }
+.qr-kod-sor { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: .88rem; color: var(--halvany); }
+.qr-kod-sor strong { font-size: 1.35rem; letter-spacing: .08em; color: var(--szoveg); }
+.qr-allapot { margin: 0; min-height: 1.3em; }
+.qr-nagy-kod { margin: 6px 0 4px; font-size: 2.6rem; font-weight: 800; letter-spacing: .1em; color: var(--fo); }
+#qr-jovahagyas { display: grid; gap: 12px; }
+#qr-jovahagyas .halvany-szoveg { margin: 0; }
+.qr-jelszo { display: grid; gap: 10px; }
+.qr-jelszo input { font-size: 16px; }
+.siker { margin: 0; padding: 12px; border-radius: 12px; background: var(--zold-h); color: var(--zold); font-weight: 700; line-height: 1.5; }
+
+/* ================= KIMUTATÁS ================= */
+.kapcsolo.ot { grid-template-columns: repeat(5, 1fr); }
+.mezok-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.mezok-4 > * { min-width: 0; }
+.pivot-diagram { width: 100%; display: grid; gap: 6px; padding: 14px; border-radius: 12px; background: var(--mezo); }
+.pivot-sor { display: grid; grid-template-columns: minmax(80px, 180px) 1fr auto; align-items: center; gap: 10px; font-size: .84rem; }
+.pivot-cimke { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.pivot-sav { height: 14px; border-radius: 7px; background: var(--fo-halvany); overflow: hidden; }
+.pivot-sav div { height: 100%; border-radius: 7px; background: linear-gradient(90deg, var(--grad-a), var(--grad-b)); transition: width .5s ease; }
+.pivot-sor strong { min-width: 70px; text-align: right; }
+@media (max-width: 860px) { .mezok-4 { grid-template-columns: 1fr 1fr; } .kapcsolo.ot { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px) { .kapcsolo.ot { grid-template-columns: 1fr 1fr; } .pivot-sor { grid-template-columns: 90px 1fr auto; } }
+.telepito-chip { background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; border-color: transparent; }
+.telepito-chip:hover { color: #fff; filter: brightness(1.1); }

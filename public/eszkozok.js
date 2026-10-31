@@ -13,7 +13,7 @@
 
 const EN_HU = {}, HU_EN = {};
 for (const fv of FUGGVENYEK) {
-  if (fv.hu.includes(" ") || fv.en.includes(" ")) continue;
+  if (fv.hu.includes(" ") || fv.en.includes(" ") || fv.ellenorzetlen) continue; // csak megerősített nevek
   EN_HU[fv.en] = fv.hu;
 }
 Object.assign(EN_HU, EXTRA_FUGGVENYNEVEK);
@@ -132,7 +132,7 @@ $("tr-be").value = '=HA(FKERES(A2;$E$2:$G$100;3;HAMIS)>1,5;"OK";HAHIBA(B2/C2;0))
    2. EXCEL ESZKÖZÖK
    ====================================================== */
 
-let xtFul = "osszehasonlitas";
+let xtFul = "kimutatas";
 const xtMunkafuzetek = {}; // választó azonosító → { nev, wb } vagy lista
 
 // Munkafüzet beolvasása gépről vagy a tárolt fájlok közül
@@ -238,6 +238,111 @@ function lapValaszto(azon) {
 
 /* ---------- Panelek ---------- */
 const XT_PANELEK = {
+  kimutatas: {
+    leiras: "xt_pivot_desc",
+    azon: "p",
+    rajzol(p) {
+      p.appendChild(fajlValaszto("p", "xt_pick"));
+      const sor = document.createElement("div");
+      sor.className = "mezok-4";
+      sor.appendChild(lapValaszto("xt-p-lap"));
+      for (const [id, kulcs] of [["xt-p-csop", "xt_group"], ["xt-p-ertek", "xt_value"], ["xt-p-muv", "xt_agg"]]) {
+        const l = document.createElement("label");
+        l.className = "mezo";
+        l.innerHTML = `<span></span><select id="${id}"></select>`;
+        l.querySelector("span").textContent = t(kulcs);
+        sor.appendChild(l);
+      }
+      for (const m of ["sum", "count", "avg", "min", "max"]) sor.querySelector("#xt-p-muv").add(new Option(t("agg_" + m), m));
+      p.appendChild(sor);
+    },
+    betoltve(mf) {
+      const lap = $("xt-p-lap");
+      lap.innerHTML = "";
+      mf.wb.SheetNames.forEach((n) => lap.add(new Option(n, n)));
+      lap.onchange = () => this.oszlopok(mf);
+      this.oszlopok(mf);
+    },
+    oszlopok(mf) {
+      const sorok = XLSX.utils.sheet_to_json(mf.wb.Sheets[$("xt-p-lap").value], { header: 1, raw: true, defval: "" });
+      const fej = sorok[0] || [];
+      const csop = $("xt-p-csop"), ertek = $("xt-p-ertek");
+      csop.innerHTML = ""; ertek.innerHTML = "";
+      fej.forEach((f, i) => {
+        const nev = `${oszlopBetu(i)}${f !== "" ? " – " + f : ""}`;
+        csop.add(new Option(nev, i));
+        ertek.add(new Option(nev, i));
+      });
+      // Okos alapértelmezés: első szöveges oszlop szerint csoportosít, az első számos oszlopot összegzi
+      const minta = sorok[1] || [];
+      const szoveges = minta.findIndex((v) => typeof v === "string" && v !== "");
+      const szamos = minta.findIndex((v) => typeof v === "number");
+      if (szoveges >= 0) csop.value = szoveges;
+      if (szamos >= 0) ertek.value = szamos;
+    },
+    async futtat(ki) {
+      const mf = this.mf;
+      if (!mf) return xtHiba(t("xt_need_file"));
+      const lapNeve = $("xt-p-lap").value;
+      const ci = +$("xt-p-csop").value, vi = +$("xt-p-ertek").value, muv = $("xt-p-muv").value;
+      const [fej, ...sorok] = XLSX.utils.sheet_to_json(mf.wb.Sheets[lapNeve], { header: 1, raw: true, defval: "" });
+      const csoportok = new Map();
+      for (const s of sorok) {
+        if (s.every((x) => x === "")) continue;
+        let k = s[ci];
+        if (k instanceof Date) k = k.toLocaleDateString(locale());
+        k = String(k ?? "").trim() || "(–)";
+        const v = typeof s[vi] === "number" ? s[vi] : parseFloat(String(s[vi]).replace(/\s/g, "").replace(",", "."));
+        if (!csoportok.has(k)) csoportok.set(k, { db: 0, osszeg: 0, min: Infinity, max: -Infinity, szamok: 0 });
+        const g = csoportok.get(k);
+        g.db++;
+        if (isFinite(v)) { g.osszeg += v; g.min = Math.min(g.min, v); g.max = Math.max(g.max, v); g.szamok++; }
+      }
+      const ertekOf = (g) => muv === "count" ? g.db : muv === "sum" ? g.osszeg : !g.szamok ? 0 : muv === "avg" ? g.osszeg / g.szamok : muv === "min" ? g.min : g.max;
+      const eredmeny = [...csoportok].map(([k, g]) => [k, ertekOf(g)]).sort((a, b) => b[1] - a[1]);
+      const osszes = muv === "sum" || muv === "count" ? eredmeny.reduce((s, [, v]) => s + v, 0) : null;
+
+      ki.innerHTML = "";
+      const o = document.createElement("p");
+      o.className = "xt-osszegzes jo";
+      o.textContent = t("xt_groups", { n: eredmeny.length });
+      ki.appendChild(o);
+
+      // Vízszintes oszlopdiagram (első 12 csoport)
+      const max = Math.max(...eredmeny.map(([, v]) => Math.abs(v)), 1);
+      const diagram = document.createElement("div");
+      diagram.className = "pivot-diagram";
+      for (const [k, v] of eredmeny.slice(0, 12)) {
+        const sor = document.createElement("div");
+        sor.className = "pivot-sor";
+        sor.innerHTML = `<span class="pivot-cimke"></span><div class="pivot-sav"><div></div></div><strong class="tabular"></strong>`;
+        sor.querySelector(".pivot-cimke").textContent = k;
+        sor.querySelector(".pivot-cimke").title = k;
+        sor.querySelector(".pivot-sav div").style.width = (Math.abs(v) / max * 100).toFixed(1) + "%";
+        sor.querySelector("strong").textContent = szam(v, Number.isInteger(v) ? 0 : 2);
+        diagram.appendChild(sor);
+      }
+      ki.appendChild(diagram);
+
+      const muvNev = t("agg_" + muv), ertekNev = fej[vi] !== "" ? fej[vi] : oszlopBetu(vi), csopNev = fej[ci] !== "" ? fej[ci] : oszlopBetu(ci);
+      const fejlec = [String(csopNev), `${muvNev}: ${ertekNev}`, ...(osszes ? [t("xt_share")] : [])];
+      const tablaSorok = eredmeny.map(([k, v]) => [k, szam(v, Number.isInteger(v) ? 0 : 2), ...(osszes ? [szam(v / osszes * 100, 1) + " %"] : [])]);
+      if (osszes !== null) tablaSorok.push([t("xt_total"), szam(osszes, Number.isInteger(osszes) ? 0 : 2), "100 %"]);
+      ki.appendChild(xtTabla(fejlec, tablaSorok));
+
+      ki.appendChild(xtLetoltGomb(t("xt_dl_pivot"), () => {
+        const aoa = [fejlec, ...eredmeny.map(([k, v]) => [k, v, ...(osszes ? [v / osszes] : [])])];
+        if (osszes !== null) aoa.push([t("xt_total"), osszes, 1]);
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        if (osszes) for (let r = 1; r < aoa.length; r++) { const c = ws[XLSX.utils.encode_cell({ r, c: 2 })]; if (c) c.z = "0.0%"; }
+        ws["!cols"] = [{ wch: 28 }, { wch: 18 }, { wch: 10 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, lapNev(muvNev));
+        XLSX.writeFile(wb, `${fajlAlapnev(mf.nev)}_${muvNev}.xlsx`);
+      }));
+    },
+  },
+
   osszehasonlitas: {
     leiras: "xt_compare_desc",
     rajzol(p) {
@@ -282,6 +387,7 @@ const XT_PANELEK = {
 
   ismetlodes: {
     leiras: "xt_dupes_desc",
+    azon: "d",
     rajzol(p) {
       p.appendChild(fajlValaszto("d", "xt_pick"));
       const sor = document.createElement("div");
@@ -433,8 +539,8 @@ const XT_PANELEK = {
 // Ha egy fájl kiválasztásra került: ahol kell, betöltjük (pl. munkalap-listához)
 async function xtValasztoValtozott(azon) {
   const panel = XT_PANELEK[xtFul];
-  if (azon === "d" && panel.betoltve && xtMunkafuzetek.d?.[0]) {
-    try { panel.mf = await munkafuzetBeolvas(xtMunkafuzetek.d[0]); panel.betoltve(panel.mf); }
+  if (azon === panel.azon && panel.betoltve && xtMunkafuzetek[azon]?.[0]) {
+    try { panel.mf = await munkafuzetBeolvas(xtMunkafuzetek[azon][0]); panel.betoltve(panel.mf); }
     catch { xtHiba(t("preview_failed")); }
   }
 }

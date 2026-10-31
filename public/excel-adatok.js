@@ -16,6 +16,7 @@ const KATEGORIAK = {
   szoveg:    { szin: "narancs", nev: { hu: "Szöveg",                sk: "Text",                  en: "Text" } },
   datum:     { szin: "kek",     nev: { hu: "Dátum és idő",          sk: "Dátum a čas",           en: "Date & time" } },
   dinamikus: { szin: "lila",    nev: { hu: "Dinamikus tömbök",      sk: "Dynamické polia",       en: "Dynamic arrays" } },
+  excel2024: { szin: "zold",    nev: { hu: "Új – Excel 2024",       sk: "Nové – Excel 2024",     en: "New – Excel 2024" } },
 };
 
 const FUGGVENYEK = [];
@@ -522,6 +523,101 @@ F("SORSZÁMLISTA", "SEQUENCE", "dinamikus", "sorok; [oszlopok]; [kezdet]; [lép�
   "Vytvorí rad čísel: tu od 1 do 12 pod seba.",
   "Creates a series of numbers: here 1 to 12 downwards.");
 
+/* ---------------- Új – Excel 2024 (és Microsoft 365) ----------------
+   ellenorzott = false: a magyar nevet nem tudtuk hivatalos forrásból megerősíteni,
+   ilyenkor az angol nevet mutatjuk, és figyelmeztetünk. */
+function F24(hu, en, parHu, parEn, keplet, hu_, sk_, en_, ellenorzott = true) {
+  F(hu, en, "excel2024", parHu, parEn, keplet, hu_, sk_, en_);
+  FUGGVENYEK[FUGGVENYEK.length - 1].uj = true;
+  FUGGVENYEK[FUGGVENYEK.length - 1].ellenorzetlen = !ellenorzott;
+}
+
+F24("SZÖVEGFELOSZTÁS", "TEXTSPLIT", "szöveg; oszlop_határoló; [sor_határoló]; …", "text, col_delimiter, [row_delimiter], …",
+  '=TEXTSPLIT(A2; ", ")',
+  "Egy cella szövegét több cellába bontja egy határoló mentén – pl. „Kovács, Anna, Budapest” → 3 oszlop. Mint a Szövegből oszlopok, csak képlettel.",
+  "Rozdelí text bunky do viacerých buniek podľa oddeľovača – napr. „Kováč, Anna, Bratislava“ → 3 stĺpce. Ako Text na stĺpce, ale vzorcom.",
+  "Splits a cell's text into several cells at a delimiter – e.g. \"Smith, Anna, London\" → 3 columns. Like Text to Columns, but as a formula.");
+F24("SZÖVEGELŐTTE", "TEXTBEFORE", "szöveg; határoló; [hányadik]; …", "text, delimiter, [instance_num], …",
+  '=TEXTBEFORE(A2; "@")',
+  "A határoló ELŐTTI szövegrész – itt egy e-mail címből a felhasználónév. Nem kell többé BAL + SZÖVEG.KERES.",
+  "Časť textu PRED oddeľovačom – tu používateľské meno z e-mailovej adresy. Už netreba LEFT + SEARCH.",
+  "The text BEFORE a delimiter – here the user name from an e-mail address. No more LEFT + SEARCH.");
+F24("SZÖVEGUTÁNA", "TEXTAFTER", "szöveg; határoló; [hányadik]; …", "text, delimiter, [instance_num], …",
+  '=TEXTAFTER(A2; "@")',
+  "A határoló UTÁNI szövegrész – itt az e-mail cím domainje. Negatív „hányadik” értékkel a végétől számol.",
+  "Časť textu ZA oddeľovačom – tu doména e-mailovej adresy. So záporným poradím počíta od konca.",
+  "The text AFTER a delimiter – here the domain of an e-mail address. A negative instance counts from the end.", false);
+F24("FÜGG.HALMOZÁS", "VSTACK", "tömb1; [tömb2]; …", "array1, [array2], …",
+  "=VSTACK(A2:C10; E2:G10)",
+  "Tartományokat (akár több munkalapról) EGYMÁS ALÁ fűz egyetlen listává – pl. havi táblák összesítése.",
+  "Spojí rozsahy (aj z viacerých hárkov) POD SEBA do jedného zoznamu – napr. súhrn mesačných tabuliek.",
+  "Stacks ranges (even from several sheets) ON TOP of each other into one list – e.g. combining monthly tables.");
+F24("VÍZSZ.HALMOZÁS", "HSTACK", "tömb1; [tömb2]; …", "array1, [array2], …",
+  "=HSTACK(A2:A10; D2:D10)",
+  "Tartományokat EGYMÁS MELLÉ tesz – pl. két nem szomszédos oszlopból egy új táblát készít.",
+  "Spojí rozsahy VEDĽA SEBA – napr. vytvorí novú tabuľku z dvoch nesusediacich stĺpcov.",
+  "Places ranges SIDE BY SIDE – e.g. builds a new table from two non-adjacent columns.");
+F24("TAKE", "TAKE", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
+  "=TAKE(SORT(A2:C100; 3; -1); 5)",
+  "Az első (vagy negatív számmal az utolsó) N sort adja vissza. Itt: TOP 5 a 3. oszlop szerint.",
+  "Vráti prvých (alebo so záporným číslom posledných) N riadkov. Tu: TOP 5 podľa 3. stĺpca.",
+  "Returns the first (or, with a negative number, the last) N rows. Here: the top 5 by the 3rd column.", false);
+F24("DROP", "DROP", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
+  "=DROP(A1:C100; 1)",
+  "Elhagy N sort az elejéről (vagy negatívval a végéről) – itt a fejlécet.",
+  "Vynechá N riadkov zo začiatku (alebo so záporným číslom z konca) – tu hlavičku.",
+  "Removes N rows from the start (or, with a negative number, the end) – here the header.", false);
+F24("CHOOSECOLS", "CHOOSECOLS", "tömb; oszlop1; [oszlop2]; …", "array, col_num1, [col_num2], …",
+  "=CHOOSECOLS(A2:F100; 1; 4)",
+  "Csak a megadott oszlopokat adja vissza, a megadott sorrendben – itt az 1. és 4. oszlopot.",
+  "Vráti iba zadané stĺpce v zadanom poradí – tu 1. a 4. stĺpec.",
+  "Returns only the columns you list, in that order – here columns 1 and 4.", false);
+F24("CHOOSEROWS", "CHOOSEROWS", "tömb; sor1; [sor2]; …", "array, row_num1, [row_num2], …",
+  "=CHOOSEROWS(A2:C100; 1; -1)",
+  "A megadott sorokat adja vissza – itt az elsőt és az utolsót (-1).",
+  "Vráti zadané riadky – tu prvý a posledný (-1).",
+  "Returns the rows you list – here the first and the last (-1).", false);
+F24("TOCOL", "TOCOL", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
+  "=TOCOL(A2:D10; 1)",
+  "Egy egész tartományt EGYETLEN OSZLOPBA rendez; az 1 = az üres cellák kihagyása.",
+  "Usporiada celý rozsah do JEDNÉHO STĹPCA; 1 = vynechať prázdne bunky.",
+  "Turns a whole range into a SINGLE COLUMN; 1 = skip blank cells.", false);
+F24("TOROW", "TOROW", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
+  "=TOROW(A2:A10)",
+  "Egy tartományt EGYETLEN SORBA rendez.",
+  "Usporiada rozsah do JEDNÉHO RIADKA.",
+  "Turns a range into a SINGLE ROW.", false);
+F24("WRAPROWS", "WRAPROWS", "vektor; darab; [kitöltés]", "vector, wrap_count, [pad_with]",
+  "=WRAPROWS(A2:A13; 3)",
+  "Egy hosszú listát 3 elemes sorokba tördel – pl. egy oszlopnyi címadatból táblázat lesz.",
+  "Zalomí dlhý zoznam do riadkov po 3 položkách – napr. zo stĺpca adries vznikne tabuľka.",
+  "Wraps a long list into rows of 3 items – e.g. turns a column of address data into a table.", false);
+F24("EXPAND", "EXPAND", "tömb; sorok; [oszlopok]; [kitöltés]", "array, rows, [columns], [pad_with]",
+  '=EXPAND(A2:B3; 5; 3; "")',
+  "Megnöveli a tartomány méretét a megadott sorra és oszlopra, a hiányzó helyeket kitölti.",
+  "Rozšíri rozsah na zadaný počet riadkov a stĺpcov a chýbajúce miesta vyplní.",
+  "Expands the range to the given number of rows and columns and fills the gaps.", false);
+F24("LET", "LET", "név1; érték1; [név2; érték2]; …; számítás", "name1, value1, …, calculation",
+  "=LET(x; B2*C2; IF(x>1000; x*90/100; x))",
+  "Elnevez egy részeredményt (itt x), így nem kell többször kiszámolni – rövidebb, gyorsabb, olvashatóbb képlet.",
+  "Pomenuje medzivýsledok (tu x), takže sa nemusí počítať viackrát – kratší, rýchlejší a prehľadnejší vzorec.",
+  "Names an intermediate result (here x) so it isn't calculated twice – shorter, faster, more readable formulas.");
+F24("LAMBDA", "LAMBDA", "[paraméter1; …]; számítás", "[parameter1, …], calculation",
+  "=LAMBDA(netto; netto*127/100)(A2)",
+  "Saját függvényt készíthetsz vele. Ha a Névkezelőben (Ctrl+F3) elnevezed pl. BRUTTO-nak, utána =BRUTTO(A2) formában használhatod.",
+  "Vytvoríš si vlastnú funkciu. Ak ju v Správcovi názvov (Ctrl+F3) pomenuješ napr. BRUTTO, potom ju použiješ ako =BRUTTO(A2).",
+  "Lets you create your own function. Name it in the Name Manager (Ctrl+F3), e.g. GROSS, then use it as =GROSS(A2).");
+F24("BYROW", "BYROW", "tömb; LAMBDA(sor; számítás)", "array, LAMBDA(row, calculation)",
+  "=BYROW(B2:E10; LAMBDA(r; SUM(r)))",
+  "Soronként lefuttat egy számítást, és oszlopként adja vissza az eredményt – itt minden sor összegét.",
+  "Spustí výpočet pre každý riadok a výsledky vráti ako stĺpec – tu súčet každého riadka.",
+  "Runs a calculation for each row and returns the results as a column – here each row's sum.", false);
+F24("MAP", "MAP", "tömb; LAMBDA(x; számítás)", "array, LAMBDA(x, calculation)",
+  "=MAP(A2:A10; LAMBDA(x; UPPER(TRIM(x))))",
+  "Minden cellára külön lefuttatja a számítást – itt egyszerre tisztítja és nagybetűsíti a listát.",
+  "Spustí výpočet pre každú bunku zvlášť – tu naraz vyčistí zoznam a prevedie ho na veľké písmená.",
+  "Runs the calculation on every cell – here it cleans the list and converts it to upper case in one go.", false);
+
 /* ======================================================
    BILLENTYŰPARANCSOK (Windows)
    ====================================================== */
@@ -659,7 +755,7 @@ const EXTRA_FUGGVENYNEVEK = {
   CEILING: "PLAFON", FLOOR: "PADLÓ", NA: "HIÁNYZIK", ISNA: "NINCS", ISERR: "HIBA.E", ISEVEN: "PÁROSE", ISODD: "PÁRATLANE",
   HOUR: "ÓRA", MINUTE: "PERCEK", SECOND: "MPERC", CHAR: "KARAKTER", CODE: "KÓD", RAND: "VÉL",
   STDEV: "SZÓRÁS", ROWS: "SOROK", COLUMNS: "OSZLOPOK", LOOKUP: "KERES", DAYS: "NAPOK", WEEKNUM: "HÉT.SZÁMA",
-  RANK: "SORSZÁM", "NETWORKDAYS.INTL": "ÖSSZ.MUNKANAP.INTL", "WORKDAY.INTL": "KALK.MUNKANAP.INTL", RANDARRAY: "VÉLETLENTÖMB",
+  RANK: "SORSZÁM", TEXTSPLIT: "SZÖVEGFELOSZTÁS", TEXTBEFORE: "SZÖVEGELŐTTE", VSTACK: "FÜGG.HALMOZÁS", HSTACK: "VÍZSZ.HALMOZÁS", "NETWORKDAYS.INTL": "ÖSSZ.MUNKANAP.INTL", "WORKDAY.INTL": "KALK.MUNKANAP.INTL", RANDARRAY: "VÉLETLENTÖMB",
 };
 const HIBAERTEKEK = { "#N/A": "#HIÁNYZIK", "#VALUE!": "#ÉRTÉK!", "#DIV/0!": "#ZÉRÓOSZTÓ!", "#REF!": "#HIV!", "#NAME?": "#NÉV?", "#NUM!": "#SZÁM!", "#NULL!": "#NULLA!" };
 const LOGIKAI = { TRUE: "IGAZ", FALSE: "HAMIS" };

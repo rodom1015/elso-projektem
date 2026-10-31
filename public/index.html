@@ -9,6 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0c3b24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Rodom">
+  <link rel="apple-touch-icon" href="/ikonok/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
   <script>
     // Téma és szín beállítása még a megjelenés előtt (hogy ne villanjon)
@@ -108,6 +114,7 @@
         <strong id="morzsa-oldal"></strong>
       </div>
       <div class="sav-chipek">
+        <button type="button" class="chip gomb-chip telepito-chip" id="telepites" hidden data-i18n="pwa_install"></button>
         <button type="button" class="chip gomb-chip kereso-chip" id="paletta-nyit">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <span data-i18n="cp_open"></span><kbd>Ctrl K</kbd>
@@ -314,11 +321,31 @@
           <span class="porgo" hidden></span>
         </button>
         <p class="hiba" id="belepes-hiba" role="alert"></p>
+        <div class="vagy-elvalaszto"><span data-i18n="qr_or"></span></div>
+        <button type="button" class="gomb masodlagos teljes" id="qr-inditas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" fill="currentColor"/></svg>
+          <span data-i18n="qr_login"></span>
+        </button>
         <p class="biztonsag">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" fill="currentColor"/></svg>
           <span data-i18n="security_note"></span>
         </p>
       </form>
+
+      <!-- QR kódos belépés (a gépen) -->
+      <div class="kartya belepes-kartya qr-kartya" id="qr-panel" hidden>
+        <h2 data-i18n="qr_login"></h2>
+        <ol class="lepesek qr-lepesek">
+          <li data-i18n="qr_step1"></li>
+          <li data-i18n="qr_step2"></li>
+          <li data-i18n="qr_step3"></li>
+        </ol>
+        <div class="qr-kep" id="qr-kep"></div>
+        <div class="qr-kod-sor"><span data-i18n="qr_code_label"></span><strong id="qr-ellenorzo" class="tabular"></strong></div>
+        <p class="halvany-szoveg qr-allapot" id="qr-allapot"></p>
+        <button type="button" class="gomb fo" id="qr-uj" hidden data-i18n="qr_new"></button>
+        <button type="button" class="link-gomb" id="qr-vissza" data-i18n="qr_back"></button>
+      </div>
 
       <!-- Fájlkezelő -->
       <div id="fajlkezelo" hidden>
@@ -400,7 +427,8 @@
       <!-- Excel eszközök -->
       <article class="kartya excel-eszkozok">
         <div class="kartya-fej"><h2 data-i18n="xt_title"></h2></div>
-        <div class="kapcsolo negy" id="xt-fulek">
+        <div class="kapcsolo ot" id="xt-fulek">
+          <button type="button" data-ful="kimutatas" data-i18n="xt_pivot"></button>
           <button type="button" data-ful="osszehasonlitas" data-i18n="xt_compare"></button>
           <button type="button" data-ful="ismetlodes" data-i18n="xt_dupes"></button>
           <button type="button" data-ful="atalakitas" data-i18n="xt_convert"></button>
@@ -410,6 +438,18 @@
         <div id="xt-panel"></div>
         <div id="xt-eredmeny"></div>
       </article>
+    </section>
+
+    <!-- ========== QR JÓVÁHAGYÁS (telefonon) ========== -->
+    <section class="oldal megosztas-oldal" id="oldal-qr" hidden>
+      <div class="kartya belepes-kartya">
+        <div class="belepes-logo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h2 data-i18n="qr_approve_title"></h2>
+        <p class="hos-alcim" data-i18n="qr_approve_sub"></p>
+        <div id="qr-jovahagyas"></div>
+      </div>
     </section>
 
     <!-- ========== MEGOSZTOTT FÁJL (a linket megnyitónak) ========== -->
@@ -693,5 +733,7 @@
 <script src="megosztas.js"></script>
 <script src="eszkozok.js"></script>
 <script src="paletta.js"></script>
+<script src="vendor/qrcode-1.4.4.js"></script>
+<script src="qr.js"></script>
 </body>
 </html>

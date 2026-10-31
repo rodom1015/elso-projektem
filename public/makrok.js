@@ -408,4 +408,314 @@ Sub UnprotectAllSheets()
     If failed <> "" Then MsgBox "{2}" & failed
 End Sub`,
   },
+  {
+    ikon: "📂", szin: "kek",
+    cim: { hu: "Mappa fájljainak listája", sk: "Zoznam súborov v priečinku", en: "List files in a folder" },
+    leiras: {
+      hu: "Kiválasztasz egy mappát, és új lapra kilistázza az összes fájlt kattintható linkkel, mérettel és módosítási dátummal.",
+      sk: "Vyberieš priečinok a na nový hárok vypíše všetky súbory s klikateľným odkazom, veľkosťou a dátumom zmeny.",
+      en: "Pick a folder and it lists every file on a new sheet with a clickable link, size and modified date.",
+    },
+    s: { hu: ["Fájlnév", "Méret (KB)", "Módosítva"], sk: ["Názov súboru", "Veľkosť (KB)", "Zmenené"], en: ["File name", "Size (KB)", "Modified"] },
+    kod: `Sub ListFilesInFolder()
+    Dim folder As String, f As String, ws As Worksheet, r As Long
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        If .Show <> -1 Then Exit Sub
+        folder = .SelectedItems(1) & Application.PathSeparator
+    End With
+    Set ws = Worksheets.Add
+    ws.Range("A1:C1").Value = Array("{1}", "{2}", "{3}")
+    ws.Range("A1:C1").Font.Bold = True
+    r = 2
+    f = Dir(folder & "*.*")
+    Do While f <> ""
+        ws.Hyperlinks.Add Anchor:=ws.Cells(r, 1), Address:=folder & f, TextToDisplay:=f
+        ws.Cells(r, 2).Value = Round(FileLen(folder & f) / 1024, 1)
+        ws.Cells(r, 3).Value = FileDateTime(folder & f)
+        r = r + 1
+        f = Dir()
+    Loop
+    ws.Columns("A:C").AutoFit
+End Sub`,
+  },
+  {
+    ikon: "✉️", szin: "zold",
+    cim: { hu: "Munkafüzet küldése e-mailben (Outlook)", sk: "Odoslanie zošita e-mailom (Outlook)", en: "E-mail the workbook (Outlook)" },
+    leiras: {
+      hu: "Elmenti a munkafüzetet, és megnyit egy új Outlook levelet, amihez már csatolva van. Csak a címzettet kell beírnod.",
+      sk: "Uloží zošit a otvorí novú správu v Outlooku, ku ktorej je už pripojený. Stačí doplniť adresáta.",
+      en: "Saves the workbook and opens a new Outlook e-mail with it already attached. Just add the recipient.",
+    },
+    s: {
+      hu: ["Előbb mentsd el a munkafüzetet!", "Szia! Csatolva küldöm a fájlt."],
+      sk: ["Najprv ulož zošit!", "Ahoj, v prílohe posielam súbor."],
+      en: ["Save the workbook first!", "Hi, please find the file attached."],
+    },
+    kod: `Sub EmailActiveWorkbook()
+    Dim ol As Object, mail As Object
+    If ActiveWorkbook.Path = "" Then
+        MsgBox "{1}"
+        Exit Sub
+    End If
+    ActiveWorkbook.Save
+    Set ol = CreateObject("Outlook.Application")
+    Set mail = ol.CreateItem(0)
+    With mail
+        .Subject = ActiveWorkbook.Name
+        .Body = "{2}"
+        .Attachments.Add ActiveWorkbook.FullName
+        .Display
+    End With
+End Sub`,
+  },
+  {
+    ikon: "🔢", szin: "narancs",
+    cim: { hu: "Szövegként tárolt számok javítása", sk: "Oprava čísel uložených ako text", en: "Fix numbers stored as text" },
+    leiras: {
+      hu: "A kijelölésben a zöld háromszöges, „szövegként tárolt” számokat valódi számmá alakítja – utána már működik rájuk a SZUM és az FKERES.",
+      sk: "Vo výbere prevedie „čísla uložené ako text“ (so zeleným trojuholníkom) na skutočné čísla – potom na ne funguje SUM aj VLOOKUP.",
+      en: "Turns \"numbers stored as text\" (the green triangle ones) in the selection into real numbers – then SUM and VLOOKUP work on them.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Sub ConvertTextToNumbers()
+    Dim c As Range, rng As Range, v As String
+    Set rng = Intersect(Selection, ActiveSheet.UsedRange)
+    If rng Is Nothing Then Exit Sub
+    For Each c In rng.Cells
+        If Not c.HasFormula And VarType(c.Value) = vbString Then
+            v = Trim(Replace(c.Value, Chr(160), ""))
+            If v <> "" And IsNumeric(v) Then
+                c.NumberFormat = "General"
+                c.Value = CDbl(v)
+            End If
+        End If
+    Next c
+End Sub`,
+  },
+  {
+    ikon: "🧩", szin: "lila",
+    cim: { hu: "Egyesített cellák bontása és kitöltése", sk: "Zrušenie zlúčenia a vyplnenie buniek", en: "Unmerge and fill cells" },
+    leiras: {
+      hu: "A kijelölésben szétbontja az egyesített cellákat, és MINDEN cellába beírja az értéket – így a táblázat szűrhető és rendezhető lesz.",
+      sk: "Vo výbere zruší zlúčenie buniek a hodnotu zapíše do KAŽDEJ bunky – tabuľku potom možno filtrovať a zoraďovať.",
+      en: "Unmerges cells in the selection and writes the value into EVERY cell – so the table can be filtered and sorted.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Sub UnmergeAndFill()
+    Dim c As Range, area As Range, v As Variant, rng As Range
+    Set rng = Intersect(Selection, ActiveSheet.UsedRange)
+    If rng Is Nothing Then Exit Sub
+    For Each c In rng.Cells
+        If c.MergeCells Then
+            Set area = c.MergeArea
+            v = area.Cells(1, 1).Value
+            area.UnMerge
+            area.Value = v
+        End If
+    Next c
+End Sub`,
+  },
+  {
+    ikon: "📤", szin: "kek",
+    cim: { hu: "Kijelölés mentése CSV-be", sk: "Uloženie výberu do CSV", en: "Save selection as CSV" },
+    leiras: {
+      hu: "Csak a kijelölt területet menti CSV fájlba, a géped beállításának megfelelő elválasztóval (magyar gépen pontosvessző).",
+      sk: "Uloží do CSV iba vybranú oblasť s oddeľovačom podľa nastavení počítača (na slovenskom počítači bodkočiarka).",
+      en: "Saves only the selected area to a CSV file, using your computer's list separator.",
+    },
+    s: { hu: ["Elmentve:"], sk: ["Uložené:"], en: ["Saved:"] },
+    kod: `Sub ExportSelectionToCsv()
+    Dim fileName As Variant, r As Range, c As Range, txt As String, n As Integer, sep As String
+    sep = Application.International(xlListSeparator)
+    fileName = Application.GetSaveAsFilename("export.csv", "CSV (*.csv), *.csv")
+    If VarType(fileName) = vbBoolean Then Exit Sub
+    n = FreeFile
+    Open fileName For Output As #n
+    For Each r In Selection.Rows
+        txt = ""
+        For Each c In r.Cells
+            If c.Column > r.Column Then txt = txt & sep
+            txt = txt & c.Text
+        Next c
+        Print #n, txt
+    Next r
+    Close #n
+    MsgBox "{1}" & vbCrLf & fileName
+End Sub`,
+  },
+  {
+    ikon: "🏷️", szin: "narancs",
+    cim: { hu: "Lapok átnevezése az A1 cella alapján", sk: "Premenovanie hárkov podľa bunky A1", en: "Rename sheets from cell A1" },
+    leiras: {
+      hu: "Minden munkalapot átnevez arra, ami az A1 cellájában áll (pl. „Január”, „Február”). A tiltott karaktereket tartalmazó neveket kihagyja.",
+      sk: "Každý hárok premenuje podľa obsahu bunky A1 (napr. „Január“, „Február“). Názvy s nepovolenými znakmi preskočí.",
+      en: "Renames every sheet to whatever is in its cell A1 (e.g. \"January\"). Names with invalid characters are skipped.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Sub RenameSheetsFromA1()
+    Dim ws As Worksheet, newName As String
+    For Each ws In ActiveWorkbook.Worksheets
+        newName = Left(Trim(ws.Range("A1").Text), 31)
+        If newName <> "" Then
+            On Error Resume Next
+            ws.Name = newName
+            On Error GoTo 0
+        End If
+    Next ws
+End Sub`,
+  },
+  {
+    ikon: "📌", szin: "zold",
+    cim: { hu: "Fejléc rögzítése és szűrő minden lapon", sk: "Ukotvenie hlavičky a filter na všetkých hárkoch", en: "Freeze header and filter on all sheets" },
+    leiras: {
+      hu: "Minden lapon rögzíti az első sort (görgetéskor is látszik), félkövérré teszi, és bekapcsolja rá a szűrőt.",
+      sk: "Na každom hárku ukotví prvý riadok (vidno ho aj pri posúvaní), zvýrazní ho tučným a zapne filter.",
+      en: "On every sheet freezes the first row (stays visible while scrolling), makes it bold and turns on the filter.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Sub FreezeHeaderAllSheets()
+    Dim ws As Worksheet, startSheet As Worksheet
+    Set startSheet = ActiveSheet
+    Application.ScreenUpdating = False
+    For Each ws In ActiveWorkbook.Worksheets
+        If ws.Visible = xlSheetVisible Then
+            ws.Activate
+            ActiveWindow.FreezePanes = False
+            ActiveWindow.ScrollRow = 1
+            ActiveWindow.ScrollColumn = 1
+            ws.Range("A2").Select
+            ActiveWindow.FreezePanes = True
+            ws.Rows(1).Font.Bold = True
+            If Not ws.AutoFilterMode And Application.WorksheetFunction.CountA(ws.Rows(1)) > 0 Then
+                On Error Resume Next
+                ws.Range("A1").AutoFilter
+                On Error GoTo 0
+            End If
+        End If
+    Next ws
+    startSheet.Activate
+    Application.ScreenUpdating = True
+End Sub`,
+  },
+  {
+    ikon: "↕️", szin: "lila",
+    cim: { hu: "Üres sor beszúrása minden sor közé", sk: "Vloženie prázdneho riadka medzi riadky", en: "Insert a blank row between rows" },
+    leiras: {
+      hu: "A kijelölt sorok közé egy-egy üres sort szúr be – pl. nyomtatáshoz vagy kézi kitöltéshez.",
+      sk: "Medzi vybrané riadky vloží po jednom prázdnom riadku – napr. na tlač alebo ručné vypĺňanie.",
+      en: "Inserts one blank row between each selected row – e.g. for printing or filling in by hand.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Sub InsertBlankRowBetween()
+    Dim i As Long, firstRow As Long, lastRow As Long
+    firstRow = Selection.Row
+    lastRow = Selection.Row + Selection.Rows.Count - 1
+    Application.ScreenUpdating = False
+    For i = lastRow To firstRow + 1 Step -1
+        ActiveSheet.Rows(i).Insert
+    Next i
+    Application.ScreenUpdating = True
+End Sub`,
+  },
+  {
+    ikon: "🎨", szin: "narancs",
+    cim: { hu: "Saját függvény: színes cellák számolása", sk: "Vlastná funkcia: počítanie farebných buniek", en: "Custom function: count coloured cells" },
+    leiras: {
+      hu: "Két saját függvényt ad az Excelhez: =CountByColor(A2:A100; D1) megszámolja, =SumByColor(A2:A100; D1) összeadja a D1-gyel azonos háttérszínű cellákat. Színváltozás után nyomj F9-et.",
+      sk: "Pridá do Excelu dve vlastné funkcie: =CountByColor(A2:A100; D1) spočíta a =SumByColor(A2:A100; D1) sčíta bunky s rovnakou farbou pozadia ako D1. Po zmene farby stlač F9.",
+      en: "Adds two custom functions: =CountByColor(A2:A100, D1) counts and =SumByColor(A2:A100, D1) sums the cells with the same fill colour as D1. Press F9 after changing colours.",
+    },
+    s: { hu: [], sk: [], en: [] },
+    kod: `Function CountByColor(rng As Range, colorCell As Range) As Long
+    Dim c As Range
+    Application.Volatile
+    For Each c In rng.Cells
+        If c.Interior.Color = colorCell.Interior.Color Then CountByColor = CountByColor + 1
+    Next c
+End Function
+
+Function SumByColor(rng As Range, colorCell As Range) As Double
+    Dim c As Range
+    Application.Volatile
+    For Each c In rng.Cells
+        If c.Interior.Color = colorCell.Interior.Color And IsNumeric(c.Value) Then
+            SumByColor = SumByColor + c.Value
+        End If
+    Next c
+End Function`,
+  },
+  {
+    ikon: "🔍", szin: "kek",
+    cim: { hu: "Összes képlet kilistázása", sk: "Výpis všetkých vzorcov", en: "List all formulas" },
+    leiras: {
+      hu: "Új lapra kigyűjti a munkafüzet összes képletét: melyik lapon, melyik cellában, mi a képlet és mi az eredménye. Ellenőrzéshez, dokumentáláshoz kiváló.",
+      sk: "Na nový hárok vypíše všetky vzorce zošita: hárok, bunka, vzorec a výsledok. Výborné na kontrolu a dokumentáciu.",
+      en: "Collects every formula in the workbook onto a new sheet: sheet, cell, formula and result. Great for checking and documenting.",
+    },
+    s: {
+      hu: ["Képletek", "Munkalap", "Cella", "Képlet", "Eredmény"],
+      sk: ["Vzorce", "Hárok", "Bunka", "Vzorec", "Výsledok"],
+      en: ["Formulas", "Sheet", "Cell", "Formula", "Result"],
+    },
+    kod: `Sub ListAllFormulas()
+    Const SHEET_NAME As String = "{1}"
+    Dim ws As Worksheet, out As Worksheet, c As Range, f As Range, r As Long
+    Application.DisplayAlerts = False
+    On Error Resume Next
+    Worksheets(SHEET_NAME).Delete
+    On Error GoTo 0
+    Application.DisplayAlerts = True
+
+    Set out = Worksheets.Add(After:=Worksheets(Worksheets.Count))
+    out.Name = SHEET_NAME
+    out.Range("A1:D1").Value = Array("{2}", "{3}", "{4}", "{5}")
+    out.Range("A1:D1").Font.Bold = True
+    r = 2
+    For Each ws In Worksheets
+        If ws.Name <> SHEET_NAME Then
+            Set f = Nothing
+            On Error Resume Next
+            Set f = ws.UsedRange.SpecialCells(xlCellTypeFormulas)
+            On Error GoTo 0
+            If Not f Is Nothing Then
+                For Each c In f.Cells
+                    out.Cells(r, 1).Value = ws.Name
+                    out.Cells(r, 2).Value = c.Address(False, False)
+                    out.Cells(r, 3).Value = "'" & c.FormulaLocal
+                    out.Cells(r, 4).Value = c.Text
+                    r = r + 1
+                Next c
+            End If
+        End If
+    Next ws
+    out.Columns("A:D").AutoFit
+End Sub`,
+  },
+  {
+    ikon: "🛡️", szin: "zold",
+    cim: { hu: "Csak a képletek védelme", sk: "Ochrana iba vzorcov", en: "Protect formulas only" },
+    leiras: {
+      hu: "Az aktív lapon csak a képletes cellákat zárolja – az adatokat továbbra is be lehet írni, de a képleteket nem lehet véletlenül elrontani.",
+      sk: "Na aktívnom hárku zamkne iba bunky so vzorcami – údaje sa dajú zadávať ďalej, ale vzorce sa nedajú omylom pokaziť.",
+      en: "Locks only the formula cells on the active sheet – data can still be entered, but formulas can't be broken by accident.",
+    },
+    s: {
+      hu: ["Jelszó a laphoz (üresen hagyva jelszó nélkül):", "Kész! A képletek védettek."],
+      sk: ["Heslo pre hárok (prázdne = bez hesla):", "Hotovo! Vzorce sú chránené."],
+      en: ["Sheet password (leave empty for none):", "Done! Formulas are protected."],
+    },
+    kod: `Sub ProtectFormulasOnly()
+    Dim ws As Worksheet, f As Range, pwd As String
+    Set ws = ActiveSheet
+    pwd = InputBox("{1}")
+    On Error Resume Next
+    ws.Unprotect Password:=pwd
+    ws.Cells.Locked = False
+    Set f = ws.UsedRange.SpecialCells(xlCellTypeFormulas)
+    On Error GoTo 0
+    If Not f Is Nothing Then f.Locked = True
+    ws.Protect Password:=pwd
+    MsgBox "{2}"
+End Sub`,
+  },
 ];

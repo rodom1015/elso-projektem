@@ -26,7 +26,7 @@ function palettaElemek() {
     add("cp_functions", "ƒx", fvNev(fv), (nyelv === "hu" ? fv.en : fv.hu) + " · " + fv.leiras[nyelv], `${fv.hu} ${fv.en} ${fv.leiras[nyelv]}`, ugras("fuggvenyek", "fv-kereses", fvNev(fv)));
 
   for (const m of MAKROK)
-    add("cp_macros", m.ikon, m.cim[nyelv], m.leiras[nyelv], m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod.match(/Sub (\w+)/)[1], () => {
+    add("cp_macros", m.ikon, m.cim[nyelv], m.leiras[nyelv], m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod.match(/(?:Sub|Function) (\w+)/)[1], () => {
       location.hash = "#/makrok";
       setTimeout(() => {
         const k = [...document.querySelectorAll(".makro")].find((x) => x.querySelector("h2").textContent === m.cim[nyelv]);

@@ -7,14 +7,17 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 🔎 Keresés, rendezés, letöltés, törlés
 - 👁️ **Előnézet**: Excel fájl megnézése a böngészőben, letöltés nélkül (munkalapokkal)
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
-- 📚 Excel súgó: 97 függvény példákkal és 93 billentyűparancs, kereshetően
-- ⚙️ 15 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
+- 📚 Excel súgó: 114 függvény (köztük 17 új Excel 2024 függvény) példákkal és 93 billentyűparancs, kereshetően
+- ⚙️ 26 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
 - 🧮 Kalkulátorok: pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
 - 💱 Napi árfolyamok az Európai Központi Banktól, 90 napos EUR/HUF grafikonnal
 - 📄 Word súgó: 63 billentyűparancs és 12 tipp
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
+- 📱 **Belépés QR kóddal**: a gépen QR kód, a telefonon jóváhagyás (ECDH titkosítással, ellenőrző kóddal) – a munkahelyi gépen nem kell beírni a jelszót
+- 📊 **Kimutatás-készítő**: csoportosítás összeggel/darabbal/átlaggal, grafikonnal és Excel letöltéssel
+- 📲 **Telepíthető alkalmazás (PWA)**: ikon a telefonon és az asztalon, offline is megnyílik
 - 🔗 **Megosztó link** lejárattal (1 óra / 1 nap / 7 nap), egyszeri letöltés opcióval, visszavonható – a link saját kulccsal titkosított
 - 🔄 **Képletfordító**: magyar ↔ szlovák ↔ angol Excel képletek (függvénynevek, elválasztók, tizedesjel, IGAZ/HAMIS, hibaértékek)
 - 🧰 **Excel eszközök** a böngészőben: összehasonlítás, ismétlődések, CSV ↔ Excel, egyesítés
@@ -46,7 +49,9 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/idojaras.js` | időjárás |
 | `public/tema.js` | témaváltó |
 | `public/paletta.js` | Ctrl + K gyorskereső |
-| `public/vendor/` | SheetJS – az Excel fájlok előnézetéhez (Apache-2.0 licenc) |
+| `public/qr.js` | belépés QR kóddal |
+| `public/sw.js`, `public/manifest.webmanifest`, `public/ikonok/` | telepíthető alkalmazás (PWA) |
+| `public/vendor/` | SheetJS (Apache-2.0) és qrcode-generator (MIT) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |
 

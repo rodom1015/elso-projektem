@@ -113,8 +113,17 @@ let aktivOldal = "kezdolap";
 
 function oldalValtas() {
   // Megosztott fájl linkje: #/s/<azonosító>.<kulcs>
+  const qrOldal = location.hash.startsWith("#/qr/");
   const megosztott = location.hash.startsWith("#/s/");
-  document.body.classList.toggle("megosztas-mod", megosztott);
+  document.body.classList.toggle("megosztas-mod", megosztott || qrOldal);
+  $("oldal-qr").hidden = !qrOldal;
+  if (qrOldal) {
+    OLDALAK.forEach((o) => ($("oldal-" + o).hidden = true));
+    $("oldal-megosztas").hidden = true;
+    aktivOldal = "kezdolap";
+    if (typeof qrJovahagyoMegnyit === "function") qrJovahagyoMegnyit(location.hash.slice(5));
+    return;
+  }
   if (megosztott) {
     OLDALAK.forEach((o) => ($("oldal-" + o).hidden = true));
     $("oldal-megosztas").hidden = false;
@@ -152,12 +161,27 @@ async function szamolBelepesiKulcs(jelszo) {
   return b64(new Uint8Array(hash));
 }
 
-async function szamolTitkositoKulcs(jelszo, so) {
-  const alap = await crypto.subtle.importKey("raw", szovegbol(jelszo), "PBKDF2", false, ["deriveKey"]);
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: b64bol(so), iterations: KIFEJTES_KOR, hash: "SHA-256" },
-    alap, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
-  );
+// A titkosító kulcs nyers bájtjai csak a memóriában vannak – a QR kódos belépés ezt adja át
+// (titkosítva) a másik eszköznek. Sehova nem mentjük.
+let nyersKulcs = null;
+
+async function szamolNyersKulcs(jelszo, so) {
+  const alap = await crypto.subtle.importKey("raw", szovegbol(jelszo), "PBKDF2", false, ["deriveBits"]);
+  return new Uint8Array(await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: b64bol(so), iterations: KIFEJTES_KOR, hash: "SHA-256" }, alap, 256));
+}
+const kulcsNyersbol = (nyers) => crypto.subtle.importKey("raw", nyers, "AES-GCM", false, ["encrypt", "decrypt"]);
+
+// Közös belépés: jelszóból vagy QR kódból kapott kulcsokkal
+async function belepesKulcsokkal(bk, nyersVagyJelszo) {
+  belepesiKulcs = bk;
+  const adat = await (await api("files")).json();
+  nyersKulcs = typeof nyersVagyJelszo === "string" ? await szamolNyersKulcs(nyersVagyJelszo, adat.so) : nyersVagyJelszo;
+  titkositoKulcs = await kulcsNyersbol(nyersKulcs);
+  await listaFeldolgoz(adat.fajlok);
+  belepesAllapot(true);
+  tetlensegFigyelo();
+  if (typeof megosztasokBetolt === "function") megosztasokBetolt();
 }
 
 // Eredmény: [12 bájt véletlen IV][titkosított adat]
@@ -228,14 +252,9 @@ $("belepes-urlap").addEventListener("submit", async (e) => {
   tolt(true);
   $("belepes-hiba").textContent = "";
   try {
-    belepesiKulcs = await szamolBelepesiKulcs(jelszo);
-    const adat = await (await api("files")).json();
-    titkositoKulcs = await szamolTitkositoKulcs(jelszo, adat.so);
+    await belepesKulcsokkal(await szamolBelepesiKulcs(jelszo), jelszo);
     $("jelszo").value = "";
-    await listaFeldolgoz(adat.fajlok);
-    belepesAllapot(true);
-    tetlensegFigyelo();
-    if (typeof megosztasokBetolt === "function") megosztasokBetolt();
+    if (typeof qrBelepesUtan === "function") qrBelepesUtan();
   } catch (hiba) {
     belepesiKulcs = null;
     belepesHiba(hiba.status ? hiba.message : t("no_server"));
@@ -273,6 +292,7 @@ function belepesAllapot(bent) {
 function kilepes(uzenetKulcs) {
   belepesiKulcs = null;
   titkositoKulcs = null;
+  nyersKulcs = null;
   fajlok = [];
   if ($("elonezet").open) $("elonezet").close();
   belepesAllapot(false);
@@ -775,6 +795,18 @@ function fvKartya(fv) {
   div.querySelector(".fv-leiras").textContent = fv.leiras[nyelv];
   div.querySelector(".fv-szintaxis").textContent = fvSzintaxis(fv);
   div.appendChild(kepletsor(kepletNyelven(fv.keplet)));
+  if (fv.uj) {
+    const cimke = document.createElement("span");
+    cimke.className = "uj-cimke";
+    cimke.textContent = "2024";
+    div.querySelector(".fv-fej").insertBefore(cimke, div.querySelector(".fv-kat"));
+  }
+  if (fv.ellenorzetlen && nyelv === "hu") {
+    const p = document.createElement("p");
+    p.className = "fv-figyelmeztetes";
+    p.textContent = t("fn_unverified");
+    div.appendChild(p);
+  }
   return div;
 }
 
@@ -1099,7 +1131,7 @@ function makrokRajzol() {
       <pre class="makro-kod" hidden><code></code></pre>`;
     kartya.querySelector(".makro-ikon").textContent = m.ikon;
     kartya.querySelector("h2").textContent = m.cim[nyelv];
-    kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^Sub (\w+)/gm)].map((x) => x[1]).join(" · ");
+    kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^(?:Sub|Function) (\w+)/gm)].map((x) => x[1]).join(" · ");
     kartya.querySelector(".makro-leiras").textContent = m.leiras[nyelv];
     kartya.querySelector("pre code").textContent = kod;
     kartya.querySelector(".masol-makro span").textContent = t("copy_macro");
@@ -1218,3 +1250,27 @@ setInterval(oraFrissit, 1000);
 forditasAlkalmaz();
 oldalValtas();
 arfolyamBetolt();
+
+/* ======================================================
+   TELEPÍTHETŐ ALKALMAZÁS (PWA)
+   ====================================================== */
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+let telepitoEsemeny = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();          // a saját gombunkkal ajánljuk fel
+  telepitoEsemeny = e;
+  $("telepites").hidden = false;
+});
+$("telepites").addEventListener("click", async () => {
+  if (!telepitoEsemeny) return;
+  telepitoEsemeny.prompt();
+  await telepitoEsemeny.userChoice;
+  telepitoEsemeny = null;
+  $("telepites").hidden = true;
+});
+window.addEventListener("appinstalled", () => {
+  $("telepites").hidden = true;
+  ertesit(t("pwa_installed"));
+});
