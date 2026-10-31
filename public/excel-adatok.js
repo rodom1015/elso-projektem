@@ -316,7 +316,7 @@ F("KICSI", "SMALL", "stat", "tömb; k", "array, k",
   "A k-adik legkisebb érték.",
   "k-ta najmenšia hodnota.",
   "The k-th smallest value.");
-F("SORSZÁM.EGY", "RANK.EQ", "stat", "szám; hivatkozás; [sorrend]", "number, ref, [order]",
+F("RANG.EGY", "RANK.EQ", "stat", "szám; hivatkozás; [sorrend]", "number, ref, [order]",
   "=RANK.EQ(B2; $B$2:$B$100)",
   "Megmondja, hányadik B2 a listában (1 = a legnagyobb).",
   "Určí poradie B2 v zozname (1 = najväčšie).",
@@ -512,7 +512,7 @@ F("SORBA.RENDEZ", "SORT", "dinamikus", "tömb; [oszlop]; [sorrend]", "array, [so
   "Rendezve adja vissza a tartományt (az eredeti marad). Itt a 3. oszlop szerint csökkenőben (-1).",
   "Vráti rozsah zoradený (pôvodný zostane). Tu podľa 3. stĺpca zostupne (-1).",
   "Returns the range sorted (the original stays). Here by the 3rd column, descending (-1).");
-F("RENDEZÉS.ALAPJÁN", "SORTBY", "dinamikus", "tömb; alapján_tömb1; [sorrend1]; …", "array, by_array1, [sort_order1], …",
+F("RENDEZÉS.ALAP.SZERINT", "SORTBY", "dinamikus", "tömb; alapján_tömb1; [sorrend1]; …", "array, by_array1, [sort_order1], …",
   "=SORTBY(A2:B100; C2:C100; -1)",
   "Egy másik oszlop szerint rendez – az az oszlop nem is kell, hogy megjelenjen az eredményben.",
   "Zoradí podľa iného stĺpca – ten stĺpec sa ani nemusí zobraziť vo výsledku.",
@@ -546,7 +546,7 @@ F24("SZÖVEGUTÁNA", "TEXTAFTER", "szöveg; határoló; [hányadik]; …", "text
   '=TEXTAFTER(A2; "@")',
   "A határoló UTÁNI szövegrész – itt az e-mail cím domainje. Negatív „hányadik” értékkel a végétől számol.",
   "Časť textu ZA oddeľovačom – tu doména e-mailovej adresy. So záporným poradím počíta od konca.",
-  "The text AFTER a delimiter – here the domain of an e-mail address. A negative instance counts from the end.", false);
+  "The text AFTER a delimiter – here the domain of an e-mail address. A negative instance counts from the end.");
 F24("FÜGG.HALMOZÁS", "VSTACK", "tömb1; [tömb2]; …", "array1, [array2], …",
   "=VSTACK(A2:C10; E2:G10)",
   "Tartományokat (akár több munkalapról) EGYMÁS ALÁ fűz egyetlen listává – pl. havi táblák összesítése.",
@@ -557,46 +557,46 @@ F24("VÍZSZ.HALMOZÁS", "HSTACK", "tömb1; [tömb2]; …", "array1, [array2], �
   "Tartományokat EGYMÁS MELLÉ tesz – pl. két nem szomszédos oszlopból egy új táblát készít.",
   "Spojí rozsahy VEDĽA SEBA – napr. vytvorí novú tabuľku z dvoch nesusediacich stĺpcov.",
   "Places ranges SIDE BY SIDE – e.g. builds a new table from two non-adjacent columns.");
-F24("TAKE", "TAKE", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
+F24("ÁTHELYEZ", "TAKE", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
   "=TAKE(SORT(A2:C100; 3; -1); 5)",
   "Az első (vagy negatív számmal az utolsó) N sort adja vissza. Itt: TOP 5 a 3. oszlop szerint.",
   "Vráti prvých (alebo so záporným číslom posledných) N riadkov. Tu: TOP 5 podľa 3. stĺpca.",
-  "Returns the first (or, with a negative number, the last) N rows. Here: the top 5 by the 3rd column.", false);
-F24("DROP", "DROP", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
+  "Returns the first (or, with a negative number, the last) N rows. Here: the top 5 by the 3rd column.");
+F24("ELTÁVOLÍT", "DROP", "tömb; sorok; [oszlopok]", "array, rows, [columns]",
   "=DROP(A1:C100; 1)",
   "Elhagy N sort az elejéről (vagy negatívval a végéről) – itt a fejlécet.",
   "Vynechá N riadkov zo začiatku (alebo so záporným číslom z konca) – tu hlavičku.",
-  "Removes N rows from the start (or, with a negative number, the end) – here the header.", false);
-F24("CHOOSECOLS", "CHOOSECOLS", "tömb; oszlop1; [oszlop2]; …", "array, col_num1, [col_num2], …",
+  "Removes N rows from the start (or, with a negative number, the end) – here the header.");
+F24("OSZLOPVÁLASZTÁS", "CHOOSECOLS", "tömb; oszlop1; [oszlop2]; …", "array, col_num1, [col_num2], …",
   "=CHOOSECOLS(A2:F100; 1; 4)",
   "Csak a megadott oszlopokat adja vissza, a megadott sorrendben – itt az 1. és 4. oszlopot.",
   "Vráti iba zadané stĺpce v zadanom poradí – tu 1. a 4. stĺpec.",
-  "Returns only the columns you list, in that order – here columns 1 and 4.", false);
-F24("CHOOSEROWS", "CHOOSEROWS", "tömb; sor1; [sor2]; …", "array, row_num1, [row_num2], …",
+  "Returns only the columns you list, in that order – here columns 1 and 4.");
+F24("SORVÁLASZTÁS", "CHOOSEROWS", "tömb; sor1; [sor2]; …", "array, row_num1, [row_num2], …",
   "=CHOOSEROWS(A2:C100; 1; -1)",
   "A megadott sorokat adja vissza – itt az elsőt és az utolsót (-1).",
   "Vráti zadané riadky – tu prvý a posledný (-1).",
-  "Returns the rows you list – here the first and the last (-1).", false);
-F24("TOCOL", "TOCOL", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
+  "Returns the rows you list – here the first and the last (-1).");
+F24("OSZLOPHOZ", "TOCOL", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
   "=TOCOL(A2:D10; 1)",
   "Egy egész tartományt EGYETLEN OSZLOPBA rendez; az 1 = az üres cellák kihagyása.",
   "Usporiada celý rozsah do JEDNÉHO STĹPCA; 1 = vynechať prázdne bunky.",
-  "Turns a whole range into a SINGLE COLUMN; 1 = skip blank cells.", false);
-F24("TOROW", "TOROW", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
+  "Turns a whole range into a SINGLE COLUMN; 1 = skip blank cells.");
+F24("SORHOZ", "TOROW", "tömb; [kihagy]; [oszloponként]", "array, [ignore], [scan_by_column]",
   "=TOROW(A2:A10)",
   "Egy tartományt EGYETLEN SORBA rendez.",
   "Usporiada rozsah do JEDNÉHO RIADKA.",
-  "Turns a range into a SINGLE ROW.", false);
-F24("WRAPROWS", "WRAPROWS", "vektor; darab; [kitöltés]", "vector, wrap_count, [pad_with]",
+  "Turns a range into a SINGLE ROW.");
+F24("OSZLOPTÖRDELÉS", "WRAPROWS", "vektor; darab; [kitöltés]", "vector, wrap_count, [pad_with]",
   "=WRAPROWS(A2:A13; 3)",
   "Egy hosszú listát 3 elemes sorokba tördel – pl. egy oszlopnyi címadatból táblázat lesz.",
   "Zalomí dlhý zoznam do riadkov po 3 položkách – napr. zo stĺpca adries vznikne tabuľka.",
-  "Wraps a long list into rows of 3 items – e.g. turns a column of address data into a table.", false);
-F24("EXPAND", "EXPAND", "tömb; sorok; [oszlopok]; [kitöltés]", "array, rows, [columns], [pad_with]",
+  "Wraps a long list into rows of 3 items – e.g. turns a column of address data into a table.");
+F24("KITERJESZT", "EXPAND", "tömb; sorok; [oszlopok]; [kitöltés]", "array, rows, [columns], [pad_with]",
   '=EXPAND(A2:B3; 5; 3; "")',
   "Megnöveli a tartomány méretét a megadott sorra és oszlopra, a hiányzó helyeket kitölti.",
   "Rozšíri rozsah na zadaný počet riadkov a stĺpcov a chýbajúce miesta vyplní.",
-  "Expands the range to the given number of rows and columns and fills the gaps.", false);
+  "Expands the range to the given number of rows and columns and fills the gaps.");
 F24("LET", "LET", "név1; érték1; [név2; érték2]; …; számítás", "name1, value1, …, calculation",
   "=LET(x; B2*C2; IF(x>1000; x*90/100; x))",
   "Elnevez egy részeredményt (itt x), így nem kell többször kiszámolni – rövidebb, gyorsabb, olvashatóbb képlet.",
@@ -611,12 +611,12 @@ F24("BYROW", "BYROW", "tömb; LAMBDA(sor; számítás)", "array, LAMBDA(row, cal
   "=BYROW(B2:E10; LAMBDA(r; SUM(r)))",
   "Soronként lefuttat egy számítást, és oszlopként adja vissza az eredményt – itt minden sor összegét.",
   "Spustí výpočet pre každý riadok a výsledky vráti ako stĺpec – tu súčet každého riadka.",
-  "Runs a calculation for each row and returns the results as a column – here each row's sum.", false);
+  "Runs a calculation for each row and returns the results as a column – here each row's sum.");
 F24("MAP", "MAP", "tömb; LAMBDA(x; számítás)", "array, LAMBDA(x, calculation)",
   "=MAP(A2:A10; LAMBDA(x; UPPER(TRIM(x))))",
   "Minden cellára külön lefuttatja a számítást – itt egyszerre tisztítja és nagybetűsíti a listát.",
   "Spustí výpočet pre každú bunku zvlášť – tu naraz vyčistí zoznam a prevedie ho na veľké písmená.",
-  "Runs the calculation on every cell – here it cleans the list and converts it to upper case in one go.", false);
+  "Runs the calculation on every cell – here it cleans the list and converts it to upper case in one go.");
 
 /* ======================================================
    BILLENTYŰPARANCSOK (Windows)
@@ -755,6 +755,21 @@ const EXTRA_FUGGVENYNEVEK = {
   CEILING: "PLAFON", FLOOR: "PADLÓ", NA: "HIÁNYZIK", ISNA: "NINCS", ISERR: "HIBA.E", ISEVEN: "PÁROSE", ISODD: "PÁRATLANE",
   HOUR: "ÓRA", MINUTE: "PERCEK", SECOND: "MPERC", CHAR: "KARAKTER", CODE: "KÓD", RAND: "VÉL",
   STDEV: "SZÓRÁS", ROWS: "SOROK", COLUMNS: "OSZLOPOK", LOOKUP: "KERES", DAYS: "NAPOK", WEEKNUM: "HÉT.SZÁMA",
+  "RANK.AVG": "RANG.ÁTL", TEXTAFTER: "SZÖVEGUTÁNA", TAKE: "ÁTHELYEZ", DROP: "ELTÁVOLÍT", CHOOSECOLS: "OSZLOPVÁLASZTÁS",
+  CHOOSEROWS: "SORVÁLASZTÁS", TOCOL: "OSZLOPHOZ", TOROW: "SORHOZ", WRAPROWS: "OSZLOPTÖRDELÉS", WRAPCOLS: "SORTÖRDELÉS",
+  EXPAND: "KITERJESZT", ARRAYTOTEXT: "TÖMB.SZÖVEGGÉ", VALUETOTEXT: "ÉRTÉK.SZÖVEGGÉ", IMAGE: "KÉP",
+  "CEILING.MATH": "PLAFON.MAT", "FLOOR.MATH": "PADLÓ.MAT", ISFORMULA: "KÉPLET", FORMULATEXT: "KÉPLETSZÖVEG",
+  SHEET: "LAP", SHEETS: "LAPOK", NUMBERVALUE: "SZÁMÉRTÉK", DATEVALUE: "DÁTUMÉRTÉK", TIMEVALUE: "IDŐÉRTÉK",
+  CONVERT: "KONVERTÁLÁS", ROMAN: "RÓMAI", ARABIC: "ARAB", QUOTIENT: "KVÓCIENS", GCD: "LKO", LCM: "LKT", EXP: "KITEVŐ",
+  SIGN: "ELŐJEL", FREQUENCY: "GYAKORISÁG", GETPIVOTDATA: "KIMUTATÁSADATOT.VESZ", TRIMMEAN: "RÉSZÁTLAG",
+  "PERCENTILE.INC": "PERCENTILIS.TARTALMAZ", "PERCENTILE.EXC": "PERCENTILIS.KIZÁR", "PERCENTRANK.INC": "SZÁZALÉKRANG.TARTALMAZ",
+  "PERCENTRANK.EXC": "SZÁZALÉKRANG.KIZÁR", "QUARTILE.INC": "KVARTILIS.TARTALMAZ", "QUARTILE.EXC": "KVARTILIS.KIZÁR",
+  "MODE.SNGL": "MÓDUSZ.EGY", "MODE.MULT": "MÓDUSZ.TÖBB", AVERAGEA: "ÁTLAGA", MINA: "MIN2", MAXA: "MAXA", AVEDEV: "ÁTL.ELTÉRÉS",
+  DSUM: "AB.SZUM", DAVERAGE: "AB.ÁTLAG", DCOUNT: "AB.DARAB", DCOUNTA: "AB.DARAB2", DMAX: "AB.MAX", DMIN: "AB.MIN",
+  DGET: "AB.MEZŐ", DPRODUCT: "AB.SZORZAT", UNICHAR: "UNIKARAKTER", UNICODE: "UNICODE", TYPE: "TÍPUS", EVEN: "PÁROS", ODD: "PÁRATLAN",
+  DAYS360: "NAP360", FIXED: "FIX", DOLLAR: "FORINT", "ERROR.TYPE": "HIBA.TÍPUS", ISLOGICAL: "LOGIKAI", ISNONTEXT: "NEM.SZÖVEG",
+  ISREF: "HIVATKOZÁS", CELL: "CELLA", INFO: "INFÓ", AREAS: "TERÜLET", SQRTPI: "GYÖKPI", GESTEP: "KÜSZÖBNÉL.NAGYOBB",
+  BYCOL: "BYCOL", REDUCE: "REDUCE", SCAN: "SCAN", MAKEARRAY: "MAKEARRAY", ISOMITTED: "ISOMITTED",
   RANK: "SORSZÁM", TEXTSPLIT: "SZÖVEGFELOSZTÁS", TEXTBEFORE: "SZÖVEGELŐTTE", VSTACK: "FÜGG.HALMOZÁS", HSTACK: "VÍZSZ.HALMOZÁS", "NETWORKDAYS.INTL": "ÖSSZ.MUNKANAP.INTL", "WORKDAY.INTL": "KALK.MUNKANAP.INTL", RANDARRAY: "VÉLETLENTÖMB",
 };
 const HIBAERTEKEK = { "#N/A": "#HIÁNYZIK", "#VALUE!": "#ÉRTÉK!", "#DIV/0!": "#ZÉRÓOSZTÓ!", "#REF!": "#HIV!", "#NAME?": "#NÉV?", "#NUM!": "#SZÁM!", "#NULL!": "#NULLA!" };
