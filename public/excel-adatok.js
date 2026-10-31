@@ -322,9 +322,9 @@ F("SORSZÁM.EGY", "RANK.EQ", "stat", "szám; hivatkozás; [sorrend]", "number, r
   "Tells the rank of B2 in the list (1 = the largest).");
 
 /* ---------------- Szöveg ---------------- */
-F("ÖSSZEFŰZ", "CONCAT", "szoveg", "szöveg1; [szöveg2]; …", "text1, [text2], …",
+F("FŰZ", "CONCAT", "szoveg", "szöveg1; [szöveg2]; …", "text1, [text2], …",
   '=CONCAT(A2; " "; B2)',
-  "Szövegeket fűz össze. Ugyanez az & jellel is megy: =A2 & \" \" & B2.",
+  "Szövegeket fűz össze (a régebbi Excelekben: ÖSSZEFŰZ). Ugyanez az & jellel is megy: =A2 & \" \" & B2.",
   "Spojí texty. To isté ide aj so znakom &: =A2 & \" \" & B2.",
   "Joins texts. The & sign does the same: =A2 & \" \" & B2.");
 F("SZÖVEGÖSSZEFŰZÉS", "TEXTJOIN", "szoveg", "elválasztó; üreset_kihagy; szöveg1; …", "delimiter, ignore_empty, text1, …",
@@ -650,3 +650,16 @@ const BILLENTYUK = [
     [{ hu: "Immediate ablak (VBA-ban)", sk: "Okno Immediate (vo VBA)", en: "Immediate window (in VBA)" }, ["Ctrl", "G"]],
   ]},
 ];
+
+/* ======================================================
+   KÉPLETFORDÍTÓ – további függvénynevek (a fenti 97-en felül)
+   ====================================================== */
+const EXTRA_FUGGVENYNEVEK = {
+  PMT: "RÉSZLET", ADDRESS: "CÍM", CONCATENATE: "ÖSSZEFŰZ", PRODUCT: "SZORZAT", TRUNC: "CSONK",
+  CEILING: "PLAFON", FLOOR: "PADLÓ", NA: "HIÁNYZIK", ISNA: "NINCS", ISERR: "HIBA.E", ISEVEN: "PÁROSE", ISODD: "PÁRATLANE",
+  HOUR: "ÓRA", MINUTE: "PERCEK", SECOND: "MPERC", CHAR: "KARAKTER", CODE: "KÓD", RAND: "VÉL",
+  STDEV: "SZÓRÁS", ROWS: "SOROK", COLUMNS: "OSZLOPOK", LOOKUP: "KERES", DAYS: "NAPOK", WEEKNUM: "HÉT.SZÁMA",
+  RANK: "SORSZÁM", "NETWORKDAYS.INTL": "ÖSSZ.MUNKANAP.INTL", "WORKDAY.INTL": "KALK.MUNKANAP.INTL", RANDARRAY: "VÉLETLENTÖMB",
+};
+const HIBAERTEKEK = { "#N/A": "#HIÁNYZIK", "#VALUE!": "#ÉRTÉK!", "#DIV/0!": "#ZÉRÓOSZTÓ!", "#REF!": "#HIV!", "#NAME?": "#NÉV?", "#NUM!": "#SZÁM!", "#NULL!": "#NULLA!" };
+const LOGIKAI = { TRUE: "IGAZ", FALSE: "HAMIS" };

@@ -15,6 +15,12 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📄 Word súgó: 63 billentyűparancs és 12 tipp
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
+- 🔗 **Megosztó link** lejárattal (1 óra / 1 nap / 7 nap), egyszeri letöltés opcióval, visszavonható – a link saját kulccsal titkosított
+- 🔄 **Képletfordító**: magyar ↔ szlovák ↔ angol Excel képletek (függvénynevek, elválasztók, tizedesjel, IGAZ/HAMIS, hibaértékek)
+- 🧰 **Excel eszközök** a böngészőben: összehasonlítás, ismétlődések, CSV ↔ Excel, egyesítés
+- 🌤️ Időjárás (Open-Meteo) városválasztással
+- 🎨 Témaváltó: világos / sötét / automatikus, 5 kiemelő szín
+- ⌨️ **Ctrl + K gyorskereső**: oldalak, függvények, billentyűk, makrók, fájlok – ékezet nélkül is
 - 🌍 Három nyelv: magyar (alap), szlovák, angol
 - 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés
 - 🌙 Sötét mód, telefonon is működik
@@ -35,6 +41,11 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/kalkulator.js` | a kalkulátorok számolása |
 | `public/word-adatok.js` | a Word súgó tartalma |
 | `public/unnepnapok.js` | magyar és szlovák ünnepnapok (húsvét számítással) |
+| `public/eszkozok.js` | képletfordító és Excel eszközök |
+| `public/megosztas.js` | megosztó linkek |
+| `public/idojaras.js` | időjárás |
+| `public/tema.js` | témaváltó |
+| `public/paletta.js` | Ctrl + K gyorskereső |
 | `public/vendor/` | SheetJS – az Excel fájlok előnézetéhez (Apache-2.0 licenc) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |

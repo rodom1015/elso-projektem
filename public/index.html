@@ -10,6 +10,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Téma és szín beállítása még a megjelenés előtt (hogy ne villanjon)
+    try {
+      var mod = localStorage.getItem("tema") || "auto";
+      var sotet = mod === "sotet" || (mod === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.dataset.tema = sotet ? "sotet" : "vilagos";
+      document.documentElement.dataset.szin = localStorage.getItem("szin") || "zold";
+    } catch (e) {}
+  </script>
 </head>
 <body>
 <div class="app">
@@ -35,6 +44,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
         <span data-i18n="nav_files">Fájljaim</span>
         <em class="menu-szam" id="menu-szam" hidden></em>
+      </a>
+      <a href="#/eszkozok" data-oldal="eszkozok" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span data-i18n="nav_tools">Eszközök</span>
       </a>
       <a href="#/szamolas" data-oldal="szamolas" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -95,9 +108,33 @@
         <strong id="morzsa-oldal"></strong>
       </div>
       <div class="sav-chipek">
+        <button type="button" class="chip gomb-chip kereso-chip" id="paletta-nyit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-i18n="cp_open"></span><kbd>Ctrl K</kbd>
+        </button>
+        <a href="#/kezdolap" class="chip" id="sav-idojaras" hidden></a>
         <span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="sav-datum"></span></span>
         <span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="sav-het"></span></span>
         <span class="chip ora-chip"><span class="elo-pont"></span><span id="sav-ora" class="tabular"></span></span>
+        <div class="tema-doboz">
+          <button type="button" class="chip gomb-chip" id="tema-gomb" data-i18n-title="th_title">🎨</button>
+          <div class="tema-panel kartya" id="tema-panel" hidden>
+            <strong data-i18n="th_mode"></strong>
+            <div class="kapcsolo harom" id="tema-mod">
+              <button type="button" data-mod="auto" data-i18n="th_auto"></button>
+              <button type="button" data-mod="vilagos" data-i18n="th_light"></button>
+              <button type="button" data-mod="sotet" data-i18n="th_dark"></button>
+            </div>
+            <strong data-i18n="th_color"></strong>
+            <div class="szin-valaszto" id="tema-szin">
+              <button type="button" data-szin="zold" style="--minta:#107c41" aria-label="zöld"></button>
+              <button type="button" data-szin="kek" style="--minta:#2563eb" aria-label="kék"></button>
+              <button type="button" data-szin="lila" style="--minta:#7c3aed" aria-label="lila"></button>
+              <button type="button" data-szin="narancs" style="--minta:#ea580c" aria-label="narancs"></button>
+              <button type="button" data-szin="grafit" style="--minta:#334155" aria-label="grafit"></button>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -167,9 +204,23 @@
           </div>
         </div>
 
+        <div class="jobb-oszlop">
+        <div class="kartya idojaras-kartya" id="idojaras-kartya">
+          <div class="kartya-fej">
+            <h2 data-i18n="wx_title"></h2>
+            <button type="button" class="link-gomb" id="wx-valt" data-i18n="wx_change"></button>
+          </div>
+          <div class="wx-kereso" id="wx-kereso" hidden>
+            <input type="search" id="wx-varos" data-i18n-ph="wx_search_ph" autocomplete="off">
+            <button type="button" class="gomb masodlagos kicsi" id="wx-hely" data-i18n="wx_my_location"></button>
+            <ul class="wx-talalatok" id="wx-talalatok"></ul>
+          </div>
+          <div id="wx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
+        </div>
         <div class="kartya arfolyam-kartya">
           <div class="kartya-fej"><h2 data-i18n="fx_title"></h2><span class="halvany-szoveg kicsi-szoveg" id="fx-forras"></span></div>
           <div id="fx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
+        </div>
         </div>
       </div>
 
@@ -199,6 +250,11 @@
           <span class="gyors-ikon zold">📁</span>
           <strong data-i18n="nav_files"></strong>
           <span data-i18n="quick_files_sub"></span>
+        </a>
+        <a href="#/eszkozok" class="gyors-kartya">
+          <span class="gyors-ikon lila">🧰</span>
+          <strong data-i18n="tools_title"></strong>
+          <span data-i18n="quick_tools_sub"></span>
         </a>
         <a href="#/szamolas" class="gyors-kartya">
           <span class="gyors-ikon zold">🧮</span>
@@ -303,7 +359,69 @@
             <p id="ures-szoveg"></p>
           </div>
         </section>
+        <section class="kartya lista-kartya" id="megosztasok-kartya" hidden>
+          <div class="kartya-fej"><h2 data-i18n="sh_active"></h2></div>
+          <ul class="fajl-lista" id="megosztas-lista"></ul>
+        </section>
         <p class="labjegyzet" data-i18n="idle_note"></p>
+      </div>
+    </section>
+
+    <!-- ========== ESZKÖZÖK ========== -->
+    <section class="oldal" id="oldal-eszkozok" hidden>
+      <header class="oldal-fej">
+        <div>
+          <h1 data-i18n="tools_title"></h1>
+          <p class="hos-alcim" data-i18n="tools_sub"></p>
+        </div>
+      </header>
+
+      <!-- Képletfordító -->
+      <article class="kartya forditó" id="kepletforditó">
+        <div class="kartya-fej"><div><h2 data-i18n="tr_title"></h2><p class="halvany-szoveg" data-i18n="tr_sub"></p></div></div>
+        <label class="mezo"><span data-i18n="tr_input"></span>
+          <textarea id="tr-be" rows="3" spellcheck="false" data-i18n-ph="tr_ph"></textarea>
+        </label>
+        <div class="tr-sor">
+          <span class="halvany-szoveg" id="tr-felismert"></span>
+          <div class="tr-cel">
+            <span data-i18n="tr_to"></span>
+            <div class="kapcsolo harom" id="tr-cel">
+              <button type="button" data-cel="hu" data-i18n="tr_hu"></button>
+              <button type="button" data-cel="sk" data-i18n="tr_sk"></button>
+              <button type="button" data-cel="en" data-i18n="tr_en"></button>
+            </div>
+          </div>
+        </div>
+        <div id="tr-ki"></div>
+        <p class="kalk-megj figyelmeztetes-szoveg" id="tr-ismeretlen" hidden></p>
+      </article>
+
+      <!-- Excel eszközök -->
+      <article class="kartya excel-eszkozok">
+        <div class="kartya-fej"><h2 data-i18n="xt_title"></h2></div>
+        <div class="kapcsolo negy" id="xt-fulek">
+          <button type="button" data-ful="osszehasonlitas" data-i18n="xt_compare"></button>
+          <button type="button" data-ful="ismetlodes" data-i18n="xt_dupes"></button>
+          <button type="button" data-ful="atalakitas" data-i18n="xt_convert"></button>
+          <button type="button" data-ful="egyesites" data-i18n="xt_merge"></button>
+        </div>
+        <p class="halvany-szoveg" id="xt-leiras"></p>
+        <div id="xt-panel"></div>
+        <div id="xt-eredmeny"></div>
+      </article>
+    </section>
+
+    <!-- ========== MEGOSZTOTT FÁJL (a linket megnyitónak) ========== -->
+    <section class="oldal megosztas-oldal" id="oldal-megosztas" hidden>
+      <div class="kartya belepes-kartya">
+        <div class="belepes-logo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h2 data-i18n="sh_page_title"></h2>
+        <p class="hos-alcim" data-i18n="sh_page_sub"></p>
+        <div id="mo-tartalom"><span class="porgo sotet"></span></div>
+        <a href="#/kezdolap" class="link" data-i18n="sh_go_home"></a>
       </div>
     </section>
 
@@ -525,6 +643,42 @@
   <div class="tabla-doboz" id="tabla-doboz"></div>
 </dialog>
 
+<!-- ==================== MEGOSZTÁS ABLAK ==================== -->
+<dialog id="megosztas-ablak" class="kis-ablak">
+  <div class="kis-ablak-fej">
+    <h2 data-i18n="sh_title"></h2>
+    <button class="kis-gomb" id="mo-bezar" data-i18n-title="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="fajl mo-fajl"><div class="fajl-ikon"></div><div class="fajl-adatok"><div class="fajl-nev" id="mo-nev"></div><div class="fajl-info" id="mo-info"></div></div></div>
+  <p class="halvany-szoveg" data-i18n="sh_desc"></p>
+  <div id="mo-beallitas">
+    <strong class="mo-cimke" data-i18n="sh_valid"></strong>
+    <div class="kapcsolo harom" id="mo-ido">
+      <button type="button" data-ido="3600" data-i18n="sh_1h"></button>
+      <button type="button" data-ido="86400" class="aktiv" data-i18n="sh_1d"></button>
+      <button type="button" data-ido="604800" data-i18n="sh_7d"></button>
+    </div>
+    <label class="jelolo"><input type="checkbox" id="mo-egyszeri"><span data-i18n="sh_once"></span></label>
+    <button class="gomb fo teljes" id="mo-keszit"><span data-i18n="sh_create"></span><span class="porgo" hidden></span></button>
+  </div>
+  <div id="mo-eredmeny" hidden>
+    <strong class="mo-cimke" data-i18n="sh_link"></strong>
+    <div class="link-doboz"><input type="text" id="mo-link" readonly><button class="gomb fo kicsi" id="mo-masol" data-i18n="sh_copy"></button></div>
+    <p class="halvany-szoveg" id="mo-lejar"></p>
+  </div>
+</dialog>
+
+<!-- ==================== GYORSKERESŐ (Ctrl + K) ==================== -->
+<dialog id="paletta" class="paletta">
+  <div class="paletta-kereso">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input type="text" id="paletta-be" autocomplete="off" spellcheck="false" data-i18n-ph="cp_ph">
+    <kbd>Esc</kbd>
+  </div>
+  <div class="paletta-lista" id="paletta-lista"></div>
+  <div class="paletta-lab" data-i18n="cp_hint"></div>
+</dialog>
+
 <div id="ertesitesek" class="ertesitesek" aria-live="polite"></div>
 
 <script src="i18n.js"></script>
@@ -534,5 +688,10 @@
 <script src="makrok.js"></script>
 <script src="app.js"></script>
 <script src="kalkulator.js"></script>
+<script src="tema.js"></script>
+<script src="idojaras.js"></script>
+<script src="megosztas.js"></script>
+<script src="eszkozok.js"></script>
+<script src="paletta.js"></script>
 </body>
 </html>

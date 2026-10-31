@@ -13,7 +13,17 @@
     POST   /api/files        -> új fájl feltöltése
     GET    /api/files/:id    -> egy fájl letöltése
     DELETE /api/files/:id    -> egy fájl törlése
+    POST   /api/shares       -> megosztó link készítése (lejárattal)
+    GET    /api/shares       -> aktív megosztások
+    DELETE /api/shares/:id   -> megosztás visszavonása
+    GET    /api/s/:id/info   -> megosztott fájl adatai (NYILVÁNOS – a linkkel bárki)
+    GET    /api/s/:id        -> megosztott fájl letöltése (NYILVÁNOS)
+
+  Megosztásnál a böngésző egy ÚJ, véletlen kulccsal titkosítja újra a fájlt.
+  Ez a kulcs csak a linkben van (a # után), azt a böngésző sosem küldi el a szervernek.
 */
+
+const ERVENYESSEGEK = [3600, 86400, 7 * 86400]; // 1 óra, 1 nap, 1 hét
 
 const MAX_MERET = 20 * 1024 * 1024; // 20 MB (a KV max 25 MB-ot enged)
 const MAX_HIBAS_PROBA = 10;         // ennyi rossz jelszó után...
@@ -30,6 +40,7 @@ export default {
 
     try {
       if (url.pathname === "/api/arfolyam" && request.method === "GET") return await arfolyam(env, ctx);
+      if (url.pathname.startsWith("/api/s/") && request.method === "GET") return await megosztottFajl(env, url);
       return await api(request, env, url);
     } catch (e) {
       console.error(e);
@@ -61,6 +72,7 @@ async function api(request, env, url) {
   }
 
   const resz = url.pathname.split("/").filter(Boolean); // pl. ["api", "files", "abc123"]
+  if (resz[1] === "shares") return megosztasok(request, env, resz[2]);
   if (resz[1] !== "files") return valasz({ hiba: "Nincs ilyen oldal." }, 404);
   const id = resz[2];
 
@@ -151,6 +163,63 @@ async function arfolyam(env, ctx) {
     if (tarolt.value) return valasz(tarolt.value, 200, 300); // ha az EKB nem elérhető, a régebbi adat is jó
     return valasz({ hiba: "Az árfolyamok most nem érhetők el." }, 502);
   }
+}
+
+/* ---------------- Megosztó linkek ---------------- */
+async function megosztasok(request, env, id) {
+  // Új megosztás
+  if (request.method === "POST" && !id) {
+    const nev = request.headers.get("X-Nev") || "";
+    const nevTulaj = request.headers.get("X-Nev-Tulaj") || "";
+    const ervenyes = parseInt(request.headers.get("X-Ervenyes") || "0", 10);
+    if (!nev || !nevTulaj || nev.length + nevTulaj.length > 850) return valasz({ hiba: "Hibás vagy túl hosszú fájlnév." }, 400);
+    if (!ERVENYESSEGEK.includes(ervenyes)) return valasz({ hiba: "Hibás lejárati idő." }, 400);
+    const adat = await request.arrayBuffer();
+    if (adat.byteLength === 0 || adat.byteLength > MAX_MERET + 1024) return valasz({ hiba: "Hibás fájlméret." }, 413);
+    const ujId = crypto.randomUUID();
+    await env.FILES.put("s:" + ujId, adat, {
+      expirationTtl: ervenyes,
+      metadata: {
+        nev, nevTulaj,
+        meret: parseInt(request.headers.get("X-Meret") || "0", 10),
+        lejar: Date.now() + ervenyes * 1000,
+        egyszeri: request.headers.get("X-Egyszeri") === "1",
+      },
+    });
+    return valasz({ id: ujId }, 201);
+  }
+  // Lista
+  if (request.method === "GET" && !id) {
+    const r = await env.FILES.list({ prefix: "s:" });
+    const lista = r.keys
+      .map((k) => ({ id: k.name.slice(2), nevTulaj: k.metadata?.nevTulaj, meret: k.metadata?.meret, lejar: k.metadata?.lejar, egyszeri: k.metadata?.egyszeri }))
+      .filter((m) => m.lejar > Date.now())
+      .sort((a, b) => a.lejar - b.lejar);
+    return valasz({ megosztasok: lista });
+  }
+  // Visszavonás
+  if (request.method === "DELETE" && id && /^[0-9a-f-]{36}$/.test(id)) {
+    await env.FILES.delete("s:" + id);
+    return valasz({ ok: true });
+  }
+  return valasz({ hiba: "Nem támogatott művelet." }, 405);
+}
+
+async function megosztottFajl(env, url) {
+  const [, , , id, info] = url.pathname.split("/"); // /api/s/:id[/info]
+  if (!/^[0-9a-f-]{36}$/.test(id || "")) return valasz({ hiba: "Hibás link." }, 400);
+  const lejart = () => valasz({ hiba: "A link lejárt vagy nem létezik." }, 404);
+  if (info === "info") {
+    // Csak az adatok kellenek, a fájl nem – ezt a listából olvassuk ki
+    const k = (await env.FILES.list({ prefix: "s:" + id })).keys[0];
+    const m = k && k.metadata;
+    if (!m || m.lejar < Date.now()) return lejart();
+    return valasz({ nev: m.nev, meret: m.meret, lejar: m.lejar, egyszeri: m.egyszeri });
+  }
+  const { value, metadata } = await env.FILES.getWithMetadata("s:" + id, "arrayBuffer");
+  if (!value || !metadata || metadata.lejar < Date.now()) return lejart();
+  if (metadata.egyszeri) await env.FILES.delete("s:" + id); // egyszeri link: letöltés után törlődik
+  return new Response(value, { headers: { "Content-Type": "application/octet-stream", "Cache-Control": "no-store" } });
 }
 
 // A titkosítás "sója": egy véletlen szám, egyszer jön létre, utána mindig ugyanaz.

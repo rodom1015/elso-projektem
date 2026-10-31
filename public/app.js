@@ -96,6 +96,7 @@ function forditasAlkalmaz() {
   $("morzsa-oldal").textContent = t(OLDAL_NEVEK[aktivOldal]);
   oraFrissit();
   if (typeof kalkulatorFrissit === "function") kalkulatorFrissit();
+  forditasHookok.forEach((f) => f());
   if (elonezetFajl) $("elonezet-info").textContent = meret(elonezetFajl.meret) + " · " + datum(elonezetFajl.ido);
 }
 
@@ -103,11 +104,26 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "szamolas", "fuggvenyek", "billentyuk", "makrok", "word"];
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", word: "word_title" };
+const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "fuggvenyek", "billentyuk", "makrok", "word"];
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", word: "word_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
+
+// A többi modul (időjárás, eszközök…) ide teszi a függvényét, ami nyelvváltáskor lefut
+const forditasHookok = [];
 let aktivOldal = "kezdolap";
 
 function oldalValtas() {
+  // Megosztott fájl linkje: #/s/<azonosító>.<kulcs>
+  const megosztott = location.hash.startsWith("#/s/");
+  document.body.classList.toggle("megosztas-mod", megosztott);
+  if (megosztott) {
+    OLDALAK.forEach((o) => ($("oldal-" + o).hidden = true));
+    $("oldal-megosztas").hidden = false;
+    aktivOldal = "megosztas";
+    $("morzsa-oldal").textContent = t("sh_page_title");
+    if (typeof megosztottMegnyit === "function") megosztottMegnyit(location.hash.slice(4));
+    return;
+  }
+  $("oldal-megosztas").hidden = true;
   let oldal = location.hash.replace("#/", "");
   if (!OLDALAK.includes(oldal)) oldal = "kezdolap";
   aktivOldal = oldal;
@@ -219,6 +235,7 @@ $("belepes-urlap").addEventListener("submit", async (e) => {
     await listaFeldolgoz(adat.fajlok);
     belepesAllapot(true);
     tetlensegFigyelo();
+    if (typeof megosztasokBetolt === "function") megosztasokBetolt();
   } catch (hiba) {
     belepesiKulcs = null;
     belepesHiba(hiba.status ? hiba.message : t("no_server"));
@@ -248,6 +265,7 @@ function belepesAllapot(bent) {
   $("kilepes").hidden = !bent;
   $("kilepes-mobil").hidden = !bent;
   $("statok-zar").hidden = bent;
+  if (!bent) $("megosztasok-kartya").hidden = true;
   $("allapot").classList.toggle("belepve", bent);
   $("allapot-szoveg").textContent = bent ? t("status_in") : t("status_locked");
 }
@@ -337,6 +355,9 @@ function fajlSor(f, { egyszeru = false } = {}) {
       <button class="kis-gomb letolt">
         <svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button class="kis-gomb megoszt">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
       <button class="kis-gomb torles">
         <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -350,7 +371,7 @@ function fajlSor(f, { egyszeru = false } = {}) {
     li.addEventListener("click", () => (tablazatE(f.nev) ? elonezet(f) : letolt(f)));
   } else {
     if (!tablazatE(f.nev)) li.querySelector(".nez").style.visibility = "hidden"; // előnézet csak táblázatokhoz
-    for (const [osztaly, kulcs] of [["nez", "preview"], ["letolt", "download"], ["torles", "delete"]]) {
+    for (const [osztaly, kulcs] of [["nez", "preview"], ["letolt", "download"], ["megoszt", "sh_title"], ["torles", "delete"]]) {
       const gomb = li.querySelector("." + osztaly);
       gomb.title = t(kulcs);
       gomb.setAttribute("aria-label", t(kulcs));
@@ -358,6 +379,7 @@ function fajlSor(f, { egyszeru = false } = {}) {
     li.querySelector(".nez").addEventListener("click", () => elonezet(f));
     li.querySelector(".letolt").addEventListener("click", (e) => letolt(f, e.currentTarget));
     li.querySelector(".torles").addEventListener("click", () => torol(f));
+    li.querySelector(".megoszt").addEventListener("click", () => megosztasAblak(f));
   }
   return li;
 }
