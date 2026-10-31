@@ -52,6 +52,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         <span data-i18n="nav_macros">Makrók</span>
       </a>
+      <a href="#/word" data-oldal="word" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 12.5l1.3 5 1.7-4 1.7 4 1.3-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="nav_word">Word</span>
+      </a>
     </nav>
 
     <div class="oldalsav-alja">
@@ -141,6 +145,34 @@
         </a>
       </div>
 
+      <div class="racs-2 naptar-sor">
+        <div class="kartya naptar-kartya">
+          <div class="kartya-fej">
+            <h2 data-i18n="cal_title"></h2>
+            <div class="naptar-vezerlok">
+              <div class="kapcsolo mini" id="naptar-orszag">
+                <button type="button" data-orszag="hu">HU</button>
+                <button type="button" data-orszag="sk">SK</button>
+              </div>
+              <button class="kis-gomb" id="naptar-elozo" data-i18n-title="cal_prev"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+              <button class="kis-gomb" id="naptar-kovetkezo" data-i18n-title="cal_next"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+            </div>
+          </div>
+          <button class="naptar-honap" id="naptar-honap" data-i18n-title="cal_today"></button>
+          <div class="naptar" id="naptar"></div>
+          <div class="naptar-unnepek">
+            <strong data-i18n="cal_holidays"></strong>
+            <ul id="naptar-lista"></ul>
+            <p class="kalk-megj" data-i18n="cal_note"></p>
+          </div>
+        </div>
+
+        <div class="kartya arfolyam-kartya">
+          <div class="kartya-fej"><h2 data-i18n="fx_title"></h2><span class="halvany-szoveg kicsi-szoveg" id="fx-forras"></span></div>
+          <div id="fx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
+        </div>
+      </div>
+
       <div class="racs-2">
         <div class="kartya tipp-kartya">
           <div class="kartya-fej">
@@ -182,6 +214,11 @@
           <span class="gyors-ikon lila">⌨️</span>
           <strong data-i18n="quick_sc_title"></strong>
           <span id="gyors-sc-sub"></span>
+        </a>
+        <a href="#/word" class="gyors-kartya">
+          <span class="gyors-ikon kek">W</span>
+          <strong data-i18n="word_title"></strong>
+          <span data-i18n="quick_word_sub"></span>
         </a>
         <a href="#/makrok" class="gyors-kartya">
           <span class="gyors-ikon narancs">⚙️</span>
@@ -280,24 +317,21 @@
       </header>
 
       <div class="kalk-racs">
-        <!-- ÁFA -->
-        <article class="kartya kalk" id="kalk-afa">
-          <h2 data-i18n="vat_title"></h2>
-          <div class="kapcsolo" role="group">
-            <button type="button" class="aktiv" data-irany="netto" data-i18n="vat_from_net"></button>
-            <button type="button" data-irany="brutto" data-i18n="vat_from_gross"></button>
+        <!-- Pénzváltó -->
+        <article class="kartya kalk" id="kalk-valto">
+          <h2 data-i18n="conv_title"></h2>
+          <div class="valto-sor">
+            <label class="mezo"><span data-i18n="conv_amount"></span><input type="number" id="va-osszeg" value="100" min="0" step="any"></label>
+            <label class="mezo"><span data-i18n="conv_from"></span><select id="va-mibol"></select></label>
+            <button type="button" class="kis-gomb valto-csere" id="va-csere" data-i18n-title="conv_swap"><svg viewBox="0 0 24 24"><path d="M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <label class="mezo"><span data-i18n="conv_to"></span><select id="va-mibe"></select></label>
           </div>
-          <div class="mezok-2">
-            <label class="mezo"><span data-i18n="vat_amount"></span><input type="number" id="afa-osszeg" value="10000" min="0" step="any"></label>
-            <label class="mezo"><span data-i18n="vat_rate"></span><input type="number" id="afa-kulcs" value="27" min="0" step="any"></label>
+          <div class="eredmenyek ketto">
+            <div class="kiemelt"><span data-i18n="conv_result"></span><strong id="va-eredmeny">–</strong></div>
+            <div><span data-i18n="conv_rate"></span><strong id="va-arfolyam">–</strong></div>
           </div>
-          <div class="cimkek kicsi" id="afa-kulcsok"></div>
-          <div class="eredmenyek">
-            <div><span data-i18n="vat_net"></span><strong id="afa-netto"></strong></div>
-            <div><span data-i18n="vat_tax"></span><strong id="afa-ado"></strong></div>
-            <div class="kiemelt"><span data-i18n="vat_gross"></span><strong id="afa-brutto"></strong></div>
-          </div>
-          <div class="kalk-keplet" data-keplet="afa"></div>
+          <p class="kalk-megj" id="va-megj"></p>
+          <div class="kalk-keplet" data-keplet="valto"></div>
         </article>
 
         <!-- Százalék -->
@@ -341,6 +375,14 @@
             <label class="mezo"><span data-i18n="date_from"></span><input type="date" id="dt-tol"></label>
             <label class="mezo"><span data-i18n="date_to"></span><input type="date" id="dt-ig"></label>
           </div>
+          <div class="unnep-valaszto">
+            <span data-i18n="hol_label"></span>
+            <div class="kapcsolo harom" id="dt-unnep">
+              <button type="button" data-orszag="" data-i18n="hol_none"></button>
+              <button type="button" data-orszag="hu">HU</button>
+              <button type="button" data-orszag="sk">SK</button>
+            </div>
+          </div>
           <div class="eredmenyek">
             <div class="kiemelt"><span data-i18n="date_workdays"></span><strong id="dt-munkanap"></strong></div>
             <div><span data-i18n="date_days"></span><strong id="dt-nap"></strong></div>
@@ -350,22 +392,27 @@
           <div class="kalk-keplet" data-keplet="datum"></div>
         </article>
 
-        <!-- Hitel -->
-        <article class="kartya kalk szeles" id="kalk-hitel">
-          <h2 data-i18n="loan_title"></h2>
-          <div class="mezok-3">
-            <label class="mezo"><span data-i18n="loan_amount"></span><input type="number" id="hi-osszeg" value="3000000" min="0" step="any"></label>
-            <label class="mezo"><span data-i18n="loan_rate"></span><input type="number" id="hi-kamat" value="9.9" min="0" step="any"></label>
-            <label class="mezo"><span data-i18n="loan_months"></span><input type="number" id="hi-honap" value="60" min="1" step="1"></label>
+        <!-- Excel segéd -->
+        <article class="kartya kalk szeles" id="kalk-excel">
+          <h2 data-i18n="xl_title"></h2>
+          <div class="excel-seged">
+            <div>
+              <p class="seged-cim" data-i18n="xl_col"></p>
+              <div class="mezok-2">
+                <label class="mezo"><span data-i18n="xl_letter"></span><input type="text" id="xs-betu" value="AB" maxlength="3" autocomplete="off" spellcheck="false"></label>
+                <label class="mezo"><span data-i18n="xl_number"></span><input type="number" id="xs-szam" value="28" min="1" max="16384" step="1"></label>
+              </div>
+            </div>
+            <div>
+              <p class="seged-cim" data-i18n="xl_date"></p>
+              <div class="mezok-2">
+                <label class="mezo"><span data-i18n="xl_date_label"></span><input type="date" id="xs-datum"></label>
+                <label class="mezo"><span data-i18n="xl_serial"></span><input type="number" id="xs-sorszam" min="1" step="1"></label>
+              </div>
+            </div>
           </div>
-          <div class="eredmenyek">
-            <div class="kiemelt"><span data-i18n="loan_monthly"></span><strong id="hi-havi"></strong></div>
-            <div><span data-i18n="loan_total"></span><strong id="hi-ossz"></strong></div>
-            <div><span data-i18n="loan_interest"></span><strong id="hi-kamatossz"></strong></div>
-          </div>
-          <div class="hitel-sav" aria-hidden="true"><div id="hi-sav-toke"></div><div id="hi-sav-kamat"></div></div>
-          <p class="kalk-megj" data-i18n="loan_note"></p>
-          <div class="kalk-keplet" data-keplet="hitel"></div>
+          <p class="kalk-megj" data-i18n="xl_note"></p>
+          <div class="kalk-keplet" data-keplet="excel"></div>
         </article>
       </div>
     </section>
@@ -405,6 +452,29 @@
       </div>
       <div class="billentyu-racs" id="billentyu-lista"></div>
       <p class="halvany-szoveg kozep" id="sc-ures" hidden data-i18n="sc_none"></p>
+    </section>
+
+    <!-- ========== WORD ========== -->
+    <section class="oldal" id="oldal-word" hidden>
+      <header class="oldal-fej">
+        <div>
+          <h1 data-i18n="word_title"></h1>
+          <p class="hos-alcim" id="word-alcim"></p>
+        </div>
+      </header>
+      <div class="eszkoztar szabad word-eszkoztar">
+        <div class="kapcsolo word-fulek" id="word-fulek">
+          <button type="button" class="aktiv" data-ful="billentyuk" data-i18n="word_tab_sc"></button>
+          <button type="button" data-ful="tippek" data-i18n="word_tab_tips"></button>
+        </div>
+        <div class="kereso szeles">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="search" id="word-kereses" data-i18n-ph="word_search">
+        </div>
+      </div>
+      <div class="billentyu-racs" id="word-billentyuk"></div>
+      <div class="tipp-racs" id="word-tippek" hidden></div>
+      <p class="halvany-szoveg kozep" id="word-ures" hidden data-i18n="sc_none"></p>
     </section>
 
     <!-- ========== MAKRÓK ========== -->
@@ -459,6 +529,8 @@
 
 <script src="i18n.js"></script>
 <script src="excel-adatok.js"></script>
+<script src="word-adatok.js"></script>
+<script src="unnepnapok.js"></script>
 <script src="makrok.js"></script>
 <script src="app.js"></script>
 <script src="kalkulator.js"></script>

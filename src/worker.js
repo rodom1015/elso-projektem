@@ -8,6 +8,7 @@
   már titkosítva küldi. A szerver csak azt ellenőrzi, hogy jó-e a belépési kulcs.
 
   Végpontok:
+    GET    /api/arfolyam     -> EKB árfolyamok (nyilvános, nem kell hozzá jelszó)
     GET    /api/files        -> fájlok listája (+ a titkosítás "sója")
     POST   /api/files        -> új fájl feltöltése
     GET    /api/files/:id    -> egy fájl letöltése
@@ -19,7 +20,7 @@ const MAX_HIBAS_PROBA = 10;         // ennyi rossz jelszó után...
 const TILTAS_PERC = 15;             // ...ennyi percre letiltjuk az IP-címet
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // Minden, ami nem /api/..., az a weboldal (public mappa) - azt a Cloudflare magától kiszolgálja
@@ -28,6 +29,7 @@ export default {
     }
 
     try {
+      if (url.pathname === "/api/arfolyam" && request.method === "GET") return await arfolyam(env, ctx);
       return await api(request, env, url);
     } catch (e) {
       console.error(e);
@@ -110,6 +112,47 @@ async function api(request, env, url) {
   return valasz({ hiba: "Nem támogatott művelet." }, 405);
 }
 
+/* ---------------- Árfolyamok (Európai Központi Bank) ----------------
+   Az EKB naponta egyszer (kb. 16:00-kor) frissít. Az adatot a KV-ban tároljuk,
+   és legfeljebb 3 óránként kérjük le újra – így kevés írás kell (ingyenes keret: 1000/nap).  */
+const EKB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
+const AROLYAM_KULCS = "beallitas:arfolyam";
+const AROLYAM_FRISSITES = 3 * 60 * 60 * 1000;
+
+function ekbFeldolgoz(xml) {
+  const napok = [];
+  const napMinta = /<Cube\s+time=['"](\d{4}-\d{2}-\d{2})['"]\s*>([\s\S]*?)<\/Cube>/g;
+  for (const [, datum, belso] of xml.matchAll(napMinta)) {
+    const r = { EUR: 1 };
+    for (const [, penznem, ertek] of belso.matchAll(/currency=['"]([A-Z]{3})['"]\s+rate=['"]([\d.]+)['"]/g)) r[penznem] = parseFloat(ertek);
+    napok.push({ d: datum, r });
+  }
+  if (!napok.length) throw new Error("Üres EKB válasz");
+  napok.sort((a, b) => (a.d < b.d ? 1 : -1)); // legújabb elöl
+  return {
+    datum: napok[0].d,
+    arfolyamok: napok[0].r,
+    tortenet: napok.slice().reverse().map((n) => ({ d: n.d, HUF: n.r.HUF, USD: n.r.USD, CZK: n.r.CZK, GBP: n.r.GBP })),
+  };
+}
+
+async function arfolyam(env, ctx) {
+  const tarolt = await env.FILES.getWithMetadata(AROLYAM_KULCS, "json");
+  const friss = tarolt.value && tarolt.metadata && Date.now() - tarolt.metadata.ido < AROLYAM_FRISSITES;
+  if (friss) return valasz(tarolt.value, 200, 600);
+  try {
+    const r = await fetch(EKB_URL, { headers: { "User-Agent": "rodom-excel-kozpont" } });
+    if (!r.ok) throw new Error("EKB " + r.status);
+    const adat = ekbFeldolgoz(await r.text());
+    ctx.waitUntil(env.FILES.put(AROLYAM_KULCS, JSON.stringify(adat), { metadata: { ido: Date.now() } }));
+    return valasz(adat, 200, 600);
+  } catch (e) {
+    console.error(e);
+    if (tarolt.value) return valasz(tarolt.value, 200, 300); // ha az EKB nem elérhető, a régebbi adat is jó
+    return valasz({ hiba: "Az árfolyamok most nem érhetők el." }, 502);
+  }
+}
+
 // A titkosítás "sója": egy véletlen szám, egyszer jön létre, utána mindig ugyanaz.
 async function so(env) {
   let s = await env.FILES.get("beallitas:so");
@@ -138,9 +181,12 @@ function b64(bytes) {
   return btoa(String.fromCharCode(...bytes));
 }
 
-function valasz(obj, status = 200) {
+function valasz(obj, status = 200, gyorsitotar = 0) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": gyorsitotar ? `public, max-age=${gyorsitotar}` : "no-store",
+    },
   });
 }

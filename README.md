@@ -9,7 +9,10 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
 - 📚 Excel súgó: 97 függvény példákkal és 93 billentyűparancs, kereshetően
 - ⚙️ 15 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
-- 🧮 Kalkulátorok: ÁFA, százalék, munkaidő, munkanapok, hitel – mindegyikhez Excel képlettel
+- 🧮 Kalkulátorok: pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
+- 📅 Naptár magyar és szlovák ünnepnapokkal
+- 💱 Napi árfolyamok az Európai Központi Banktól, 90 napos EUR/HUF grafikonnal
+- 📄 Word súgó: 63 billentyűparancs és 12 tipp
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
 - 🌍 Három nyelv: magyar (alap), szlovák, angol
@@ -30,6 +33,8 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/excel-adatok.js` | az Excel súgó tartalma: függvények, billentyűparancsok |
 | `public/makrok.js` | a kész VBA makrók és a használati útmutató |
 | `public/kalkulator.js` | a kalkulátorok számolása |
+| `public/word-adatok.js` | a Word súgó tartalma |
+| `public/unnepnapok.js` | magyar és szlovák ünnepnapok (húsvét számítással) |
 | `public/vendor/` | SheetJS – az Excel fájlok előnézetéhez (Apache-2.0 licenc) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |

@@ -90,6 +90,9 @@ function forditasAlkalmaz() {
   fuggvenyekRajzol();
   billentyukRajzol();
   makrokRajzol();
+  wordRajzol();
+  naptarRajzol();
+  arfolyamRajzol();
   $("morzsa-oldal").textContent = t(OLDAL_NEVEK[aktivOldal]);
   oraFrissit();
   if (typeof kalkulatorFrissit === "function") kalkulatorFrissit();
@@ -100,8 +103,8 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "szamolas", "fuggvenyek", "billentyuk", "makrok"];
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros" };
+const OLDALAK = ["kezdolap", "fajlok", "szamolas", "fuggvenyek", "billentyuk", "makrok", "word"];
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", word: "word_title" };
 let aktivOldal = "kezdolap";
 
 function oldalValtas() {
@@ -674,6 +677,7 @@ for (const fv of FUGGVENYEK) {
 }
 
 MAGYAR_NEV.PMT = "RÉSZLET";
+MAGYAR_NEV.ADDRESS = "CÍM";
 
 // A szlovák alakú képletből (angol nevek + ;) elkészíti a kért nyelvű változatot
 function kepletNyelven(keplet) {
@@ -800,13 +804,11 @@ $("uj-tipp").addEventListener("click", () => {
 const billentyuDarab = () => BILLENTYUK.reduce((s, cs) => s + cs.sorok.length, 0);
 const billentyuNev = (b) => (BILLENTYU_NEVEK[b] ? BILLENTYU_NEVEK[b][nyelv] : b);
 
-function billentyukRajzol() {
-  const szuro = $("sc-kereses").value.trim().toLowerCase();
-  const doboz = $("billentyu-lista");
+// Billentyűparancs-csoportok kirajzolása (Excel és Word oldal is ezt használja)
+function billentyuCsoportokRajzol(adat, doboz, szuro) {
   doboz.innerHTML = "";
   let osszes = 0;
-
-  for (const csoport of BILLENTYUK) {
+  for (const csoport of adat) {
     const sorok = csoport.sorok.filter(([leiras, ...kombok]) =>
       !szuro ||
       leiras[nyelv].toLowerCase().includes(szuro) ||
@@ -846,9 +848,199 @@ function billentyukRajzol() {
     }
     doboz.appendChild(kartya);
   }
-  $("sc-ures").hidden = osszes > 0;
+  return osszes;
+}
+
+function billentyukRajzol() {
+  const db = billentyuCsoportokRajzol(BILLENTYUK, $("billentyu-lista"), $("sc-kereses").value.trim().toLowerCase());
+  $("sc-ures").hidden = db > 0;
 }
 $("sc-kereses").addEventListener("input", billentyukRajzol);
+
+/* ======================================================
+   WORD SÚGÓ
+   ====================================================== */
+
+let wordFul = "billentyuk";
+const wordBillentyuDarab = () => WORD_BILLENTYUK.reduce((s, cs) => s + cs.sorok.length, 0);
+
+function wordRajzol() {
+  $("word-alcim").textContent = t("word_sub", { n: wordBillentyuDarab(), t: WORD_TIPPEK.length });
+  const szuro = $("word-kereses").value.trim().toLowerCase();
+  document.querySelectorAll("#word-fulek button").forEach((g) => g.classList.toggle("aktiv", g.dataset.ful === wordFul));
+  $("word-billentyuk").hidden = wordFul !== "billentyuk";
+  $("word-tippek").hidden = wordFul !== "tippek";
+
+  let db;
+  if (wordFul === "billentyuk") {
+    db = billentyuCsoportokRajzol(WORD_BILLENTYUK, $("word-billentyuk"), szuro);
+  } else {
+    const doboz = $("word-tippek");
+    doboz.innerHTML = "";
+    const lista = WORD_TIPPEK.filter((tp) => !szuro || (tp.cim[nyelv] + " " + tp.szoveg[nyelv]).toLowerCase().includes(szuro));
+    for (const tp of lista) {
+      const k = document.createElement("article");
+      k.className = "kartya word-tipp";
+      k.innerHTML = `<div class="word-tipp-ikon"></div><div><h2></h2><p></p></div>`;
+      k.querySelector(".word-tipp-ikon").textContent = tp.ikon;
+      k.querySelector("h2").textContent = tp.cim[nyelv];
+      k.querySelector("p").textContent = tp.szoveg[nyelv];
+      doboz.appendChild(k);
+    }
+    db = lista.length;
+  }
+  $("word-ures").hidden = db > 0;
+}
+document.querySelectorAll("#word-fulek button").forEach((g) =>
+  g.addEventListener("click", () => { wordFul = g.dataset.ful; wordRajzol(); })
+);
+$("word-kereses").addEventListener("input", wordRajzol);
+
+/* ======================================================
+   NAPTÁR (magyar / szlovák ünnepnapokkal)
+   ====================================================== */
+
+let naptarHonap = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let naptarOrszag = null;
+try { naptarOrszag = localStorage.getItem("naptarOrszag"); } catch {}
+
+function naptarRajzol() {
+  const orszag = naptarOrszag || (nyelv === "sk" ? "sk" : "hu");
+  document.querySelectorAll("#naptar-orszag button").forEach((g) => g.classList.toggle("aktiv", g.dataset.orszag === orszag));
+
+  const ev = naptarHonap.getFullYear(), ho = naptarHonap.getMonth();
+  $("naptar-honap").textContent = naptarHonap.toLocaleDateString(locale(), { year: "numeric", month: "long" });
+
+  const racs = $("naptar");
+  racs.innerHTML = "";
+  // Hét napjainak rövid neve (hétfővel kezdve)
+  for (let i = 0; i < 7; i++) {
+    const fej = document.createElement("div");
+    fej.className = "naptar-fej" + (i >= 5 ? " hetvege" : "");
+    fej.textContent = new Date(2024, 0, 1 + i).toLocaleDateString(locale(), { weekday: "short" }).replace(".", "");
+    racs.appendChild(fej);
+  }
+  const elsoNap = (new Date(ev, ho, 1).getDay() + 6) % 7; // 0 = hétfő
+  const napokSzama = new Date(ev, ho + 1, 0).getDate();
+  const ma = new Date();
+  const unnepek = [];
+
+  for (let i = 0; i < elsoNap; i++) racs.appendChild(document.createElement("div"));
+  for (let n = 1; n <= napokSzama; n++) {
+    const d = new Date(ev, ho, n);
+    const cella = document.createElement("div");
+    const unnep = unnepE(d, orszag);
+    cella.className = "naptar-nap";
+    if (d.getDay() === 0 || d.getDay() === 6) cella.classList.add("hetvege");
+    if (unnep) { cella.classList.add("unnep"); cella.title = unnep[nyelv]; unnepek.push([d, unnep]); }
+    if (d.toDateString() === ma.toDateString()) cella.classList.add("ma");
+    cella.textContent = n;
+    racs.appendChild(cella);
+  }
+
+  const lista = $("naptar-lista");
+  lista.innerHTML = "";
+  if (!unnepek.length) {
+    const li = document.createElement("li");
+    li.className = "halvany-szoveg";
+    li.textContent = t("cal_none");
+    lista.appendChild(li);
+  }
+  for (const [d, unnep] of unnepek) {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="unnep-datum"></span><span></span>`;
+    li.firstChild.textContent = d.toLocaleDateString(locale(), { month: "short", day: "numeric", weekday: "short" });
+    li.lastChild.textContent = unnep[nyelv];
+    lista.appendChild(li);
+  }
+}
+
+$("naptar-elozo").addEventListener("click", () => { naptarHonap = new Date(naptarHonap.getFullYear(), naptarHonap.getMonth() - 1, 1); naptarRajzol(); });
+$("naptar-kovetkezo").addEventListener("click", () => { naptarHonap = new Date(naptarHonap.getFullYear(), naptarHonap.getMonth() + 1, 1); naptarRajzol(); });
+$("naptar-honap").addEventListener("click", () => { naptarHonap = new Date(new Date().getFullYear(), new Date().getMonth(), 1); naptarRajzol(); });
+document.querySelectorAll("#naptar-orszag button").forEach((g) =>
+  g.addEventListener("click", () => {
+    naptarOrszag = g.dataset.orszag;
+    try { localStorage.setItem("naptarOrszag", naptarOrszag); } catch {}
+    naptarRajzol();
+  })
+);
+
+/* ======================================================
+   ÁRFOLYAMOK (Európai Központi Bank, a szerveren keresztül)
+   ====================================================== */
+
+window.ARFOLYAM = null;
+window.ARFOLYAM_HIBA = false;
+const FX_PAROK = [["EUR", "HUF"], ["EUR", "USD"], ["USD", "HUF"], ["EUR", "CZK"], ["EUR", "GBP"]];
+
+async function arfolyamBetolt() {
+  try {
+    const v = await fetch("/api/arfolyam");
+    if (!v.ok) throw new Error(v.status);
+    window.ARFOLYAM = await v.json();
+  } catch {
+    window.ARFOLYAM_HIBA = true;
+  }
+  arfolyamRajzol();
+  if (typeof valtoFrissit === "function") valtoFrissit();
+}
+
+function parErtek(r, a, b) { return r && r[a] && r[b] ? r[b] / r[a] : null; }
+
+function arfolyamRajzol() {
+  const doboz = $("fx-tartalom");
+  if (!window.ARFOLYAM) {
+    doboz.innerHTML = `<p class="halvany-szoveg"></p>`;
+    doboz.firstChild.textContent = window.ARFOLYAM_HIBA ? t("fx_error") : t("fx_loading");
+    $("fx-forras").textContent = "";
+    return;
+  }
+  const A = window.ARFOLYAM;
+  $("fx-forras").textContent = t("fx_source", { date: new Date(A.datum).toLocaleDateString(locale()) });
+  const elozo = A.tortenet.length > 1 ? A.tortenet[A.tortenet.length - 2] : null;
+  const elozoR = elozo ? { EUR: 1, HUF: elozo.HUF, USD: elozo.USD, CZK: elozo.CZK, GBP: elozo.GBP } : null;
+
+  doboz.innerHTML = "";
+  const lista = document.createElement("div");
+  lista.className = "fx-lista";
+  for (const [a, b] of FX_PAROK) {
+    const most = parErtek(A.arfolyamok, a, b);
+    if (!most) continue;
+    const regi = parErtek(elozoR, a, b);
+    const valt = regi ? (most - regi) / regi * 100 : 0;
+    const sor = document.createElement("div");
+    sor.className = "fx-sor";
+    sor.innerHTML = `<span class="fx-par"></span><strong class="tabular"></strong><span class="fx-valt"></span>`;
+    sor.children[0].textContent = `${a}/${b}`;
+    sor.children[1].textContent = szam(most, most >= 100 ? 2 : 4);
+    sor.children[2].textContent = (valt > 0 ? "▲ " : valt < 0 ? "▼ " : "• ") + szam(Math.abs(valt), 2) + " %";
+    sor.children[2].className = "fx-valt " + (valt > 0 ? "fel" : valt < 0 ? "le" : "");
+    lista.appendChild(sor);
+  }
+  doboz.appendChild(lista);
+
+  // Kis grafikon: EUR/HUF az utolsó 90 napban
+  const pontok = A.tortenet.filter((n) => n.HUF).map((n) => n.HUF);
+  if (pontok.length > 1) {
+    const min = Math.min(...pontok), max = Math.max(...pontok), W = 300, H = 70;
+    const xy = pontok.map((v, i) => [i / (pontok.length - 1) * W, H - 6 - (max === min ? 0.5 : (v - min) / (max - min)) * (H - 12)]);
+    const vonal = xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+    const graf = document.createElement("div");
+    graf.className = "fx-grafikon";
+    graf.innerHTML = `
+      <div class="fx-graf-fej"><span></span><span class="tabular"></span></div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="fxszin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--fo)" stop-opacity=".28"/><stop offset="1" stop-color="var(--fo)" stop-opacity="0"/></linearGradient></defs>
+        <polygon points="0,${H} ${vonal} ${W},${H}" fill="url(#fxszin)"/>
+        <polyline points="${vonal}" fill="none" stroke="var(--fo)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+        <circle cx="${xy[xy.length - 1][0]}" cy="${xy[xy.length - 1][1]}" r="3.5" fill="var(--fo)"/>
+      </svg>`;
+    graf.querySelector(".fx-graf-fej span").textContent = t("fx_90d");
+    graf.querySelector(".fx-graf-fej .tabular").textContent = `${szam(min, 2)} – ${szam(max, 2)}`;
+    doboz.appendChild(graf);
+  }
+}
 
 /* ======================================================
    MAKRÓK
@@ -1003,3 +1195,4 @@ setInterval(oraFrissit, 1000);
 
 forditasAlkalmaz();
 oldalValtas();
+arfolyamBetolt();

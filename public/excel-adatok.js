@@ -531,6 +531,8 @@ const BILLENTYU_NEVEK = {
   Space:  { hu: "Szóköz", sk: "Medzerník", en: "Space" },
   Arrows: { hu: "Nyilak", sk: "Šípky",     en: "Arrows" },
   Click:  { hu: "Kattintás", sk: "Kliknutie", en: "Click" },
+  Wheel:  { hu: "Görgő", sk: "Koliesko", en: "Wheel" },
+  Drag:   { hu: "Húzás", sk: "Ťahanie", en: "Drag" },
   "Num-": { hu: "Num −", sk: "Num −", en: "Num −" },
   "Num+": { hu: "Num +", sk: "Num +", en: "Num +" },
 };
