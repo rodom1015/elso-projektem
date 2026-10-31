@@ -1,5 +1,5 @@
 {
-  "name": "fajltarolo",
+  "name": "rodom",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
