@@ -9,6 +9,9 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
 - 📚 Excel súgó: 97 függvény példákkal és 93 billentyűparancs, kereshetően
 - ⚙️ 15 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
+- 🧮 Kalkulátorok: ÁFA, százalék, munkaidő, munkanapok, hitel – mindegyikhez Excel képlettel
+- 🕒 Felső sáv élő órával, dátummal és a hét számával
+- 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
 - 🌍 Három nyelv: magyar (alap), szlovák, angol
 - 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés
 - 🌙 Sötét mód, telefonon is működik
@@ -26,6 +29,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/i18n.js` | a felület szövegei magyarul, szlovákul és angolul |
 | `public/excel-adatok.js` | az Excel súgó tartalma: függvények, billentyűparancsok |
 | `public/makrok.js` | a kész VBA makrók és a használati útmutató |
+| `public/kalkulator.js` | a kalkulátorok számolása |
 | `public/vendor/` | SheetJS – az Excel fájlok előnézetéhez (Apache-2.0 licenc) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |

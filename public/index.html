@@ -36,6 +36,10 @@
         <span data-i18n="nav_files">Fájljaim</span>
         <em class="menu-szam" id="menu-szam" hidden></em>
       </a>
+      <a href="#/szamolas" data-oldal="szamolas" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span data-i18n="nav_calc">Számolás</span>
+      </a>
       <a href="#/fuggvenyek" data-oldal="fuggvenyek" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h-2a3 3 0 0 0-3 3v13M6 11h7M15 13l5 6M20 13l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span data-i18n="nav_functions">Függvények</span>
@@ -79,6 +83,20 @@
       </div>
     </div>
 
+    <!-- Felső sáv: oldal neve, dátum, hét, élő óra -->
+    <header class="felso-sav">
+      <div class="morzsa">
+        <span>Rodom</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <strong id="morzsa-oldal"></strong>
+      </div>
+      <div class="sav-chipek">
+        <span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="sav-datum"></span></span>
+        <span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="sav-het"></span></span>
+        <span class="chip ora-chip"><span class="elo-pont"></span><span id="sav-ora" class="tabular"></span></span>
+      </div>
+    </header>
+
     <!-- ========== KEZDŐLAP ========== -->
     <section class="oldal" id="oldal-kezdolap" hidden>
       <div class="hos">
@@ -87,10 +105,13 @@
           <h1 id="koszontes">👋</h1>
           <p class="hos-alcim" data-i18n="hero_sub"></p>
         </div>
-        <a href="#/fajlok" class="gomb fo">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="upload"></span>
-        </a>
+        <div class="hos-jobb">
+          <div class="nagy-ora tabular"><span id="hos-ora">00:00</span><small id="hos-mp">00</small></div>
+          <a href="#/fajlok" class="gomb fo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-i18n="upload"></span>
+          </a>
+        </div>
       </div>
 
       <div class="statok" id="statok">
@@ -146,6 +167,11 @@
           <span class="gyors-ikon zold">📁</span>
           <strong data-i18n="nav_files"></strong>
           <span data-i18n="quick_files_sub"></span>
+        </a>
+        <a href="#/szamolas" class="gyors-kartya">
+          <span class="gyors-ikon zold">🧮</span>
+          <strong data-i18n="calc_title"></strong>
+          <span data-i18n="quick_calc_sub"></span>
         </a>
         <a href="#/fuggvenyek" class="gyors-kartya">
           <span class="gyors-ikon kek">ƒx</span>
@@ -204,7 +230,7 @@
       <!-- Fájlkezelő -->
       <div id="fajlkezelo" hidden>
         <label id="ejto-zona" class="ejto-zona" tabindex="0">
-          <input type="file" id="fajl-valaszto" multiple accept=".xlsx,.xlsm,.xls,.csv,.ods">
+          <input type="file" id="fajl-valaszto" multiple accept=".xlsx,.xlsm,.xls,.csv,.ods,.docx,.doc,.pdf,.pptx,.ppt,.txt">
           <div class="ejto-ikon">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
@@ -241,6 +267,106 @@
           </div>
         </section>
         <p class="labjegyzet" data-i18n="idle_note"></p>
+      </div>
+    </section>
+
+    <!-- ========== SZÁMOLÁS ========== -->
+    <section class="oldal" id="oldal-szamolas" hidden>
+      <header class="oldal-fej">
+        <div>
+          <h1 data-i18n="calc_title"></h1>
+          <p class="hos-alcim" data-i18n="calc_sub"></p>
+        </div>
+      </header>
+
+      <div class="kalk-racs">
+        <!-- ÁFA -->
+        <article class="kartya kalk" id="kalk-afa">
+          <h2 data-i18n="vat_title"></h2>
+          <div class="kapcsolo" role="group">
+            <button type="button" class="aktiv" data-irany="netto" data-i18n="vat_from_net"></button>
+            <button type="button" data-irany="brutto" data-i18n="vat_from_gross"></button>
+          </div>
+          <div class="mezok-2">
+            <label class="mezo"><span data-i18n="vat_amount"></span><input type="number" id="afa-osszeg" value="10000" min="0" step="any"></label>
+            <label class="mezo"><span data-i18n="vat_rate"></span><input type="number" id="afa-kulcs" value="27" min="0" step="any"></label>
+          </div>
+          <div class="cimkek kicsi" id="afa-kulcsok"></div>
+          <div class="eredmenyek">
+            <div><span data-i18n="vat_net"></span><strong id="afa-netto"></strong></div>
+            <div><span data-i18n="vat_tax"></span><strong id="afa-ado"></strong></div>
+            <div class="kiemelt"><span data-i18n="vat_gross"></span><strong id="afa-brutto"></strong></div>
+          </div>
+          <div class="kalk-keplet" data-keplet="afa"></div>
+        </article>
+
+        <!-- Százalék -->
+        <article class="kartya kalk" id="kalk-szazalek">
+          <h2 data-i18n="pct_title"></h2>
+          <div class="szazalek-sor">
+            <p data-i18n="pct_m1"></p>
+            <div class="mini-mezok"><input type="number" id="sz1-x" value="15" step="any" aria-label="X"><span>%</span><input type="number" id="sz1-y" value="2400" step="any" aria-label="Y"><span>=</span><strong id="sz1-e"></strong></div>
+          </div>
+          <div class="szazalek-sor">
+            <p data-i18n="pct_m2"></p>
+            <div class="mini-mezok"><input type="number" id="sz2-x" value="360" step="any" aria-label="X"><span>/</span><input type="number" id="sz2-y" value="2400" step="any" aria-label="Y"><span>=</span><strong id="sz2-e"></strong></div>
+          </div>
+          <div class="szazalek-sor">
+            <p data-i18n="pct_m3"></p>
+            <div class="mini-mezok"><input type="number" id="sz3-x" value="2400" step="any" aria-label="X"><span>→</span><input type="number" id="sz3-y" value="2760" step="any" aria-label="Y"><span>=</span><strong id="sz3-e"></strong></div>
+          </div>
+          <div class="kalk-keplet" data-keplet="szazalek"></div>
+        </article>
+
+        <!-- Munkaidő -->
+        <article class="kartya kalk" id="kalk-munka">
+          <h2 data-i18n="work_title"></h2>
+          <div class="mezok-3">
+            <label class="mezo"><span data-i18n="work_start"></span><input type="time" id="mu-kezd" value="08:00"></label>
+            <label class="mezo"><span data-i18n="work_end"></span><input type="time" id="mu-vege" value="16:30"></label>
+            <label class="mezo"><span data-i18n="work_break"></span><input type="number" id="mu-szunet" value="30" min="0" step="5"></label>
+          </div>
+          <div class="eredmenyek">
+            <div class="kiemelt"><span data-i18n="work_total"></span><strong id="mu-ido"></strong></div>
+            <div><span data-i18n="work_decimal"></span><strong id="mu-tizedes"></strong></div>
+            <div><span data-i18n="work_week"></span><strong id="mu-het"></strong></div>
+          </div>
+          <div class="kalk-keplet" data-keplet="munka"></div>
+        </article>
+
+        <!-- Dátum -->
+        <article class="kartya kalk" id="kalk-datum">
+          <h2 data-i18n="date_title"></h2>
+          <div class="mezok-2">
+            <label class="mezo"><span data-i18n="date_from"></span><input type="date" id="dt-tol"></label>
+            <label class="mezo"><span data-i18n="date_to"></span><input type="date" id="dt-ig"></label>
+          </div>
+          <div class="eredmenyek">
+            <div class="kiemelt"><span data-i18n="date_workdays"></span><strong id="dt-munkanap"></strong></div>
+            <div><span data-i18n="date_days"></span><strong id="dt-nap"></strong></div>
+            <div><span data-i18n="date_weeks"></span><strong id="dt-het"></strong></div>
+          </div>
+          <p class="kalk-megj" data-i18n="date_note"></p>
+          <div class="kalk-keplet" data-keplet="datum"></div>
+        </article>
+
+        <!-- Hitel -->
+        <article class="kartya kalk szeles" id="kalk-hitel">
+          <h2 data-i18n="loan_title"></h2>
+          <div class="mezok-3">
+            <label class="mezo"><span data-i18n="loan_amount"></span><input type="number" id="hi-osszeg" value="3000000" min="0" step="any"></label>
+            <label class="mezo"><span data-i18n="loan_rate"></span><input type="number" id="hi-kamat" value="9.9" min="0" step="any"></label>
+            <label class="mezo"><span data-i18n="loan_months"></span><input type="number" id="hi-honap" value="60" min="1" step="1"></label>
+          </div>
+          <div class="eredmenyek">
+            <div class="kiemelt"><span data-i18n="loan_monthly"></span><strong id="hi-havi"></strong></div>
+            <div><span data-i18n="loan_total"></span><strong id="hi-ossz"></strong></div>
+            <div><span data-i18n="loan_interest"></span><strong id="hi-kamatossz"></strong></div>
+          </div>
+          <div class="hitel-sav" aria-hidden="true"><div id="hi-sav-toke"></div><div id="hi-sav-kamat"></div></div>
+          <p class="kalk-megj" data-i18n="loan_note"></p>
+          <div class="kalk-keplet" data-keplet="hitel"></div>
+        </article>
       </div>
     </section>
 
@@ -335,5 +461,6 @@
 <script src="excel-adatok.js"></script>
 <script src="makrok.js"></script>
 <script src="app.js"></script>
+<script src="kalkulator.js"></script>
 </body>
 </html>

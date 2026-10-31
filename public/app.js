@@ -59,6 +59,7 @@ function nyelvValtoRajzol() {
 
 function nyelvBeallit(kod) {
   nyelv = kod;
+  utolsoPerc = -1;
   try { localStorage.setItem("nyelv", kod); } catch {}
   forditasAlkalmaz();
 }
@@ -89,6 +90,9 @@ function forditasAlkalmaz() {
   fuggvenyekRajzol();
   billentyukRajzol();
   makrokRajzol();
+  $("morzsa-oldal").textContent = t(OLDAL_NEVEK[aktivOldal]);
+  oraFrissit();
+  if (typeof kalkulatorFrissit === "function") kalkulatorFrissit();
   if (elonezetFajl) $("elonezet-info").textContent = meret(elonezetFajl.meret) + " · " + datum(elonezetFajl.ido);
 }
 
@@ -96,11 +100,15 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "fuggvenyek", "billentyuk", "makrok"];
+const OLDALAK = ["kezdolap", "fajlok", "szamolas", "fuggvenyek", "billentyuk", "makrok"];
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros" };
+let aktivOldal = "kezdolap";
 
 function oldalValtas() {
   let oldal = location.hash.replace("#/", "");
   if (!OLDALAK.includes(oldal)) oldal = "kezdolap";
+  aktivOldal = oldal;
+  $("morzsa-oldal").textContent = t(OLDAL_NEVEK[oldal]);
   OLDALAK.forEach((o) => ($("oldal-" + o).hidden = o !== oldal));
   document.querySelectorAll(".menu-pont").forEach((a) => a.classList.toggle("aktiv", a.dataset.oldal === oldal));
   if (oldal === "fajlok" && !titkositoKulcs) setTimeout(() => $("jelszo").focus(), 50);
@@ -299,12 +307,24 @@ function rendezett(lista) {
   });
 }
 
+const TABLAZAT = ["xlsx", "xlsm", "xls", "csv", "ods"];
+const kiterjesztesOf = (nev) => (nev.split(".").pop() || "").toLowerCase();
+const tablazatE = (nev) => TABLAZAT.includes(kiterjesztesOf(nev));
+function ikonOsztaly(k) {
+  if (k === "csv") return "csv";
+  if (["doc", "docx"].includes(k)) return "word";
+  if (k === "pdf") return "pdf";
+  if (["ppt", "pptx"].includes(k)) return "ppt";
+  if (k === "txt") return "txt";
+  return "";
+}
+
 function fajlSor(f, { egyszeru = false } = {}) {
-  const kiterjesztes = (f.nev.split(".").pop() || "").toLowerCase();
+  const kiterjesztes = kiterjesztesOf(f.nev);
   const li = document.createElement("li");
   li.className = "fajl";
   li.innerHTML = `
-    <div class="fajl-ikon ${kiterjesztes === "csv" ? "csv" : ""}"></div>
+    <div class="fajl-ikon ${ikonOsztaly(kiterjesztes)}"></div>
     <div class="fajl-adatok"><div class="fajl-nev"></div><div class="fajl-info"></div></div>
     ${egyszeru ? "" : `
     <div class="fajl-gombok">
@@ -324,8 +344,9 @@ function fajlSor(f, { egyszeru = false } = {}) {
   li.querySelector(".fajl-nev").title = f.nev;
   li.querySelector(".fajl-info").textContent = meret(f.meret) + " · " + datum(f.ido);
   if (egyszeru) {
-    li.addEventListener("click", () => elonezet(f));
+    li.addEventListener("click", () => (tablazatE(f.nev) ? elonezet(f) : letolt(f)));
   } else {
+    if (!tablazatE(f.nev)) li.querySelector(".nez").style.visibility = "hidden"; // előnézet csak táblázatokhoz
     for (const [osztaly, kulcs] of [["nez", "preview"], ["letolt", "download"], ["torles", "delete"]]) {
       const gomb = li.querySelector("." + osztaly);
       gomb.title = t(kulcs);
@@ -537,7 +558,7 @@ async function elonezet(f) {
   const ablak = $("elonezet");
   const kiterjesztes = (f.nev.split(".").pop() || "").toUpperCase();
   ablak.querySelector(".fajl-ikon").textContent = kiterjesztes.slice(0, 4);
-  ablak.querySelector(".fajl-ikon").classList.toggle("csv", kiterjesztes === "CSV");
+  ablak.querySelector(".fajl-ikon").className = "fajl-ikon " + ikonOsztaly(kiterjesztes.toLowerCase());
   $("elonezet-nev").textContent = f.nev;
   $("elonezet-info").textContent = meret(f.meret) + " · " + datum(f.ido);
   $("lapfulek").innerHTML = "";
@@ -651,6 +672,8 @@ for (const fv of FUGGVENYEK) {
   const hu = fv.hu.split(" / ")[0], en = fv.en.split(" / ")[0];
   if (!hu.includes(" ") && !en.includes(" ")) MAGYAR_NEV[en] = hu;
 }
+
+MAGYAR_NEV.PMT = "RÉSZLET";
 
 // A szlovák alakú képletből (angol nevek + ;) elkészíti a kért nyelvű változatot
 function kepletNyelven(keplet) {
@@ -890,6 +913,12 @@ function tipus(nev) {
     xls: "application/vnd.ms-excel",
     csv: "text/csv",
     ods: "application/vnd.oasis.opendocument.spreadsheet",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    doc: "application/msword",
+    pdf: "application/pdf",
+    pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ppt: "application/vnd.ms-powerpoint",
+    txt: "text/plain",
   }[k] || "application/octet-stream";
 }
 
@@ -937,6 +966,36 @@ function koszontes() {
   const ma = new Date().toLocaleDateString(locale(), { year: "numeric", month: "long", day: "numeric", weekday: "long" });
   $("mai-datum").textContent = ma;
 }
+
+/* ======================================================
+   ÓRA, DÁTUM, HÉT
+   ====================================================== */
+
+// ISO hét száma (Európában ez a szokásos)
+function hetSzama(d) {
+  const x = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const nap = x.getUTCDay() || 7;
+  x.setUTCDate(x.getUTCDate() + 4 - nap);
+  const evEleje = new Date(Date.UTC(x.getUTCFullYear(), 0, 1));
+  return Math.ceil(((x - evEleje) / 864e5 + 1) / 7);
+}
+
+let utolsoPerc = -1;
+function oraFrissit() {
+  const most = new Date();
+  const ket = (n) => String(n).padStart(2, "0");
+  const hhmm = ket(most.getHours()) + ":" + ket(most.getMinutes());
+  $("sav-ora").textContent = hhmm + ":" + ket(most.getSeconds());
+  $("hos-ora").textContent = hhmm;
+  $("hos-mp").textContent = ket(most.getSeconds());
+  if (most.getMinutes() !== utolsoPerc) {   // percenként elég frissíteni
+    utolsoPerc = most.getMinutes();
+    $("sav-datum").textContent = most.toLocaleDateString(locale(), { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+    $("sav-het").textContent = t("week_no", { n: hetSzama(most) });
+    koszontes();
+  }
+}
+setInterval(oraFrissit, 1000);
 
 /* ======================================================
    INDULÁS
