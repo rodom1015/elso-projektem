@@ -576,3 +576,30 @@ kbd {
 /* A rácsban lévő kártyák ne nőjenek szélesebbre a képernyőnél (hosszú képletek miatt) */
 .racs-2 > *, .fv-racs > *, .gyors > *, .statok > * { min-width: 0; }
 .fv-szintaxis { overflow-wrap: anywhere; }
+
+/* ================= NYELVVÁLASZTÓ ================= */
+.nyelvvalto {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+  padding: 3px; border-radius: 11px;
+  background: rgba(255,255,255,.06);
+}
+.nyelv-gomb {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 7px 4px; border: none; border-radius: 8px;
+  background: transparent; color: var(--oldalsav-szoveg);
+  font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.nyelv-gomb:hover { color: #fff; background: rgba(255,255,255,.06); }
+.nyelv-gomb.aktiv { background: #fff; color: #0b4a2b; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.nyelvvalto.kompakt { grid-template-columns: repeat(3, auto); background: rgba(255,255,255,.1); }
+.nyelvvalto.kompakt .nyelv-gomb { padding: 6px 8px; font-size: .72rem; }
+.nyelvvalto.kompakt .nyelv-gomb .zaszlo { display: none; }
+.mobil-jobb { display: flex; align-items: center; gap: 8px; }
+
+/* Billentyűk: kiemelés kereséskor */
+.billentyu-csoport .darab { margin-left: auto; font-size: .75rem; font-weight: 600; color: var(--halvany); }
+.billentyu-csoport h2 em.darab { font-style: normal; }
+.billentyuk { flex-wrap: wrap; row-gap: 4px; justify-content: flex-end; }
+@media (max-width: 520px) { .billentyuk { justify-content: flex-start; } }
+.nyelv-gomb .zaszlo { display: none; }  /* Windows nem mutat zászló-emojit, ezért csak a kód látszik */

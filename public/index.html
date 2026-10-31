@@ -22,38 +22,39 @@
       </div>
       <div>
         <strong>Rodom</strong>
-        <span>Excel központ</span>
+        <span data-i18n="brand_sub">Excel központ</span>
       </div>
     </a>
 
-    <nav class="menu" aria-label="Főmenü">
+    <nav class="menu" aria-label="Menu">
       <a href="#/kezdolap" data-oldal="kezdolap" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v8a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2v-8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <span>Kezdőlap</span>
+        <span data-i18n="nav_home">Kezdőlap</span>
       </a>
       <a href="#/fajlok" data-oldal="fajlok" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <span>Fájljaim</span>
+        <span data-i18n="nav_files">Fájljaim</span>
         <em class="menu-szam" id="menu-szam" hidden></em>
       </a>
       <a href="#/fuggvenyek" data-oldal="fuggvenyek" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h-2a3 3 0 0 0-3 3v13M6 11h7M15 13l5 6M20 13l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Függvények</span>
+        <span data-i18n="nav_functions">Függvények</span>
       </a>
       <a href="#/billentyuk" data-oldal="billentyuk" class="menu-pont">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Billentyűk</span>
+        <span data-i18n="nav_shortcuts">Billentyűk</span>
       </a>
     </nav>
 
     <div class="oldalsav-alja">
+      <div class="nyelvvalto" role="group" data-i18n-title="language"></div>
       <div class="allapot" id="allapot">
         <span class="allapot-pont"></span>
-        <span id="allapot-szoveg">Zárolva</span>
+        <span id="allapot-szoveg" data-i18n="status_locked">Zárolva</span>
       </div>
       <button class="kilepes-gomb" id="kilepes" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M15 17l5-5-5-5M20 12H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Kilépés
+        <span data-i18n="logout">Kilépés</span>
       </button>
     </div>
   </aside>
@@ -66,9 +67,12 @@
         <div class="marka-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6l10 12M17 6L7 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
         </div>
-        <div><strong>Rodom</strong><span>Excel központ</span></div>
+        <div><strong>Rodom</strong><span data-i18n="brand_sub">Excel központ</span></div>
       </a>
-      <button class="kilepes-gomb" id="kilepes-mobil" hidden>Kilépés</button>
+      <div class="mobil-jobb">
+        <div class="nyelvvalto kompakt" role="group" data-i18n-title="language"></div>
+        <button class="kilepes-gomb" id="kilepes-mobil" hidden data-i18n="logout">Kilépés</button>
+      </div>
     </div>
 
     <!-- ========== KEZDŐLAP ========== -->
@@ -76,47 +80,47 @@
       <div class="hos">
         <div>
           <p class="hos-datum" id="mai-datum"></p>
-          <h1 id="koszontes">Szia! 👋</h1>
-          <p class="hos-alcim">Itt vannak a fájljaid és minden, ami Excel.</p>
+          <h1 id="koszontes">👋</h1>
+          <p class="hos-alcim" data-i18n="hero_sub"></p>
         </div>
         <a href="#/fajlok" class="gomb fo">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Feltöltés
+          <span data-i18n="upload"></span>
         </a>
       </div>
 
       <div class="statok" id="statok">
         <div class="stat kartya">
           <div class="stat-ikon zold"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
-          <div><span class="stat-cimke">Fájlok</span><strong class="stat-ertek" id="stat-db">–</strong></div>
+          <div><span class="stat-cimke" data-i18n="stat_files"></span><strong class="stat-ertek" id="stat-db">–</strong></div>
         </div>
         <div class="stat kartya">
           <div class="stat-ikon kek"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
-          <div><span class="stat-cimke">Összes méret</span><strong class="stat-ertek" id="stat-meret">–</strong></div>
+          <div><span class="stat-cimke" data-i18n="stat_size"></span><strong class="stat-ertek" id="stat-meret">–</strong></div>
         </div>
         <div class="stat kartya">
           <div class="stat-ikon narancs"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-          <div><span class="stat-cimke">Utolsó feltöltés</span><strong class="stat-ertek" id="stat-utolso">–</strong></div>
+          <div><span class="stat-cimke" data-i18n="stat_last"></span><strong class="stat-ertek" id="stat-utolso">–</strong></div>
         </div>
         <div class="stat kartya">
           <div class="stat-ikon lila"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
           <div class="stat-tarhely">
-            <span class="stat-cimke">Tárhely (1 GB)</span>
+            <span class="stat-cimke" data-i18n="stat_storage"></span>
             <strong class="stat-ertek" id="stat-tarhely">–</strong>
             <div class="savsor kicsi"><div id="stat-sav"></div></div>
           </div>
         </div>
         <a href="#/fajlok" class="statok-zar" id="statok-zar">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="11" width="16" height="10" rx="3" fill="currentColor"/></svg>
-          Lépj be a statisztikához
+          <span data-i18n="stats_locked"></span>
         </a>
       </div>
 
       <div class="racs-2">
         <div class="kartya tipp-kartya">
           <div class="kartya-fej">
-            <h2>💡 Napi Excel-tipp</h2>
-            <button class="kis-gomb" id="uj-tipp" title="Másik tipp" aria-label="Másik tipp">
+            <h2 data-i18n="tip_title"></h2>
+            <button class="kis-gomb" id="uj-tipp" data-i18n-title="tip_next">
               <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
@@ -125,29 +129,29 @@
 
         <div class="kartya">
           <div class="kartya-fej">
-            <h2>🕒 Legutóbbi fájlok</h2>
-            <a href="#/fajlok" class="link">Összes →</a>
+            <h2 data-i18n="recent_title"></h2>
+            <a href="#/fajlok" class="link" data-i18n="all_link"></a>
           </div>
           <ul class="fajl-lista" id="legutobbi"></ul>
-          <p class="halvany-szoveg" id="legutobbi-ures">Lépj be, hogy lásd a fájljaidat.</p>
+          <p class="halvany-szoveg" id="legutobbi-ures"></p>
         </div>
       </div>
 
       <div class="gyors">
         <a href="#/fajlok" class="gyors-kartya">
           <span class="gyors-ikon zold">📁</span>
-          <strong>Fájljaim</strong>
-          <span>Feltöltés, előnézet, letöltés</span>
+          <strong data-i18n="nav_files"></strong>
+          <span data-i18n="quick_files_sub"></span>
         </a>
         <a href="#/fuggvenyek" class="gyors-kartya">
           <span class="gyors-ikon kek">ƒx</span>
-          <strong>Függvények</strong>
-          <span>FKERES, HA, SZUMHA és társai</span>
+          <strong data-i18n="quick_fn_title"></strong>
+          <span id="gyors-fv-sub"></span>
         </a>
         <a href="#/billentyuk" class="gyors-kartya">
           <span class="gyors-ikon lila">⌨️</span>
-          <strong>Billentyűparancsok</strong>
-          <span>Dolgozz gyorsabban egér nélkül</span>
+          <strong data-i18n="quick_sc_title"></strong>
+          <span id="gyors-sc-sub"></span>
         </a>
       </div>
     </section>
@@ -156,8 +160,8 @@
     <section class="oldal" id="oldal-fajlok" hidden>
       <header class="oldal-fej">
         <div>
-          <h1>Fájljaim</h1>
-          <p class="hos-alcim" id="osszesito">Titkosított Excel tárhely</p>
+          <h1 data-i18n="files_title"></h1>
+          <p class="hos-alcim" id="osszesito"></p>
         </div>
       </header>
 
@@ -166,25 +170,25 @@
         <div class="belepes-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="11" width="16" height="10" rx="3" fill="currentColor"/></svg>
         </div>
-        <h2>Lépj be a fájljaidhoz</h2>
-        <p class="hos-alcim">A fájlok titkosítva vannak – csak a jelszóval nyithatók meg.</p>
+        <h2 data-i18n="login_title"></h2>
+        <p class="hos-alcim" data-i18n="login_sub"></p>
         <label class="mezo">
-          <span>Jelszó</span>
+          <span data-i18n="password"></span>
           <div class="jelszo-sor">
-            <input type="password" id="jelszo" required placeholder="Add meg a jelszavad">
-            <button type="button" id="mutat" class="szem-gomb" aria-label="Jelszó mutatása">
+            <input type="password" id="jelszo" required data-i18n-ph="password_ph">
+            <button type="button" id="mutat" class="szem-gomb" data-i18n-title="show_password">
               <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
             </button>
           </div>
         </label>
         <button type="submit" class="gomb fo teljes" id="belepes-gomb">
-          <span class="gomb-szoveg">Belépés</span>
+          <span class="gomb-szoveg" data-i18n="login"></span>
           <span class="porgo" hidden></span>
         </button>
         <p class="hiba" id="belepes-hiba" role="alert"></p>
         <p class="biztonsag">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" fill="currentColor"/></svg>
-          A fájlok a böngésződben titkosítódnak (AES-256). A jelszó nélkül senki nem tudja megnyitni őket.
+          <span data-i18n="security_note"></span>
         </p>
       </form>
 
@@ -196,8 +200,8 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <div>
-            <strong>Húzd ide az Excel fájlokat</strong>
-            <span>vagy kattints a tallózáshoz · max. 20 MB / fájl</span>
+            <strong data-i18n="drop_title"></strong>
+            <span data-i18n="drop_sub"></span>
           </div>
         </label>
 
@@ -207,27 +211,27 @@
           <div class="eszkoztar">
             <div class="kereso">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              <input type="search" id="kereses" placeholder="Keresés a fájlok között…">
+              <input type="search" id="kereses" data-i18n-ph="search_files">
             </div>
             <label class="rendezo">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <select id="rendezes" aria-label="Rendezés">
-                <option value="ido-le">Legújabb elöl</option>
-                <option value="ido-fel">Legrégebbi elöl</option>
-                <option value="nev-fel">Név (A–Z)</option>
-                <option value="nev-le">Név (Z–A)</option>
-                <option value="meret-le">Legnagyobb elöl</option>
-                <option value="meret-fel">Legkisebb elöl</option>
+              <select id="rendezes" data-i18n-title="sort">
+                <option value="ido-le" data-i18n="sort_new"></option>
+                <option value="ido-fel" data-i18n="sort_old"></option>
+                <option value="nev-fel" data-i18n="sort_az"></option>
+                <option value="nev-le" data-i18n="sort_za"></option>
+                <option value="meret-le" data-i18n="sort_big"></option>
+                <option value="meret-fel" data-i18n="sort_small"></option>
               </select>
             </label>
           </div>
           <ul id="fajl-lista" class="fajl-lista"></ul>
           <div id="ures" class="ures" hidden>
             <div class="ures-ikon">📂</div>
-            <p id="ures-szoveg">Még nincs feltöltött fájl.</p>
+            <p id="ures-szoveg"></p>
           </div>
         </section>
-        <p class="labjegyzet">🔒 Biztonsági okból 15 perc tétlenség után automatikusan kilépsz.</p>
+        <p class="labjegyzet" data-i18n="idle_note"></p>
       </div>
     </section>
 
@@ -235,30 +239,37 @@
     <section class="oldal" id="oldal-fuggvenyek" hidden>
       <header class="oldal-fej">
         <div>
-          <h1>Excel függvények</h1>
-          <p class="hos-alcim">A leghasznosabb függvények magyar Excelhez, példákkal. Kattints a 📋 ikonra a másoláshoz.</p>
+          <h1 data-i18n="fn_title"></h1>
+          <p class="hos-alcim" id="fv-alcim"></p>
         </div>
       </header>
       <div class="eszkoztar szabad">
         <div class="kereso szeles">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input type="search" id="fv-kereses" placeholder="Keresés: pl. FKERES, VLOOKUP, összeg…">
+          <input type="search" id="fv-kereses" data-i18n-ph="fn_search">
         </div>
       </div>
       <div class="cimkek" id="fv-kategoriak"></div>
       <div class="fv-racs" id="fv-lista"></div>
-      <p class="halvany-szoveg kozep" id="fv-ures" hidden>Nincs ilyen függvény a listában.</p>
+      <p class="halvany-szoveg kozep" id="fv-ures" hidden data-i18n="fn_none"></p>
     </section>
 
     <!-- ========== BILLENTYŰK ========== -->
     <section class="oldal" id="oldal-billentyuk" hidden>
       <header class="oldal-fej">
         <div>
-          <h1>Billentyűparancsok</h1>
-          <p class="hos-alcim">A legfontosabb Excel gyorsbillentyűk Windowson.</p>
+          <h1 data-i18n="sc_title"></h1>
+          <p class="hos-alcim" id="sc-alcim"></p>
         </div>
       </header>
+      <div class="eszkoztar szabad">
+        <div class="kereso szeles">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="search" id="sc-kereses" data-i18n-ph="sc_search">
+        </div>
+      </div>
       <div class="billentyu-racs" id="billentyu-lista"></div>
+      <p class="halvany-szoveg kozep" id="sc-ures" hidden data-i18n="sc_none"></p>
     </section>
 
   </main>
@@ -277,9 +288,9 @@
     <div class="elonezet-gombok">
       <button class="gomb masodlagos" id="elonezet-letolt">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Letöltés
+        <span data-i18n="download"></span>
       </button>
-      <button class="kis-gomb" id="elonezet-bezar" aria-label="Bezárás">
+      <button class="kis-gomb" id="elonezet-bezar" data-i18n-title="close">
         <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -290,6 +301,7 @@
 
 <div id="ertesitesek" class="ertesitesek" aria-live="polite"></div>
 
+<script src="i18n.js"></script>
 <script src="excel-adatok.js"></script>
 <script src="app.js"></script>
 </body>
