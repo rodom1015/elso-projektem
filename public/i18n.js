@@ -14,6 +14,12 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    cp_pq: "Power Query",
+    nav_pq: "Power Query", pq_title: "Power Query", pq_sub: "Adatok betöltése, tisztítása és összefésülése – egyszer beállítod, utána egy Frissítéssel kész. {e} kész M kód, {f} M függvény, {t} tipp és {h} gyakori hiba megoldással.",
+    pq_tab_basics: "📘 Alapok", pq_tab_tips: "💡 Tippek", pq_tab_examples: "🧩 Példák (M kód)", pq_tab_functions: "ƒ M függvények", pq_tab_errors: "🩺 Hibák",
+    pq_search: "Keresés: pl. mappa, összefésülés, dátum, unpivot…", pq_copy: "Kód másolása", pq_copied: "📋 M kód kimásolva – Power Query-szerkesztő → Speciális szerkesztő → beillesztés",
+    pq_howto: "Használat: Adatok → Adatok beolvasása → Egyéb forrásokból → Üres lekérdezés → Speciális szerkesztő → illeszd be a kódot. A fájl- és táblaneveket írd át a sajátodra.",
+    pq_example: "Példa", pq_fix: "Megoldás",
     quick_excel_sub: "{f} függvény, {b} billentyű, makrók, tippek",
     nav_excel: "Excel", excel_title: "Excel súgó", excel_sub: "{f} függvény, {b} billentyűparancs, {m} kész makró és {t} hasznos tipp. Kereshetsz is bennük.",
     excel_tab_fn: "ƒx Függvények", excel_tab_sc: "⌨️ Billentyűparancsok", excel_tab_mac: "⚙️ Makrók", excel_tab_tips: "💡 Tippek",
@@ -142,6 +148,12 @@ const SZOVEGEK = {
   },
 
   sk: {
+    cp_pq: "Power Query",
+    nav_pq: "Power Query", pq_title: "Power Query", pq_sub: "Načítanie, čistenie a spájanie údajov – raz nastavíš, potom stačí Obnoviť. {e} hotových kódov M, {f} funkcií M, {t} tipov a {h} častých chýb s riešením.",
+    pq_tab_basics: "📘 Základy", pq_tab_tips: "💡 Tipy", pq_tab_examples: "🧩 Príklady (kód M)", pq_tab_functions: "ƒ Funkcie M", pq_tab_errors: "🩺 Chyby",
+    pq_search: "Hľadať: napr. priečinok, zlúčenie, dátum, unpivot…", pq_copy: "Kopírovať kód", pq_copied: "📋 Kód M skopírovaný – editor Power Query → Rozšírený editor → vložiť",
+    pq_howto: "Použitie: Údaje → Získať údaje → Z iných zdrojov → Prázdny dotaz → Rozšírený editor → vlož kód. Názvy súborov a tabuliek zmeň na svoje.",
+    pq_example: "Príklad", pq_fix: "Riešenie",
     quick_excel_sub: "{f} funkcií, {b} skratiek, makrá, tipy",
     nav_excel: "Excel", excel_title: "Pomocník pre Excel", excel_sub: "{f} funkcií, {b} klávesových skratiek, {m} hotových makier a {t} užitočných tipov. Môžeš v nich aj hľadať.",
     excel_tab_fn: "ƒx Funkcie", excel_tab_sc: "⌨️ Skratky", excel_tab_mac: "⚙️ Makrá", excel_tab_tips: "💡 Tipy",
@@ -270,6 +282,12 @@ const SZOVEGEK = {
   },
 
   en: {
+    cp_pq: "Power Query",
+    nav_pq: "Power Query", pq_title: "Power Query", pq_sub: "Load, clean and combine data – set it up once, then just Refresh. {e} ready-made M scripts, {f} M functions, {t} tips and {h} common errors with fixes.",
+    pq_tab_basics: "📘 Basics", pq_tab_tips: "💡 Tips", pq_tab_examples: "🧩 Examples (M code)", pq_tab_functions: "ƒ M functions", pq_tab_errors: "🩺 Errors",
+    pq_search: "Search: e.g. folder, merge, date, unpivot…", pq_copy: "Copy code", pq_copied: "📋 M code copied – Power Query Editor → Advanced Editor → paste",
+    pq_howto: "How to use: Data → Get Data → From Other Sources → Blank Query → Advanced Editor → paste the code. Change the file and table names to yours.",
+    pq_example: "Example", pq_fix: "Fix",
     quick_excel_sub: "{f} functions, {b} shortcuts, macros, tips",
     nav_excel: "Excel", excel_title: "Excel help", excel_sub: "{f} functions, {b} keyboard shortcuts, {m} ready-made macros and {t} useful tips. You can search them too.",
     excel_tab_fn: "ƒx Functions", excel_tab_sc: "⌨️ Shortcuts", excel_tab_mac: "⚙️ Macros", excel_tab_tips: "💡 Tips",

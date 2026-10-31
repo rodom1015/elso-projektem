@@ -1179,3 +1179,38 @@ body.megosztas-mod .tartalom { padding: 0 16px; }
 .excel-tipp .word-tipp-ikon { background: var(--zold-h); }
 @media (max-width: 860px) { .excel-fulek { width: 100%; grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 520px) { .excel-fulek { grid-template-columns: 1fr 1fr; } .excel-fulek button { font-size: .8rem; padding: 9px 6px; } }
+
+/* ================= POWER QUERY ================= */
+.pq-fulek { flex: 0 0 auto; grid-template-columns: repeat(5, auto); }
+.pq-fulek button { padding: 9px 12px; }
+.pq-lepesek { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; counter-reset: lepes; }
+.pq-lepesek > * { min-width: 0; }
+.pq-lepes { display: flex; gap: 16px; align-items: flex-start; animation: beuszik .3s ease; }
+.pq-lepes-szam {
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; font-weight: 800; font-size: 1.05rem;
+}
+.pq-lepes h2 { font-size: 1rem; margin-bottom: 6px; }
+.pq-lepes p { margin: 0; font-size: .9rem; line-height: 1.55; }
+.pq-tipp .word-tipp-ikon { background: rgba(242, 200, 17, .16); }
+.pq-utmutato { grid-column: 1 / -1; padding: 12px 14px; border-radius: 12px; background: var(--fo-halvany); color: var(--szoveg); margin: 0; }
+#pq-fuggvenyek { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; align-items: start; }
+#pq-fuggvenyek > * { min-width: 0; }
+.pq-fv-csoport h2 { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pq-fv-csoport em.darab { margin-left: auto; font-style: normal; font-size: .75rem; color: var(--halvany); }
+.pq-fv-sor { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--kartya-keret); min-width: 0; }
+.pq-fv-sor:first-of-type { border-top: none; }
+.pq-fv-fej { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: .88rem; }
+.pq-fv-nev { font-weight: 700; color: var(--fo); font-size: .86rem; }
+.pq-fv-sor .kepletsor code { font-size: .78rem; }
+.pq-hiba-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 14px; }
+.pq-hiba-lista > * { min-width: 0; }
+.pq-hiba { display: grid; gap: 10px; animation: beuszik .3s ease; }
+.pq-hiba-uzenet { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: var(--veszely-halvany); }
+.pq-hiba-uzenet code { font-size: .8rem; color: var(--veszely); font-weight: 600; overflow-wrap: anywhere; }
+.pq-hiba p { margin: 0; font-size: .9rem; line-height: 1.55; }
+@media (max-width: 1100px) { #pq-fuggvenyek, .pq-hiba-lista { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .pq-fulek { width: 100%; display: flex; overflow-x: auto; scrollbar-width: none; } .pq-fulek button { flex: 0 0 auto; } }
+@media (max-width: 520px) { .pq-lepesek { grid-template-columns: 1fr; } }
+.pq-fv-sor { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1100px) { #pq-fuggvenyek, .pq-hiba-lista { grid-template-columns: minmax(0, 1fr); } }

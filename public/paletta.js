@@ -16,7 +16,7 @@ function palettaElemek() {
     if (mezo) setTimeout(() => { $(mezo).value = ertek; $(mezo).dispatchEvent(new Event("input")); }, 30);
   };
 
-  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", word: "W" };
+  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W" };
   for (const o of OLDALAK) add("cp_pages", ikonok[o], t(OLDAL_NEVEK[o]), "", t(OLDAL_NEVEK[o]) + " " + o, ugras(o));
 
   if (titkositoKulcs) for (const f of fajlok)
@@ -47,6 +47,20 @@ function palettaElemek() {
       }, 60);
     });
 
+  // Power Query példák és tippek
+  for (const p of PQ_PELDAK)
+    add("cp_pq", p.ikon, p.cim[nyelv], p.leiras[nyelv], "power query pq m " + p.cim[nyelv] + " " + p.leiras[nyelv], () => {
+      pqFul = "peldak"; $("pq-kereses").value = ""; location.hash = "#/powerquery"; pqRajzol();
+      setTimeout(() => {
+        const k = [...document.querySelectorAll(".pq-pelda")].find((x) => x.querySelector("h2").textContent === p.cim[nyelv]);
+        if (k) { k.scrollIntoView({ behavior: "smooth", block: "center" }); k.classList.add("villan"); setTimeout(() => k.classList.remove("villan"), 1600); }
+      }, 60);
+    });
+  for (const tp of PQ_TIPPEK)
+    add("cp_pq", tp.ikon, tp.cim[nyelv], tp.szoveg[nyelv], "power query pq " + tp.cim[nyelv] + " " + tp.szoveg[nyelv], () => {
+      pqFul = "tippek"; $("pq-kereses").value = tp.cim[nyelv]; location.hash = "#/powerquery"; pqRajzol();
+    });
+
   const billentyuk = (adat, csoport, oldal, mezo) => {
     for (const cs of adat) for (const [leiras, ...kombok] of cs.sorok) {
       const komb = kombok.map((k) => k.map(billentyuNev).join("+")).join(" / ");
@@ -75,7 +89,7 @@ function palettaKeres() {
     talalat = talalat.filter((e) => (db[e.csoport] = (db[e.csoport] || 0) + 1) <= 6).slice(0, 30);
   }
   // csoportok sorrendje
-  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_word_macros", "cp_shortcuts", "cp_word"];
+  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_word_macros", "cp_pq", "cp_shortcuts", "cp_word"];
   talalat.sort((a, b) => sorrend.indexOf(a.csoport) - sorrend.indexOf(b.csoport) || (a.pont ?? 0) - (b.pont ?? 0));
   palettaTalalatok = talalat;
   palettaKijelolt = 0;

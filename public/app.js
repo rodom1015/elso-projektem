@@ -104,10 +104,10 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "word"];
+const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "powerquery", "word"];
 // A régi címek (pl. a gyorskeresőből) az Excel oldal megfelelő fülére visznek
 const OLDAL_ALIASOK = { fuggvenyek: ["excel", "fuggvenyek"], billentyuk: ["excel", "billentyuk"], makrok: ["excel", "makrok"] };
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", word: "word_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", powerquery: "pq_title", word: "word_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
 
 // A többi modul (időjárás, eszközök…) ide teszi a függvényét, ami nyelvváltáskor lefut
 const forditasHookok = [];
@@ -1165,7 +1165,7 @@ function arfolyamRajzol() {
    ====================================================== */
 
 // A makró kódja az aktuális nyelv szövegeivel ({1}, {2} … helyére)
-const makroKod = (m) => m.kod.replace(/\{(\d+)\}/g, (_, n) => m.s[nyelv][n - 1] ?? "");
+const makroKod = (m) => m.kod.replace(/\{([1-9]\d*)\}/g, (_, n) => m.s[nyelv][n - 1] ?? "");
 
 function makrokRajzol() {
   $("mac-lepesek").innerHTML = "";
