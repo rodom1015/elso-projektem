@@ -209,6 +209,23 @@ function kalkulatorFrissit() {
   $("xs-sorszam").value = datumbolSorszam(ma);
 })();
 
+/* ---------- Fülek: egyszerre egy kalkulátor látszik ---------- */
+let kalkFul = "kalk-valto";
+try { kalkFul = localStorage.getItem("kalkFul") || kalkFul; } catch {}
+function kalkFulMutat(id) {
+  if (!$(id)) id = "kalk-valto";
+  kalkFul = id;
+  try { localStorage.setItem("kalkFul", id); } catch {}
+  document.querySelectorAll("#kalk-fulek button").forEach((g) => {
+    const aktiv = g.dataset.kalk === id;
+    g.classList.toggle("aktiv", aktiv);
+    g.setAttribute("aria-selected", aktiv);
+  });
+  document.querySelectorAll(".kalk-racs.fulekkel > .kalk").forEach((k) => (k.hidden = k.id !== id));
+}
+document.querySelectorAll("#kalk-fulek button").forEach((g) => g.addEventListener("click", () => kalkFulMutat(g.dataset.kalk)));
+kalkFulMutat(kalkFul);
+
 document.querySelectorAll("#oldal-szamolas input").forEach((el) => el.addEventListener("input", mindentSzamol));
 kalkulatorFrissit();
 valtoFrissit();

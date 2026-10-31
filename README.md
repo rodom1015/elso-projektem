@@ -9,10 +9,10 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📊 Kezdőlap statisztikával, napi Excel-tippel
 - 📚 Excel súgó: 114 függvény (köztük 17 új Excel 2024 függvény) példákkal és 93 billentyűparancs, kereshetően
 - ⚙️ 26 kész VBA makró (biztonsági másolat, tartalomjegyzék, PDF export, lapok összefűzése …) útmutatóval
-- 🧮 Kalkulátorok: pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
+- 🧮 Kalkulátorok (fülekre rendezve): pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
 - 💱 Napi árfolyamok az Európai Központi Banktól, 90 napos EUR/HUF grafikonnal
-- 📄 Word súgó: 63 billentyűparancs és 12 tipp
+- 📄 Word súgó: 63 billentyűparancs, 12 tipp és 12 kész Word makró
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
 - 📱 **Belépés QR kóddal**: a gépen QR kód, a telefonon jóváhagyás (ECDH titkosítással, ellenőrző kóddal) – a munkahelyi gépen nem kell beírni a jelszót
@@ -43,6 +43,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/makrok.js` | a kész VBA makrók és a használati útmutató |
 | `public/kalkulator.js` | a kalkulátorok számolása |
 | `public/word-adatok.js` | a Word súgó tartalma |
+| `public/word-makrok.js` | a kész Word VBA makrók |
 | `public/unnepnapok.js` | magyar és szlovák ünnepnapok (húsvét számítással) |
 | `public/eszkozok.js` | képletfordító és Excel eszközök |
 | `public/megosztas.js` | megosztó linkek |

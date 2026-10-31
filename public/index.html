@@ -474,7 +474,14 @@
         </div>
       </header>
 
-      <div class="kalk-racs">
+      <div class="kalk-fulek" id="kalk-fulek" role="tablist">
+        <button type="button" data-kalk="kalk-valto" data-i18n="conv_title"></button>
+        <button type="button" data-kalk="kalk-szazalek" data-i18n="pct_title"></button>
+        <button type="button" data-kalk="kalk-munka" data-i18n="work_title"></button>
+        <button type="button" data-kalk="kalk-datum" data-i18n="date_title_short"></button>
+        <button type="button" data-kalk="kalk-excel" data-i18n="xl_title"></button>
+      </div>
+      <div class="kalk-racs fulekkel">
         <!-- Pénzváltó -->
         <article class="kartya kalk" id="kalk-valto">
           <h2 data-i18n="conv_title"></h2>
@@ -624,6 +631,7 @@
         <div class="kapcsolo word-fulek" id="word-fulek">
           <button type="button" class="aktiv" data-ful="billentyuk" data-i18n="word_tab_sc"></button>
           <button type="button" data-ful="tippek" data-i18n="word_tab_tips"></button>
+          <button type="button" data-ful="makrok" data-i18n="word_tab_macros"></button>
         </div>
         <div class="kereso szeles">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -632,6 +640,16 @@
       </div>
       <div class="billentyu-racs" id="word-billentyuk"></div>
       <div class="tipp-racs" id="word-tippek" hidden></div>
+      <div id="word-makrok-doboz" hidden>
+        <div class="racs-2 makro-bevezeto">
+          <div class="kartya">
+            <div class="kartya-fej"><h2 data-i18n="mac_howto"></h2></div>
+            <ol class="lepesek" id="word-mac-lepesek"></ol>
+          </div>
+          <div class="kartya figyelmeztetes"><p id="word-mac-figyelmeztetes"></p></div>
+        </div>
+        <div class="makro-lista" id="word-makro-lista"></div>
+      </div>
       <p class="halvany-szoveg kozep" id="word-ures" hidden data-i18n="sc_none"></p>
     </section>
 
@@ -724,6 +742,7 @@
 <script src="i18n.js"></script>
 <script src="excel-adatok.js"></script>
 <script src="word-adatok.js"></script>
+<script src="word-makrok.js"></script>
 <script src="unnepnapok.js"></script>
 <script src="makrok.js"></script>
 <script src="app.js"></script>

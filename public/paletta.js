@@ -34,6 +34,17 @@ function palettaElemek() {
       }, 60);
     });
 
+  for (const m of WORD_MAKROK)
+    add("cp_word_macros", "W", m.cim[nyelv], m.leiras[nyelv], "word " + m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod.match(/(?:Sub|Function) (\w+)/)[1], () => {
+      wordFul = "makrok";
+      location.hash = "#/word";
+      wordRajzol();
+      setTimeout(() => {
+        const k = [...document.querySelectorAll("#word-makro-lista .makro")].find((x) => x.querySelector("h2").textContent === m.cim[nyelv]);
+        if (k) { k.scrollIntoView({ behavior: "smooth", block: "center" }); k.classList.add("villan"); setTimeout(() => k.classList.remove("villan"), 1600); }
+      }, 60);
+    });
+
   const billentyuk = (adat, csoport, oldal, mezo) => {
     for (const cs of adat) for (const [leiras, ...kombok] of cs.sorok) {
       const komb = kombok.map((k) => k.map(billentyuNev).join("+")).join(" / ");
@@ -62,7 +73,7 @@ function palettaKeres() {
     talalat = talalat.filter((e) => (db[e.csoport] = (db[e.csoport] || 0) + 1) <= 6).slice(0, 30);
   }
   // csoportok sorrendje
-  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_shortcuts", "cp_word"];
+  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_word_macros", "cp_shortcuts", "cp_word"];
   talalat.sort((a, b) => sorrend.indexOf(a.csoport) - sorrend.indexOf(b.csoport) || (a.pont ?? 0) - (b.pont ?? 0));
   palettaTalalatok = talalat;
   palettaKijelolt = 0;

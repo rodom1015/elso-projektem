@@ -14,6 +14,8 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    word_tab_macros: "⚙️ Makrók", word_sub2: "{n} Word billentyűparancs, {t} hasznos tipp és {m} kész makró. Kereshetsz is bennük.", cp_word_macros: "Word makrók",
+    date_title_short: "📅 Dátumok",
     xt_pivot: "📊 Kimutatás", xt_pivot_desc: "Összesítés pár kattintással, mint egy kimutatás (pivot): pl. városonként az összeg, havonta a darabszám – grafikonnal és Excel letöltéssel.",
     xt_group: "Csoportosítás (mi szerint?)", xt_value: "Érték (mit számoljunk?)", xt_agg: "Művelet", agg_sum: "Összeg", agg_count: "Darab", agg_avg: "Átlag", agg_min: "Minimum", agg_max: "Maximum",
     xt_total: "Összesen", xt_share: "Arány", xt_dl_pivot: "Kimutatás letöltése (Excel)", xt_groups: "{n} csoport",
@@ -136,6 +138,8 @@ const SZOVEGEK = {
   },
 
   sk: {
+    word_tab_macros: "⚙️ Makrá", word_sub2: "{n} klávesových skratiek, {t} užitočných tipov a {m} hotových makier pre Word. Môžeš v nich aj hľadať.", cp_word_macros: "Word makrá",
+    date_title_short: "📅 Dátumy",
     xt_pivot: "📊 Kontingenčná tabuľka", xt_pivot_desc: "Súhrn na pár kliknutí ako kontingenčná tabuľka: napr. súčet podľa miest, počet podľa mesiacov – s grafom a stiahnutím do Excelu.",
     xt_group: "Zoskupiť podľa", xt_value: "Hodnota (čo počítať?)", xt_agg: "Operácia", agg_sum: "Súčet", agg_count: "Počet", agg_avg: "Priemer", agg_min: "Minimum", agg_max: "Maximum",
     xt_total: "Spolu", xt_share: "Podiel", xt_dl_pivot: "Stiahnuť súhrn (Excel)", xt_groups: "Skupín: {n}",
@@ -258,6 +262,8 @@ const SZOVEGEK = {
   },
 
   en: {
+    word_tab_macros: "⚙️ Macros", word_sub2: "{n} Word keyboard shortcuts, {t} useful tips and {m} ready-made macros. You can search them too.", cp_word_macros: "Word macros",
+    date_title_short: "📅 Dates",
     xt_pivot: "📊 Pivot summary", xt_pivot_desc: "Summarise in a few clicks, like a pivot table: e.g. total per city, count per month – with a chart and Excel download.",
     xt_group: "Group by", xt_value: "Value (what to calculate?)", xt_agg: "Operation", agg_sum: "Sum", agg_count: "Count", agg_avg: "Average", agg_min: "Minimum", agg_max: "Maximum",
     xt_total: "Total", xt_share: "Share", xt_dl_pivot: "Download summary (Excel)", xt_groups: "{n} groups",

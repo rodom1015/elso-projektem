@@ -919,15 +919,28 @@ let wordFul = "billentyuk";
 const wordBillentyuDarab = () => WORD_BILLENTYUK.reduce((s, cs) => s + cs.sorok.length, 0);
 
 function wordRajzol() {
-  $("word-alcim").textContent = t("word_sub", { n: wordBillentyuDarab(), t: WORD_TIPPEK.length });
+  $("word-alcim").textContent = t("word_sub2", { n: wordBillentyuDarab(), t: WORD_TIPPEK.length, m: WORD_MAKROK.length });
   const szuro = $("word-kereses").value.trim().toLowerCase();
   document.querySelectorAll("#word-fulek button").forEach((g) => g.classList.toggle("aktiv", g.dataset.ful === wordFul));
   $("word-billentyuk").hidden = wordFul !== "billentyuk";
   $("word-tippek").hidden = wordFul !== "tippek";
+  $("word-makrok-doboz").hidden = wordFul !== "makrok";
 
   let db;
   if (wordFul === "billentyuk") {
     db = billentyuCsoportokRajzol(WORD_BILLENTYUK, $("word-billentyuk"), szuro);
+  } else if (wordFul === "makrok") {
+    $("word-mac-lepesek").innerHTML = "";
+    for (const lepes of WORD_MAKRO_UTMUTATO[nyelv]) {
+      const li = document.createElement("li");
+      li.textContent = lepes;
+      $("word-mac-lepesek").appendChild(li);
+    }
+    $("word-mac-figyelmeztetes").textContent = WORD_MAKRO_FIGYELMEZTETES[nyelv];
+    const lista = WORD_MAKROK.filter((m) => !szuro || (m.cim[nyelv] + " " + m.leiras[nyelv] + " " + m.kod).toLowerCase().includes(szuro));
+    $("word-makro-lista").innerHTML = "";
+    lista.forEach((m) => $("word-makro-lista").appendChild(makroKartya(m)));
+    db = lista.length;
   } else {
     const doboz = $("word-tippek");
     doboz.innerHTML = "";
@@ -1114,37 +1127,40 @@ function makrokRajzol() {
 
   const doboz = $("makro-lista");
   doboz.innerHTML = "";
-  for (const m of MAKROK) {
-    const kod = makroKod(m);
-    const kartya = document.createElement("article");
-    kartya.className = "kartya makro";
-    kartya.innerHTML = `
-      <div class="makro-fej">
-        <span class="makro-ikon ${m.szin}"></span>
-        <div class="makro-cim"><h2></h2><code class="makro-nev"></code></div>
-      </div>
-      <p class="makro-leiras"></p>
-      <div class="makro-gombok">
-        <button class="gomb fo kicsi masol-makro">${MASOL_IKON}<span></span></button>
-        <button class="gomb masodlagos kicsi kod-gomb"><span></span></button>
-      </div>
-      <pre class="makro-kod" hidden><code></code></pre>`;
-    kartya.querySelector(".makro-ikon").textContent = m.ikon;
-    kartya.querySelector("h2").textContent = m.cim[nyelv];
-    kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^(?:Sub|Function) (\w+)/gm)].map((x) => x[1]).join(" · ");
-    kartya.querySelector(".makro-leiras").textContent = m.leiras[nyelv];
-    kartya.querySelector("pre code").textContent = kod;
-    kartya.querySelector(".masol-makro span").textContent = t("copy_macro");
-    const kodGomb = kartya.querySelector(".kod-gomb");
-    const pre = kartya.querySelector("pre");
-    kodGomb.querySelector("span").textContent = t("show_code");
-    kodGomb.addEventListener("click", () => {
-      pre.hidden = !pre.hidden;
-      kodGomb.querySelector("span").textContent = pre.hidden ? t("show_code") : t("hide_code");
-    });
-    kartya.querySelector(".masol-makro").addEventListener("click", () => masol(kod, "macro_copied"));
-    doboz.appendChild(kartya);
-  }
+  MAKROK.forEach((m) => doboz.appendChild(makroKartya(m)));
+}
+
+// Egy makró kártyája (az Excel és a Word makróknál is ezt használjuk)
+function makroKartya(m) {
+  const kod = makroKod(m);
+  const kartya = document.createElement("article");
+  kartya.className = "kartya makro";
+  kartya.innerHTML = `
+    <div class="makro-fej">
+      <span class="makro-ikon ${m.szin}"></span>
+      <div class="makro-cim"><h2></h2><code class="makro-nev"></code></div>
+    </div>
+    <p class="makro-leiras"></p>
+    <div class="makro-gombok">
+      <button class="gomb fo kicsi masol-makro">${MASOL_IKON}<span></span></button>
+      <button class="gomb masodlagos kicsi kod-gomb"><span></span></button>
+    </div>
+    <pre class="makro-kod" hidden><code></code></pre>`;
+  kartya.querySelector(".makro-ikon").textContent = m.ikon;
+  kartya.querySelector("h2").textContent = m.cim[nyelv];
+  kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^(?:Sub|Function) (\w+)/gm)].map((x) => x[1]).join(" · ");
+  kartya.querySelector(".makro-leiras").textContent = m.leiras[nyelv];
+  kartya.querySelector("pre code").textContent = kod;
+  kartya.querySelector(".masol-makro span").textContent = t("copy_macro");
+  const kodGomb = kartya.querySelector(".kod-gomb");
+  const pre = kartya.querySelector("pre");
+  kodGomb.querySelector("span").textContent = t("show_code");
+  kodGomb.addEventListener("click", () => {
+    pre.hidden = !pre.hidden;
+    kodGomb.querySelector("span").textContent = pre.hidden ? t("show_code") : t("hide_code");
+  });
+  kartya.querySelector(".masol-makro").addEventListener("click", () => masol(kod, "macro_copied"));
+  return kartya;
 }
 
 /* ======================================================
