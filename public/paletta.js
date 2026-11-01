@@ -61,6 +61,11 @@ function palettaElemek() {
       pqFul = "tippek"; $("pq-kereses").value = tp.cim[nyelv]; location.hash = "#/powerquery"; pqRajzol();
     });
 
+  for (const r of PQ_RECEPTEK)
+    add("cp_pq", r.ikon, r.cim[nyelv], t("pq_tab_recipes"), "power query pq recept " + r.cim[nyelv], () => {
+      pqFul = "receptek"; $("pq-kereses").value = r.cim[nyelv]; location.hash = "#/powerquery"; pqRajzol();
+    });
+
   const billentyuk = (adat, csoport, oldal, mezo) => {
     for (const cs of adat) for (const [leiras, ...kombok] of cs.sorok) {
       const komb = kombok.map((k) => k.map(billentyuNev).join("+")).join(" / ");

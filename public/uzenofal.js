@@ -8,6 +8,7 @@
 */
 
 const UJDONSAGOK = [
+  ["2026-11-01", { hu: "Power Query: +15 új M kód (összes munkalap, CSV mappa, SharePoint, fuzzy összefésülés, pivot…) és 10 recept kattintásról kattintásra", sk: "Power Query: +15 nových kódov M (všetky hárky, priečinok CSV, SharePoint, fuzzy zlúčenie, pivot…) a 10 receptov klik po kliku", en: "Power Query: +15 new M scripts (all sheets, CSV folder, SharePoint, fuzzy merge, pivot…) and 10 click-by-click recipes" }],
   ["2026-11-01", { hu: "Outlook súgó: beállítások lépésről lépésre (klasszikus és új Outlook), billentyűk, makrók, problémák; 9 új téma", sk: "Pomocník pre Outlook: nastavenia krok za krokom (klasický aj nový Outlook), skratky, makrá, problémy; 9 nových tém", en: "Outlook help: step-by-step settings (classic and new Outlook), shortcuts, macros, problems; 9 new themes" }],
   ["2026-11-01", { hu: "Új kezdőlap, nagy időjárás 7 napos előrejelzéssel, üzenőfal és látogatószámláló", sk: "Nová úvodná stránka, veľké počasie na 7 dní, odkazovač a počítadlo návštev", en: "New home page, big 7-day weather, message board and visitor counter" }],
   ["2026-10-31", { hu: "Power Query súgó: 15 M kód, 46 függvény, tippek és hibák", sk: "Pomocník Power Query: 15 kódov M, 46 funkcií, tipy a chyby", en: "Power Query help: 15 M scripts, 46 functions, tips and errors" }],

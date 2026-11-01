@@ -11,10 +11,10 @@ const pqSzuro = () => $("pq-kereses").value.trim().toLowerCase();
 const pqIllik = (...szovegek) => !pqSzuro() || szovegek.join(" ").toLowerCase().includes(pqSzuro());
 
 function pqRajzol() {
-  $("pq-alcim").textContent = t("pq_sub", { e: PQ_PELDAK.length, f: PQ_FUGGVENYEK.length, t: PQ_TIPPEK.length, h: PQ_HIBAK.length });
+  $("pq-alcim").textContent = t("pq_sub", { e: PQ_PELDAK.length, r: PQ_RECEPTEK.length, f: PQ_FUGGVENYEK.length, t: PQ_TIPPEK.length, h: PQ_HIBAK.length });
   document.querySelectorAll("#pq-fulek button").forEach((g) => g.classList.toggle("aktiv", g.dataset.ful === pqFul));
-  for (const f of ["alapok", "tippek", "peldak", "fuggvenyek", "hibak"]) $("pq-" + f).hidden = f !== pqFul;
-  const db = { alapok: pqAlapok, tippek: pqTippek, peldak: pqPeldak, fuggvenyek: pqFuggvenyek, hibak: pqHibak }[pqFul]();
+  for (const f of ["alapok", "tippek", "receptek", "peldak", "fuggvenyek", "hibak"]) $("pq-" + f).hidden = f !== pqFul;
+  const db = { alapok: pqAlapok, tippek: pqTippek, receptek: pqReceptek, peldak: pqPeldak, fuggvenyek: pqFuggvenyek, hibak: pqHibak }[pqFul]();
   $("pq-ures").hidden = db > 0;
 }
 
@@ -45,6 +45,26 @@ function pqTippek() {
     k.querySelector(".word-tipp-ikon").textContent = tp.ikon;
     k.querySelector("h2").textContent = tp.cim[nyelv];
     k.querySelector("p").textContent = tp.szoveg[nyelv];
+    doboz.appendChild(k);
+  }
+  return lista.length;
+}
+
+function pqReceptek() {
+  const doboz = $("pq-receptek");
+  doboz.innerHTML = "";
+  const lista = PQ_RECEPTEK.filter((r) => pqIllik(r.cim[nyelv], r.lepesek[nyelv].join(" ")));
+  for (const r of lista) {
+    const k = document.createElement("article");
+    k.className = "kartya ol-beall pq-recept";
+    k.innerHTML = `<h2><span class="word-tipp-ikon"></span><b></b></h2><ol class="lepesek"></ol>`;
+    k.querySelector("span").textContent = r.ikon;
+    k.querySelector("b").textContent = r.cim[nyelv];
+    for (const l of r.lepesek[nyelv]) {
+      const li = document.createElement("li");
+      li.textContent = l;
+      k.querySelector("ol").appendChild(li);
+    }
     doboz.appendChild(k);
   }
   return lista.length;

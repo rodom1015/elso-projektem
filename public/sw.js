@@ -4,9 +4,9 @@
   - Mindig a friss változatot kéri le először; ha nincs internet, a mentettet használja.
   - Az /api/ kéréseket (fájlok, árfolyam) SOHA nem menti el – azok mindig a szerverről jönnek.
 */
-const GYORSITOTAR = "rodom-v7";
+const GYORSITOTAR = "rodom-v8";
 const ALAP_FAJLOK = [
-  "/", "/style.css", "/app.js", "/i18n.js", "/excel-adatok.js", "/word-adatok.js", "/word-makrok.js", "/powerquery.js", "/pq-oldal.js", "/outlook-adatok.js", "/outlook-oldal.js", "/unnepnapok.js", "/makrok.js",
+  "/", "/style.css", "/app.js", "/i18n.js", "/excel-adatok.js", "/word-adatok.js", "/word-makrok.js", "/powerquery.js", "/pq-bovites.js", "/pq-oldal.js", "/outlook-adatok.js", "/outlook-oldal.js", "/unnepnapok.js", "/makrok.js",
   "/kalkulator.js", "/tema.js", "/idojaras.js", "/megosztas.js", "/eszkozok.js", "/paletta.js", "/qr.js", "/uzenofal.js",
   "/vendor/qrcode-1.4.4.js", "/vendor/xlsx-0.18.5.full.min.js", "/manifest.webmanifest",
   "/ikonok/ikon-192.png", "/ikonok/ikon-512.png",

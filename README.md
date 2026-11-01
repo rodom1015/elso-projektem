@@ -12,7 +12,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 26 makró és 15 tipp – közös keresővel
 - 🧮 Kalkulátorok (fülekre rendezve): pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
-- 🔄 **Power Query súgó**: alapok lépésről lépésre, 12 tipp, 15 kész M kód (mappa egyesítése, összefésülés, unpivot, naptártábla, élő árfolyam…), 46 M függvény, 8 gyakori hiba megoldással
+- 🔄 **Power Query súgó**: alapok lépésről lépésre, 10 recept kattintásról kattintásra, 12 tipp, 30 kész M kód (mappa egyesítése, összes munkalap, SharePoint, fuzzy összefésülés, pivot, naptártábla, élő árfolyam…), 46 M függvény, 8 gyakori hiba megoldással
 - 📄 Word súgó: 63 billentyűparancs, 12 tipp és 12 kész Word makró
 - 📧 **Outlook súgó**: 27 billentyűparancs, 12 beállítás lépésről lépésre (külön a klasszikus és az új/webes Outlookhoz: aláírás, szabadság, szabályok, késleltetett küldés…), 10 tipp, 7 makró, 8 gyakori probléma
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
@@ -47,7 +47,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/word-adatok.js` | a Word súgó tartalma |
 | `public/word-makrok.js` | a kész Word VBA makrók |
 | `public/outlook-adatok.js`, `public/outlook-oldal.js` | az Outlook súgó tartalma és megjelenítése |
-| `public/powerquery.js`, `public/pq-oldal.js` | a Power Query súgó tartalma és megjelenítése |
+| `public/powerquery.js`, `public/pq-bovites.js`, `public/pq-oldal.js` | a Power Query súgó tartalma és megjelenítése |
 | `public/unnepnapok.js` | magyar és szlovák ünnepnapok (húsvét számítással) |
 | `public/eszkozok.js` | képletfordító és Excel eszközök |
 | `public/megosztas.js` | megosztó linkek |
