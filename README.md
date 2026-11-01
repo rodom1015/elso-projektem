@@ -23,7 +23,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 🔄 **Képletfordító**: magyar ↔ szlovák ↔ angol Excel képletek (függvénynevek, elválasztók, tizedesjel, IGAZ/HAMIS, hibaértékek)
 - 🧰 **Excel eszközök** a böngészőben: összehasonlítás, ismétlődések, CSV ↔ Excel, egyesítés
 - 🌤️ Időjárás (Open-Meteo): óránkénti grafikon, 7 napos előrejelzés, városválasztás
-- 🎨 Témaváltó: világos / sötét / automatikus, 5 kiemelő szín
+- 🎨 Témák: 9 téma (köztük ünnepi hóeséssel), világos/sötét/automatikus mód, háttér, betűméret, tömör nézet
 - ⌨️ **Ctrl + K gyorskereső**: oldalak, függvények, billentyűk, makrók, fájlok – ékezet nélkül is
 - 🌍 Három nyelv: magyar (alap), szlovák, angol
 - 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés

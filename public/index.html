@@ -22,7 +22,11 @@
       var mod = localStorage.getItem("tema") || "auto";
       var sotet = mod === "sotet" || (mod === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
       document.documentElement.dataset.tema = sotet ? "sotet" : "vilagos";
-      document.documentElement.dataset.szin = localStorage.getItem("szin") || "zold";
+      var szin = localStorage.getItem("szin") || "zold"; if (szin === "narancs") szin = "naplemente";
+      document.documentElement.dataset.szin = szin;
+      document.documentElement.dataset.hatter = localStorage.getItem("hatter") || "sima";
+      document.documentElement.dataset.meret = localStorage.getItem("meret") || "normal";
+      if (localStorage.getItem("tomor") === "1") document.documentElement.dataset.tomor = "1";
     } catch (e) {}
   </script>
 </head>
@@ -128,14 +132,20 @@
               <button type="button" data-mod="vilagos" data-i18n="th_light"></button>
               <button type="button" data-mod="sotet" data-i18n="th_dark"></button>
             </div>
-            <strong data-i18n="th_color"></strong>
-            <div class="szin-valaszto" id="tema-szin">
-              <button type="button" data-szin="zold" style="--minta:#107c41" aria-label="zöld"></button>
-              <button type="button" data-szin="kek" style="--minta:#2563eb" aria-label="kék"></button>
-              <button type="button" data-szin="lila" style="--minta:#7c3aed" aria-label="lila"></button>
-              <button type="button" data-szin="narancs" style="--minta:#ea580c" aria-label="narancs"></button>
-              <button type="button" data-szin="grafit" style="--minta:#334155" aria-label="grafit"></button>
+            <strong data-i18n="th_theme"></strong>
+            <div class="tema-racs" id="tema-szin"></div>
+            <strong data-i18n="th_bg"></strong>
+            <div class="kapcsolo harom" id="tema-hatter">
+              <button type="button" data-hatter="sima" data-i18n="th_bg_plain"></button>
+              <button type="button" data-hatter="minta" data-i18n="th_bg_pattern"></button>
+              <button type="button" data-hatter="atmenet" data-i18n="th_bg_gradient"></button>
             </div>
+            <strong data-i18n="th_size"></strong>
+            <div class="kapcsolo" id="tema-meret">
+              <button type="button" data-meret="normal" data-i18n="th_size_normal"></button>
+              <button type="button" data-meret="nagy" data-i18n="th_size_large"></button>
+            </div>
+            <label class="jelolo"><input type="checkbox" id="tema-tomor"><span data-i18n="th_compact"></span></label>
           </div>
         </div>
       </div>

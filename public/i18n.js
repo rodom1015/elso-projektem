@@ -14,6 +14,7 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    th_theme: "Téma", th_bg: "Háttér", th_bg_plain: "Sima", th_bg_pattern: "Minta", th_bg_gradient: "Átmenet", th_size: "Betűméret", th_size_normal: "Normál", th_size_large: "Nagy", th_compact: "Tömör nézet (több fér el)",
     hero_title: "Excel, Power Query és Office – egy helyen, érthetően.", hero_sub2: "Függvények, makrók, M kódok, kalkulátorok és eszközök magyarul, szlovákul és angolul. Ingyenes, reklám nélkül.",
     hero_btn_excel: "Excel súgó", hero_btn_write: "Írj nekem",
     cnt_functions: "Excel függvény", cnt_macros: "kész makró", cnt_mcode: "M kód példa", cnt_visitors: "látogató eddig",
@@ -78,7 +79,7 @@ const SZOVEGEK = {
     sh_active: "🔗 Aktív megosztások", sh_none: "Nincs aktív megosztás.", sh_revoke: "Visszavonás", sh_revoked: "Megosztás visszavonva", sh_once_label: "egyszeri",
     sh_page_title: "Megosztott fájl", sh_page_sub: "Valaki megosztott veled egy fájlt.", sh_download: "Letöltés", sh_gone: "Ez a link lejárt, már letöltötték, vagy nem létezik.",
     sh_bad_link: "Hibás link – másold be újra a teljes linket.", sh_go_home: "Ugrás a főoldalra",
-    th_title: "🎨 Megjelenés", th_mode: "Téma", th_auto: "Automatikus", th_light: "Világos", th_dark: "Sötét", th_color: "Kiemelő szín",
+    th_title: "🎨 Megjelenés", th_mode: "Mode", th_auto: "Automatikus", th_light: "Világos", th_dark: "Sötét", th_color: "Kiemelő szín",
     cp_ph: "Keress bármit: függvény, billentyű, makró, fájl, oldal…", cp_pages: "Oldalak", cp_functions: "Függvények", cp_shortcuts: "Excel billentyűk",
     cp_word: "Word billentyűk", cp_macros: "Makrók", cp_files: "Fájljaim", cp_none: "Nincs találat.", cp_hint: "↑↓ választás · Enter megnyitás · Esc bezárás", cp_open: "Keresés",
     xl_date_label: "Dátum",
@@ -164,6 +165,7 @@ const SZOVEGEK = {
   },
 
   sk: {
+    th_theme: "Téma", th_bg: "Pozadie", th_bg_plain: "Jednoduché", th_bg_pattern: "Vzor", th_bg_gradient: "Prechod", th_size: "Veľkosť písma", th_size_normal: "Normálna", th_size_large: "Veľká", th_compact: "Kompaktné zobrazenie",
     hero_title: "Excel, Power Query a Office – na jednom mieste, zrozumiteľne.", hero_sub2: "Funkcie, makrá, kódy M, kalkulačky a nástroje po maďarsky, slovensky a anglicky. Zadarmo, bez reklám.",
     hero_btn_excel: "Pomocník pre Excel", hero_btn_write: "Napíš mi",
     cnt_functions: "funkcií Excelu", cnt_macros: "hotových makier", cnt_mcode: "príkladov M", cnt_visitors: "návštevníkov",
@@ -228,7 +230,7 @@ const SZOVEGEK = {
     sh_active: "🔗 Aktívne zdieľania", sh_none: "Žiadne aktívne zdieľanie.", sh_revoke: "Zrušiť", sh_revoked: "Zdieľanie zrušené", sh_once_label: "jednorazové",
     sh_page_title: "Zdieľaný súbor", sh_page_sub: "Niekto s tebou zdieľal súbor.", sh_download: "Stiahnuť", sh_gone: "Platnosť odkazu vypršala, súbor už bol stiahnutý, alebo odkaz neexistuje.",
     sh_bad_link: "Chybný odkaz – skopíruj celý odkaz znova.", sh_go_home: "Na hlavnú stránku",
-    th_title: "🎨 Vzhľad", th_mode: "Téma", th_auto: "Automaticky", th_light: "Svetlá", th_dark: "Tmavá", th_color: "Zvýrazňujúca farba",
+    th_title: "🎨 Vzhľad", th_mode: "Mód", th_auto: "Automaticky", th_light: "Svetlá", th_dark: "Tmavá", th_color: "Zvýrazňujúca farba",
     cp_ph: "Hľadaj čokoľvek: funkcia, skratka, makro, súbor, stránka…", cp_pages: "Stránky", cp_functions: "Funkcie", cp_shortcuts: "Skratky Excelu",
     cp_word: "Skratky Wordu", cp_macros: "Makrá", cp_files: "Moje súbory", cp_none: "Nič sa nenašlo.", cp_hint: "↑↓ výber · Enter otvoriť · Esc zavrieť", cp_open: "Hľadať",
     xl_date_label: "Dátum",
@@ -314,6 +316,7 @@ const SZOVEGEK = {
   },
 
   en: {
+    th_theme: "Theme", th_bg: "Background", th_bg_plain: "Plain", th_bg_pattern: "Pattern", th_bg_gradient: "Gradient", th_size: "Text size", th_size_normal: "Normal", th_size_large: "Large", th_compact: "Compact view (fit more)",
     hero_title: "Excel, Power Query and Office – in one place, made simple.", hero_sub2: "Functions, macros, M code, calculators and tools in Hungarian, Slovak and English. Free, no ads.",
     hero_btn_excel: "Excel help", hero_btn_write: "Write to me",
     cnt_functions: "Excel functions", cnt_macros: "ready-made macros", cnt_mcode: "M code examples", cnt_visitors: "visitors so far",
