@@ -1501,3 +1501,4 @@ body.megosztas-mod .lablec { display: none; }
 .ol-hol.thisoutlooksession { background: rgba(124, 58, 237, .12); color: #7c3aed; }
 [data-tema="sotet"] .ol-hol, [data-tema="sotet"] .ol-oszlop h3 { filter: brightness(1.5); }
 @media (max-width: 640px) { .ol-oszlopok { grid-template-columns: minmax(0, 1fr); } }
+.uzenofal.csak-latogatok { grid-template-columns: minmax(0, 1fr); padding: 0; background: none; box-shadow: none; border: 0; }

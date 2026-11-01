@@ -171,10 +171,6 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M3 15h18M9 3v18" stroke="currentColor" stroke-width="1.6"/></svg>
               <span data-i18n="hero_btn_excel"></span>
             </a>
-            <button type="button" class="gomb uveg nagy" id="iras-gomb">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-              <span data-i18n="hero_btn_write"></span>
-            </button>
           </div>
         </div>
         <div class="nyito-jobb">
@@ -306,25 +302,8 @@
         </section>
       </div>
 
-      <!-- 8. Írj nekem (üzenőfal) + látogatók -->
-      <section class="kartya uzenofal" id="uzenofal">
-        <div class="uzenofal-bal">
-          <h2 data-i18n="msg_title"></h2>
-          <p class="halvany-szoveg" data-i18n="msg_sub"></p>
-          <form id="uzenet-urlap" autocomplete="off">
-            <div class="mezok-2">
-              <label class="mezo"><span data-i18n="msg_name"></span><input type="text" id="uz-nev" maxlength="60"></label>
-              <label class="mezo"><span data-i18n="msg_contact"></span><input type="text" id="uz-kapcsolat" maxlength="120"></label>
-            </div>
-            <label class="robotcsapda" aria-hidden="true">Web<input type="text" id="uz-web" tabindex="-1" autocomplete="off"></label>
-            <label class="mezo"><span data-i18n="msg_text"></span><textarea id="uz-szoveg" rows="5" maxlength="2000" required></textarea></label>
-            <div class="uz-lab">
-              <span class="halvany-szoveg" id="uz-szamlalo">0 / 2000</span>
-              <button type="submit" class="gomb fo" id="uz-kuld"><span data-i18n="msg_send"></span><span class="porgo" hidden></span></button>
-            </div>
-            <p class="uz-allapot" id="uz-allapot" role="status"></p>
-          </form>
-        </div>
+      <!-- 8. Látogatók -->
+      <section class="kartya uzenofal csak-latogatok" id="latogatok">
         <div class="uzenofal-jobb">
           <h3 data-i18n="visitors_title"></h3>
           <div class="latogato-szamok">
@@ -435,11 +414,6 @@
         <section class="kartya lista-kartya" id="megosztasok-kartya" hidden>
           <div class="kartya-fej"><h2 data-i18n="sh_active"></h2></div>
           <ul class="fajl-lista" id="megosztas-lista"></ul>
-        </section>
-        <section class="kartya lista-kartya" id="uzenetek-kartya" hidden>
-          <div class="kartya-fej"><h2 data-i18n="inbox_title"></h2><span class="halvany-szoveg kicsi-szoveg" id="uzenetek-szam"></span></div>
-          <ul class="uzenet-lista" id="uzenet-lista"></ul>
-          <p class="halvany-szoveg" id="uzenet-ures" hidden data-i18n="inbox_empty"></p>
         </section>
         <p class="labjegyzet" data-i18n="idle_note"></p>
       </div>

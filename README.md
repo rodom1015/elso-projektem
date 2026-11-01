@@ -8,7 +8,6 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 👁️ **Előnézet**: Excel fájl megnézése a böngészőben, letöltés nélkül (munkalapokkal)
 - 🏠 **Kezdőlap** igazi weboldal felépítéssel: nyitókép, animált számlálók, szolgáltatások, újdonságok, lábléc
 - 👥 **Látogatószámláló** (napi egyedi látogatók, 30 napos grafikon; D1 adatbázissal vagy anélkül)
-- ✉️ **Üzenőfal**: privát, titkosított postaláda – a látogatók írhatnak, csak a tulajdonos olvashatja
 - 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 36 makró és 15 tipp – közös keresővel
 - 🧮 Kalkulátorok (fülekre rendezve): pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
@@ -52,7 +51,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/eszkozok.js` | képletfordító és Excel eszközök |
 | `public/megosztas.js` | megosztó linkek |
 | `public/idojaras.js` | időjárás |
-| `public/uzenofal.js` | látogatószámláló, üzenőfal, számlálók, újdonságok |
+| `public/uzenofal.js` | látogatószámláló, számlálók, újdonságok |
 | `public/tema.js` | témaváltó |
 | `public/paletta.js` | Ctrl + K gyorskereső |
 | `public/qr.js` | belépés QR kóddal |

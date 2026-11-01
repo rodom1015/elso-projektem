@@ -190,7 +190,6 @@ async function belepesKulcsokkal(bk, nyersVagyJelszo) {
   belepesAllapot(true);
   tetlensegFigyelo();
   if (typeof megosztasokBetolt === "function") megosztasokBetolt();
-  if (typeof uzenetekBetolt === "function") uzenetekBetolt();
   try { localStorage.setItem("tulaj", "1"); } catch {}
 }
 
@@ -295,7 +294,7 @@ function belepesAllapot(bent) {
   $("kilepes-mobil").hidden = !bent;
   $("statok-zar").hidden = true;
   $("privat-blokk").hidden = !bent;
-  if (!bent) { $("megosztasok-kartya").hidden = true; $("uzenetek-kartya").hidden = true; }
+  if (!bent) { $("megosztasok-kartya").hidden = true; }
   $("allapot").classList.toggle("belepve", bent);
   $("allapot-szoveg").textContent = bent ? t("status_in") : t("status_locked");
 }
