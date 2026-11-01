@@ -1502,3 +1502,13 @@ body.megosztas-mod .lablec { display: none; }
 [data-tema="sotet"] .ol-hol, [data-tema="sotet"] .ol-oszlop h3 { filter: brightness(1.5); }
 @media (max-width: 640px) { .ol-oszlopok { grid-template-columns: minmax(0, 1fr); } }
 .uzenofal.csak-latogatok { grid-template-columns: minmax(0, 1fr); padding: 0; background: none; box-shadow: none; border: 0; }
+
+/* Kompakt látogató sáv */
+.csak-latogatok .uzenofal-jobb { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; padding: 10px 16px; border-radius: 14px; }
+.csak-latogatok h3 { font-size: .85rem; font-weight: 700; white-space: nowrap; }
+.csak-latogatok .latogato-szamok { display: flex; gap: 14px; }
+.csak-latogatok .latogato-szamok > div { display: flex; align-items: baseline; gap: 5px; padding: 0; background: none; }
+.csak-latogatok .latogato-szamok strong { font-size: 1rem; font-weight: 800; }
+.csak-latogatok .latogato-szamok span { font-size: .75rem; }
+.csak-latogatok .latogato-grafikon { flex: 1 1 160px; max-width: 260px; height: 26px; padding: 3px 4px; gap: 2px; border-radius: 8px; margin-left: auto; }
+.csak-latogatok .kicsi-szoveg { display: none; }
