@@ -189,6 +189,8 @@ async function belepesKulcsokkal(bk, nyersVagyJelszo) {
   belepesAllapot(true);
   tetlensegFigyelo();
   if (typeof megosztasokBetolt === "function") megosztasokBetolt();
+  if (typeof uzenetekBetolt === "function") uzenetekBetolt();
+  try { localStorage.setItem("tulaj", "1"); } catch {}
 }
 
 // Eredmény: [12 bájt véletlen IV][titkosított adat]
@@ -290,8 +292,9 @@ function belepesAllapot(bent) {
   $("fajlkezelo").hidden = !bent;
   $("kilepes").hidden = !bent;
   $("kilepes-mobil").hidden = !bent;
-  $("statok-zar").hidden = bent;
-  if (!bent) $("megosztasok-kartya").hidden = true;
+  $("statok-zar").hidden = true;
+  $("privat-blokk").hidden = !bent;
+  if (!bent) { $("megosztasok-kartya").hidden = true; $("uzenetek-kartya").hidden = true; }
   $("allapot").classList.toggle("belepve", bent);
   $("allapot-szoveg").textContent = bent ? t("status_in") : t("status_locked");
 }
@@ -1108,6 +1111,7 @@ function parErtek(r, a, b) { return r && r[a] && r[b] ? r[b] / r[a] : null; }
 
 function arfolyamRajzol() {
   const doboz = $("fx-tartalom");
+  if (!doboz) return; // az árfolyam-kártya már nincs a kezdőlapon (a Pénzváltó használja az adatot)
   if (!window.ARFOLYAM) {
     doboz.innerHTML = `<p class="halvany-szoveg"></p>`;
     doboz.firstChild.textContent = window.ARFOLYAM_HIBA ? t("fx_error") : t("fx_loading");

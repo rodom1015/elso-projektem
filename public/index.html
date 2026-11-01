@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Rodom – Excel központ</title>
+  <title>rodom – Excel központ</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23107c41'/><path d='M10 9l12 14M22 9L10 23' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
   <meta name="theme-color" content="#0c3b24">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Rodom">
+  <meta name="apple-mobile-web-app-title" content="rodom">
   <link rel="apple-touch-icon" href="/ikonok/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
   <script>
@@ -36,7 +36,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6l10 12M17 6L7 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
       </div>
       <div>
-        <strong>Rodom</strong>
+        <strong>rodom</strong>
         <span data-i18n="brand_sub">Excel központ</span>
       </div>
     </a>
@@ -94,7 +94,7 @@
         <div class="marka-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6l10 12M17 6L7 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
         </div>
-        <div><strong>Rodom</strong><span data-i18n="brand_sub">Excel központ</span></div>
+        <div><strong>rodom</strong><span data-i18n="brand_sub">Excel központ</span></div>
       </a>
       <div class="mobil-jobb">
         <div class="nyelvvalto kompakt" role="group" data-i18n-title="language"></div>
@@ -105,7 +105,7 @@
     <!-- Felső sáv: oldal neve, dátum, hét, élő óra -->
     <header class="felso-sav">
       <div class="morzsa">
-        <span>Rodom</span>
+        <span>rodom</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <strong id="morzsa-oldal"></strong>
       </div>
@@ -143,49 +143,81 @@
 
     <!-- ========== KEZDŐLAP ========== -->
     <section class="oldal" id="oldal-kezdolap" hidden>
-      <div class="hos">
-        <div>
-          <p class="hos-datum" id="mai-datum"></p>
-          <h1 id="koszontes">👋</h1>
-          <p class="hos-alcim" data-i18n="hero_sub"></p>
-        </div>
-        <div class="hos-jobb">
-          <div class="nagy-ora tabular"><span id="hos-ora">00:00</span><small id="hos-mp">00</small></div>
-          <a href="#/fajlok" class="gomb fo">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span data-i18n="upload"></span>
-          </a>
-        </div>
-      </div>
 
-      <div class="statok" id="statok">
-        <div class="stat kartya">
-          <div class="stat-ikon zold"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
-          <div><span class="stat-cimke" data-i18n="stat_files"></span><strong class="stat-ertek" id="stat-db">–</strong></div>
-        </div>
-        <div class="stat kartya">
-          <div class="stat-ikon kek"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
-          <div><span class="stat-cimke" data-i18n="stat_size"></span><strong class="stat-ertek" id="stat-meret">–</strong></div>
-        </div>
-        <div class="stat kartya">
-          <div class="stat-ikon narancs"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-          <div><span class="stat-cimke" data-i18n="stat_last"></span><strong class="stat-ertek" id="stat-utolso">–</strong></div>
-        </div>
-        <div class="stat kartya">
-          <div class="stat-ikon lila"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-          <div class="stat-tarhely">
-            <span class="stat-cimke" data-i18n="stat_storage"></span>
-            <strong class="stat-ertek" id="stat-tarhely">–</strong>
-            <div class="savsor kicsi"><div id="stat-sav"></div></div>
+      <!-- 1. Nyitókép -->
+      <section class="nyito">
+        <div class="nyito-hatter" aria-hidden="true"><span class="buborek b1"></span><span class="buborek b2"></span><span class="buborek b3"></span></div>
+        <div class="nyito-bal">
+          <p class="hos-datum" id="mai-datum"></p>
+          <p class="nyito-koszontes" id="koszontes"></p>
+          <h1 class="nyito-cim" data-i18n="hero_title"></h1>
+          <p class="nyito-alcim" data-i18n="hero_sub2"></p>
+          <div class="nyito-gombok">
+            <a href="#/excel" class="gomb fo nagy">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M3 15h18M9 3v18" stroke="currentColor" stroke-width="1.6"/></svg>
+              <span data-i18n="hero_btn_excel"></span>
+            </a>
+            <button type="button" class="gomb uveg nagy" id="iras-gomb">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              <span data-i18n="hero_btn_write"></span>
+            </button>
           </div>
         </div>
-        <a href="#/fajlok" class="statok-zar" id="statok-zar">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="11" width="16" height="10" rx="3" fill="currentColor"/></svg>
-          <span data-i18n="stats_locked"></span>
-        </a>
-      </div>
+        <div class="nyito-jobb">
+          <div class="nagy-ora tabular"><span id="hos-ora">00:00</span><small id="hos-mp">00</small></div>
+          <a href="#idojaras-kartya" class="nyito-idojaras" id="nyito-idojaras" hidden></a>
+        </div>
+      </section>
 
+      <!-- 2. Számlálók -->
+      <section class="szamlalok" id="szamlalok">
+        <div><strong class="tabular" data-szam="fv">0</strong><span data-i18n="cnt_functions"></span></div>
+        <div><strong class="tabular" data-szam="makro">0</strong><span data-i18n="cnt_macros"></span></div>
+        <div><strong class="tabular" data-szam="mkod">0</strong><span data-i18n="cnt_mcode"></span></div>
+        <div><strong class="tabular" data-szam="latogato">0</strong><span data-i18n="cnt_visitors"></span></div>
+      </section>
+
+      <!-- 3. Mit találsz itt? -->
+      <section class="blokk">
+        <div class="blokk-fej">
+          <h2 data-i18n="services_title"></h2>
+          <p data-i18n="services_sub"></p>
+        </div>
+        <div class="szolgaltatasok" id="szolgaltatasok">
+          <a href="#/excel" class="szolg-kartya"><span class="szolg-ikon zold">X</span><strong data-i18n="excel_title"></strong><span id="gyors-excel-sub"></span><em>→</em></a>
+          <a href="#/powerquery" class="szolg-kartya"><span class="szolg-ikon narancs">PQ</span><strong data-i18n="pq_title"></strong><span data-i18n="svc_pq"></span><em>→</em></a>
+          <a href="#/word" class="szolg-kartya"><span class="szolg-ikon kek">W</span><strong data-i18n="word_title"></strong><span data-i18n="quick_word_sub"></span><em>→</em></a>
+          <a href="#/excel/makrok" class="szolg-kartya"><span class="szolg-ikon lila">⚙️</span><strong data-i18n="nav_macros"></strong><span id="gyors-mac-sub"></span><em>→</em></a>
+          <a href="#/eszkozok" class="szolg-kartya"><span class="szolg-ikon lila">🧰</span><strong data-i18n="tools_title"></strong><span data-i18n="quick_tools_sub"></span><em>→</em></a>
+          <a href="#/szamolas" class="szolg-kartya"><span class="szolg-ikon zold">🧮</span><strong data-i18n="calc_title"></strong><span data-i18n="quick_calc_sub"></span><em>→</em></a>
+        </div>
+      </section>
+
+      <!-- 4. Időjárás -->
+      <section class="kartya idojaras-nagy" id="idojaras-kartya">
+        <div class="kartya-fej">
+          <h2 data-i18n="wx_title"></h2>
+          <button type="button" class="link-gomb" id="wx-valt" data-i18n="wx_change"></button>
+        </div>
+        <div class="wx-kereso" id="wx-kereso" hidden>
+          <input type="search" id="wx-varos" data-i18n-ph="wx_search_ph" autocomplete="off">
+          <button type="button" class="gomb masodlagos kicsi" id="wx-hely" data-i18n="wx_my_location"></button>
+          <ul class="wx-talalatok" id="wx-talalatok"></ul>
+        </div>
+        <div id="wx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
+      </section>
+
+      <!-- 5. Napi tipp és naptár -->
       <div class="racs-2 naptar-sor">
+        <div class="kartya tipp-kartya">
+          <div class="kartya-fej">
+            <h2 data-i18n="tip_title"></h2>
+            <button class="kis-gomb" id="uj-tipp" data-i18n-title="tip_next">
+              <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div id="tipp"></div>
+        </div>
         <div class="kartya naptar-kartya">
           <div class="kartya-fej">
             <h2 data-i18n="cal_title"></h2>
@@ -206,80 +238,88 @@
             <p class="kalk-megj" data-i18n="cal_note"></p>
           </div>
         </div>
-
-        <div class="jobb-oszlop">
-        <div class="kartya idojaras-kartya" id="idojaras-kartya">
-          <div class="kartya-fej">
-            <h2 data-i18n="wx_title"></h2>
-            <button type="button" class="link-gomb" id="wx-valt" data-i18n="wx_change"></button>
-          </div>
-          <div class="wx-kereso" id="wx-kereso" hidden>
-            <input type="search" id="wx-varos" data-i18n-ph="wx_search_ph" autocomplete="off">
-            <button type="button" class="gomb masodlagos kicsi" id="wx-hely" data-i18n="wx_my_location"></button>
-            <ul class="wx-talalatok" id="wx-talalatok"></ul>
-          </div>
-          <div id="wx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
-        </div>
-        <div class="kartya arfolyam-kartya">
-          <div class="kartya-fej"><h2 data-i18n="fx_title"></h2><span class="halvany-szoveg kicsi-szoveg" id="fx-forras"></span></div>
-          <div id="fx-tartalom"><p class="halvany-szoveg" data-i18n="fx_loading"></p></div>
-        </div>
-        </div>
       </div>
 
-      <div class="racs-2">
-        <div class="kartya tipp-kartya">
-          <div class="kartya-fej">
-            <h2 data-i18n="tip_title"></h2>
-            <button class="kis-gomb" id="uj-tipp" data-i18n-title="tip_next">
-              <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+      <!-- 6. Privát rész (csak belépve) -->
+      <section class="blokk" id="privat-blokk" hidden>
+        <div class="blokk-fej"><h2 data-i18n="private_title"></h2></div>
+        <div class="statok" id="statok">
+          <div class="stat kartya">
+            <div class="stat-ikon zold"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+            <div><span class="stat-cimke" data-i18n="stat_files"></span><strong class="stat-ertek" id="stat-db">–</strong></div>
           </div>
-          <div id="tipp"></div>
+          <div class="stat kartya">
+            <div class="stat-ikon kek"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+            <div><span class="stat-cimke" data-i18n="stat_size"></span><strong class="stat-ertek" id="stat-meret">–</strong></div>
+          </div>
+          <div class="stat kartya">
+            <div class="stat-ikon narancs"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div><span class="stat-cimke" data-i18n="stat_last"></span><strong class="stat-ertek" id="stat-utolso">–</strong></div>
+          </div>
+          <div class="stat kartya">
+            <div class="stat-ikon lila"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <div class="stat-tarhely">
+              <span class="stat-cimke" data-i18n="stat_storage"></span>
+              <strong class="stat-ertek" id="stat-tarhely">–</strong>
+              <div class="savsor kicsi"><div id="stat-sav"></div></div>
+            </div>
+          </div>
+          <a href="#/fajlok" class="statok-zar" id="statok-zar" hidden></a>
         </div>
-
         <div class="kartya">
-          <div class="kartya-fej">
-            <h2 data-i18n="recent_title"></h2>
-            <a href="#/fajlok" class="link" data-i18n="all_link"></a>
-          </div>
+          <div class="kartya-fej"><h2 data-i18n="recent_title"></h2><a href="#/fajlok" class="link" data-i18n="all_link"></a></div>
           <ul class="fajl-lista" id="legutobbi"></ul>
           <p class="halvany-szoveg" id="legutobbi-ures"></p>
         </div>
+      </section>
+
+      <!-- 7. Újdonságok és az oldalról -->
+      <div class="racs-2">
+        <section class="kartya">
+          <div class="kartya-fej"><h2 data-i18n="news_title"></h2></div>
+          <ul class="ujdonsagok" id="ujdonsagok"></ul>
+        </section>
+        <section class="kartya oldalrol">
+          <div class="kartya-fej"><h2 data-i18n="about_title"></h2></div>
+          <p data-i18n="about_text1"></p>
+          <p data-i18n="about_text2"></p>
+          <ul class="oldalrol-pontok">
+            <li data-i18n="about_p1"></li>
+            <li data-i18n="about_p2"></li>
+            <li data-i18n="about_p3"></li>
+          </ul>
+        </section>
       </div>
 
-      <div class="gyors">
-        <a href="#/fajlok" class="gyors-kartya">
-          <span class="gyors-ikon zold">📁</span>
-          <strong data-i18n="nav_files"></strong>
-          <span data-i18n="quick_files_sub"></span>
-        </a>
-        <a href="#/eszkozok" class="gyors-kartya">
-          <span class="gyors-ikon lila">🧰</span>
-          <strong data-i18n="tools_title"></strong>
-          <span data-i18n="quick_tools_sub"></span>
-        </a>
-        <a href="#/szamolas" class="gyors-kartya">
-          <span class="gyors-ikon zold">🧮</span>
-          <strong data-i18n="calc_title"></strong>
-          <span data-i18n="quick_calc_sub"></span>
-        </a>
-        <a href="#/excel" class="gyors-kartya">
-          <span class="gyors-ikon zold">X</span>
-          <strong data-i18n="excel_title"></strong>
-          <span id="gyors-excel-sub"></span>
-        </a>
-        <a href="#/word" class="gyors-kartya">
-          <span class="gyors-ikon kek">W</span>
-          <strong data-i18n="word_title"></strong>
-          <span data-i18n="quick_word_sub"></span>
-        </a>
-        <a href="#/excel/makrok" class="gyors-kartya">
-          <span class="gyors-ikon narancs">⚙️</span>
-          <strong data-i18n="nav_macros"></strong>
-          <span id="gyors-mac-sub"></span>
-        </a>
-      </div>
+      <!-- 8. Írj nekem (üzenőfal) + látogatók -->
+      <section class="kartya uzenofal" id="uzenofal">
+        <div class="uzenofal-bal">
+          <h2 data-i18n="msg_title"></h2>
+          <p class="halvany-szoveg" data-i18n="msg_sub"></p>
+          <form id="uzenet-urlap" autocomplete="off">
+            <div class="mezok-2">
+              <label class="mezo"><span data-i18n="msg_name"></span><input type="text" id="uz-nev" maxlength="60"></label>
+              <label class="mezo"><span data-i18n="msg_contact"></span><input type="text" id="uz-kapcsolat" maxlength="120"></label>
+            </div>
+            <label class="robotcsapda" aria-hidden="true">Web<input type="text" id="uz-web" tabindex="-1" autocomplete="off"></label>
+            <label class="mezo"><span data-i18n="msg_text"></span><textarea id="uz-szoveg" rows="5" maxlength="2000" required></textarea></label>
+            <div class="uz-lab">
+              <span class="halvany-szoveg" id="uz-szamlalo">0 / 2000</span>
+              <button type="submit" class="gomb fo" id="uz-kuld"><span data-i18n="msg_send"></span><span class="porgo" hidden></span></button>
+            </div>
+            <p class="uz-allapot" id="uz-allapot" role="status"></p>
+          </form>
+        </div>
+        <div class="uzenofal-jobb">
+          <h3 data-i18n="visitors_title"></h3>
+          <div class="latogato-szamok">
+            <div><strong class="tabular" id="lat-ma">–</strong><span data-i18n="visitors_today"></span></div>
+            <div><strong class="tabular" id="lat-ossz">–</strong><span data-i18n="visitors_total"></span></div>
+          </div>
+          <div class="latogato-grafikon" id="lat-grafikon"></div>
+          <p class="halvany-szoveg kicsi-szoveg" data-i18n="visitors_note"></p>
+        </div>
+      </section>
     </section>
 
     <!-- ========== FÁJLJAIM ========== -->
@@ -380,6 +420,11 @@
         <section class="kartya lista-kartya" id="megosztasok-kartya" hidden>
           <div class="kartya-fej"><h2 data-i18n="sh_active"></h2></div>
           <ul class="fajl-lista" id="megosztas-lista"></ul>
+        </section>
+        <section class="kartya lista-kartya" id="uzenetek-kartya" hidden>
+          <div class="kartya-fej"><h2 data-i18n="inbox_title"></h2><span class="halvany-szoveg kicsi-szoveg" id="uzenetek-szam"></span></div>
+          <ul class="uzenet-lista" id="uzenet-lista"></ul>
+          <p class="halvany-szoveg" id="uzenet-ures" hidden data-i18n="inbox_empty"></p>
         </section>
         <p class="labjegyzet" data-i18n="idle_note"></p>
       </div>
@@ -692,6 +737,27 @@
       <p class="halvany-szoveg kozep" id="word-ures" hidden data-i18n="sc_none"></p>
     </section>
 
+    <!-- ========== LÁBLÉC ========== -->
+    <footer class="lablec">
+      <div class="lablec-felso">
+        <div class="lablec-marka">
+          <div class="marka-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6l10 12M17 6L7 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+          <div><strong>rodom</strong><p data-i18n="footer_tagline"></p></div>
+        </div>
+        <nav class="lablec-linkek">
+          <a href="#/excel" data-i18n="nav_excel"></a>
+          <a href="#/powerquery" data-i18n="nav_pq"></a>
+          <a href="#/word" data-i18n="nav_word"></a>
+          <a href="#/eszkozok" data-i18n="nav_tools"></a>
+          <a href="#/szamolas" data-i18n="nav_calc"></a>
+          <a href="#/fajlok" data-i18n="nav_files"></a>
+        </nav>
+      </div>
+      <div class="lablec-also">
+        <span>© <span id="lablec-ev"></span> rodom · <span data-i18n="footer_made"></span></span>
+        <span class="lablec-latogatok"><span class="elo-pont"></span><span id="lablec-latogatok"></span></span>
+      </div>
+    </footer>
   </main>
 </div>
 
@@ -774,5 +840,6 @@
 <script src="paletta.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 <script src="qr.js"></script>
+<script src="uzenofal.js"></script>
 </body>
 </html>

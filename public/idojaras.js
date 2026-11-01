@@ -1,5 +1,6 @@
 /*
   IDŐJÁRÁS – Open-Meteo (ingyenes, regisztráció és kulcs nélkül, közvetlenül a böngészőből)
+  Nagy kártya a kezdőlapon: most + részletek, óránkénti grafikon (24 óra), 7 napos előrejelzés.
   A választott város a böngészőben marad. Alapból: HU → Budapest, SK → Pozsony, EN → London.
 */
 
@@ -36,12 +37,16 @@ try { wxVaros = JSON.parse(localStorage.getItem("varos") || "null"); } catch {}
 let wxAdat = null, wxHiba = false;
 
 const aktivVaros = () => wxVaros || WX_ALAP[nyelv];
+const fok = (x) => Math.round(x) + "°";
+const oraPercbol = (iso) => iso.slice(11, 16);
 
 async function idojarasBetolt() {
   const v = aktivVaros();
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${v.lat}&longitude=${v.lon}` +
-    "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day" +
-    "&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=4";
+    "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,is_day" +
+    "&hourly=temperature_2m,precipitation_probability,weather_code,is_day" +
+    "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max" +
+    "&timezone=auto&forecast_days=7";
   try {
     const r = await fetch(url);
     if (!r.ok) throw new Error(r.status);
@@ -57,49 +62,126 @@ async function idojarasBetolt() {
 function idojarasRajzol() {
   const doboz = $("wx-tartalom");
   const chip = $("sav-idojaras");
+  const mini = $("nyito-idojaras");
   if (!wxAdat || wxAdat.varosNev !== aktivVaros().nev) {
     doboz.innerHTML = `<p class="halvany-szoveg"></p>`;
     doboz.firstChild.textContent = wxHiba ? t("wx_error") : t("fx_loading");
     chip.hidden = true;
+    mini.hidden = true;
     return;
   }
-  const c = wxAdat.current;
+  const c = wxAdat.current, d = wxAdat.daily, h = wxAdat.hourly;
   const most = wxKod(c.weather_code, c.is_day === 1);
-  const fok = (x) => Math.round(x) + "°";
 
   doboz.innerHTML = `
-    <div class="wx-most">
-      <div class="wx-ikon"></div>
-      <div class="wx-fok tabular"></div>
-      <div class="wx-adatok"><strong></strong><span></span><span class="halvany-szoveg"></span></div>
+    <div class="wx-fo">
+      <div class="wx-most-nagy">
+        <div class="wx-ikon-nagy"></div>
+        <div>
+          <div class="wx-fok-nagy tabular"></div>
+          <div class="wx-leiras"></div>
+          <div class="wx-varos-nev"></div>
+        </div>
+      </div>
+      <div class="wx-reszletek"></div>
     </div>
-    <div class="wx-napok"></div>`;
-  doboz.querySelector(".wx-ikon").textContent = most.ikon;
-  doboz.querySelector(".wx-fok").textContent = fok(c.temperature_2m);
-  doboz.querySelector(".wx-adatok strong").textContent = wxAdat.varosNev;
-  doboz.querySelector(".wx-adatok span").textContent = most.leiras;
-  doboz.querySelector(".wx-adatok .halvany-szoveg").textContent =
-    `${t("wx_feels")} ${fok(c.apparent_temperature)} · ${t("wx_wind")} ${Math.round(c.wind_speed_10m)} km/h`;
+    <div class="wx-blokk"><h3></h3><div class="wx-orak"></div></div>
+    <div class="wx-blokk"><h3></h3><div class="wx-het"></div></div>`;
+  doboz.querySelector(".wx-ikon-nagy").textContent = most.ikon;
+  doboz.querySelector(".wx-fok-nagy").textContent = fok(c.temperature_2m);
+  doboz.querySelector(".wx-leiras").textContent = `${most.leiras} · ${t("wx_feels")} ${fok(c.apparent_temperature)}`;
+  doboz.querySelector(".wx-varos-nev").textContent = "📍 " + wxAdat.varosNev;
 
-  const napok = doboz.querySelector(".wx-napok");
-  wxAdat.daily.time.slice(1, 4).forEach((nap, i) => {
-    const k = wxKod(wxAdat.daily.weather_code[i + 1]);
-    const d = new Date(nap + "T12:00:00");
+  // Részletek
+  const reszletek = [
+    ["💧", t("wx_humidity"), Math.round(c.relative_humidity_2m) + " %"],
+    ["💨", t("wx_wind"), Math.round(c.wind_speed_10m) + " km/h"],
+    ["☔", t("wx_rain"), (d.precipitation_probability_max[0] ?? 0) + " %"],
+    ["🔆", t("wx_uv"), Math.round(d.uv_index_max[0] ?? 0)],
+    ["🌅", t("wx_sunrise"), oraPercbol(d.sunrise[0])],
+    ["🌇", t("wx_sunset"), oraPercbol(d.sunset[0])],
+  ];
+  const rDoboz = doboz.querySelector(".wx-reszletek");
+  for (const [ikon, cimke, ertek] of reszletek) {
     const el = document.createElement("div");
-    el.className = "wx-nap";
-    el.title = k.leiras;
-    el.innerHTML = `<span></span><b></b><span class="tabular"></span>`;
-    el.children[0].textContent = d.toLocaleDateString(locale(), { weekday: "short" }).replace(".", "");
-    el.children[1].textContent = k.ikon;
-    el.children[2].innerHTML = `<strong></strong> <em></em>`;
-    el.children[2].firstChild.textContent = fok(wxAdat.daily.temperature_2m_max[i + 1]);
-    el.children[2].lastChild.textContent = fok(wxAdat.daily.temperature_2m_min[i + 1]);
-    napok.appendChild(el);
+    el.innerHTML = `<span class="wx-r-ikon"></span><span class="wx-r-cimke"></span><strong class="tabular"></strong>`;
+    el.children[0].textContent = ikon;
+    el.children[1].textContent = cimke;
+    el.children[2].textContent = ertek;
+    rDoboz.appendChild(el);
+  }
+
+  // Óránkénti grafikon: a következő 24 óra
+  doboz.querySelectorAll(".wx-blokk h3")[0].textContent = t("wx_hourly");
+  const kezdo = Math.max(0, h.time.findIndex((x) => x >= c.time.slice(0, 13)));
+  const orak = h.time.slice(kezdo, kezdo + 24).map((ido, i) => ({
+    ora: ido.slice(11, 13), fok: h.temperature_2m[kezdo + i], eso: h.precipitation_probability[kezdo + i] ?? 0,
+    kod: h.weather_code[kezdo + i], nappal: h.is_day[kezdo + i] === 1,
+  }));
+  doboz.querySelector(".wx-orak").appendChild(oraGrafikon(orak));
+
+  // 7 napos előrejelzés, a hőmérséklet-tartomány sávként
+  doboz.querySelectorAll(".wx-blokk h3")[1].textContent = t("wx_week");
+  const hetMin = Math.min(...d.temperature_2m_min), hetMax = Math.max(...d.temperature_2m_max);
+  const terj = Math.max(1, hetMax - hetMin);
+  const het = doboz.querySelector(".wx-het");
+  d.time.forEach((nap, i) => {
+    const k = wxKod(d.weather_code[i]);
+    const datum = new Date(nap + "T12:00:00");
+    const sor = document.createElement("div");
+    sor.className = "wx-nap-sor";
+    sor.title = k.leiras;
+    sor.innerHTML = `<span class="wx-nap-nev"></span><span class="wx-nap-ikon"></span><span class="wx-nap-eso"></span>
+      <span class="wx-min tabular"></span><div class="wx-tartomany"><div></div></div><span class="wx-max tabular"></span>`;
+    sor.querySelector(".wx-nap-nev").textContent = i === 0 ? t("wx_today") : datum.toLocaleDateString(locale(), { weekday: "short", day: "numeric" }).replace(".", "");
+    sor.querySelector(".wx-nap-ikon").textContent = k.ikon;
+    sor.querySelector(".wx-nap-eso").textContent = (d.precipitation_probability_max[i] ?? 0) >= 20 ? "💧" + d.precipitation_probability_max[i] + "%" : "";
+    sor.querySelector(".wx-min").textContent = fok(d.temperature_2m_min[i]);
+    sor.querySelector(".wx-max").textContent = fok(d.temperature_2m_max[i]);
+    const sav = sor.querySelector(".wx-tartomany div");
+    sav.style.left = ((d.temperature_2m_min[i] - hetMin) / terj * 100) + "%";
+    sav.style.width = Math.max(4, (d.temperature_2m_max[i] - d.temperature_2m_min[i]) / terj * 100) + "%";
+    het.appendChild(sor);
   });
 
+  // Kis jelzés a felső sávban és a nyitóképen
   chip.hidden = false;
   chip.textContent = `${most.ikon} ${fok(c.temperature_2m)} ${wxAdat.varosNev}`;
   chip.title = most.leiras;
+  mini.hidden = false;
+  mini.innerHTML = `<span class="mini-ikon"></span><span><strong class="tabular"></strong><small></small></span>`;
+  mini.querySelector(".mini-ikon").textContent = most.ikon;
+  mini.querySelector("strong").textContent = fok(c.temperature_2m);
+  mini.querySelector("small").textContent = `${wxAdat.varosNev} · ${fok(d.temperature_2m_max[0])} / ${fok(d.temperature_2m_min[0])}`;
+}
+
+// SVG grafikon: hőmérséklet-görbe + eső esélye oszlopként, 3 óránként felirattal
+function oraGrafikon(orak) {
+  const W = 720, H = 170, felso = 34, also = 34, n = orak.length;
+  const min = Math.min(...orak.map((o) => o.fok)), max = Math.max(...orak.map((o) => o.fok));
+  const x = (i) => 18 + i * ((W - 36) / Math.max(1, n - 1));
+  const y = (f) => felso + (max === min ? 0.5 : (max - f) / (max - min)) * (H - felso - also - 20);
+  const pontok = orak.map((o, i) => `${x(i).toFixed(1)},${y(o.fok).toFixed(1)}`).join(" ");
+  let svg = `<svg viewBox="0 0 ${W} ${H}" class="wx-grafikon" role="img">
+    <defs><linearGradient id="wxszin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f59e0b" stop-opacity=".35"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>`;
+  orak.forEach((o, i) => {   // eső oszlopok alul
+    const mag = o.eso / 100 * 26;
+    if (mag > 0) svg += `<rect x="${x(i) - 6}" y="${H - also - mag + 6}" width="12" height="${mag}" rx="3" fill="#3b82f6" opacity=".45"/>`;
+  });
+  svg += `<polygon points="${x(0)},${H - also} ${pontok} ${x(n - 1)},${H - also}" fill="url(#wxszin)"/>
+    <polyline points="${pontok}" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  orak.forEach((o, i) => {
+    if (i % 3 !== 0) return;
+    svg += `<circle cx="${x(i)}" cy="${y(o.fok)}" r="4" fill="#f59e0b" stroke="var(--kartya)" stroke-width="2"/>
+      <text x="${x(i)}" y="${y(o.fok) - 12}" text-anchor="middle" class="wx-g-fok">${Math.round(o.fok)}°</text>
+      <text x="${x(i)}" y="${H - 8}" text-anchor="middle" class="wx-g-ora">${o.ora}:00</text>
+      <text x="${x(i)}" y="${H - also + 2}" text-anchor="middle" class="wx-g-ikon">${wxKod(o.kod, o.nappal).ikon}</text>`;
+  });
+  svg += "</svg>";
+  const div = document.createElement("div");
+  div.className = "wx-grafikon-doboz";
+  div.innerHTML = svg;
+  return div;
 }
 
 /* ---------- Városválasztó ---------- */
@@ -148,6 +230,11 @@ $("wx-hely").addEventListener("click", () => {
     () => ertesit(t("wx_error"), true),
     { timeout: 10000 }
   );
+});
+
+$("nyito-idojaras").addEventListener("click", (e) => {
+  e.preventDefault();
+  $("idojaras-kartya").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 function varosBeallit(v) {

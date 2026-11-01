@@ -44,6 +44,9 @@ export default {
       if (url.pathname === "/api/arfolyam" && request.method === "GET") return await arfolyam(env, ctx);
       if (url.pathname.startsWith("/api/s/") && request.method === "GET") return await megosztottFajl(env, url);
       if (url.pathname.startsWith("/api/qr/") && request.method === "GET") return await qrLekeres(env, url);
+      if (url.pathname === "/api/latogatas") return await latogatas(request, env);
+      if (url.pathname === "/api/uzenet/kulcs" && request.method === "GET") return await uzenetKulcsLekeres(env);
+      if (url.pathname === "/api/uzenet" && request.method === "POST") return await uzenetKuldes(request, env);
       return await api(request, env, url);
     } catch (e) {
       console.error(e);
@@ -77,6 +80,8 @@ async function api(request, env, url) {
   const resz = url.pathname.split("/").filter(Boolean); // pl. ["api", "files", "abc123"]
   if (resz[1] === "shares") return megosztasok(request, env, resz[2]);
   if (resz[1] === "qr") return qrJovahagyas(request, env, resz[2]);
+  if (resz[1] === "uzenet" && resz[2] === "kulcs" && request.method === "PUT") return uzenetKulcsBeallitas(request, env);
+  if (resz[1] === "uzenetek") return uzenetekKezelese(request, env, resz[2]);
   if (resz[1] !== "files") return valasz({ hiba: "Nincs ilyen oldal." }, 404);
   const id = resz[2];
 
@@ -248,6 +253,95 @@ async function qrLekeres(env, url) {
   if (!adat) return valasz({ varakozas: true }, 404);
   await env.FILES.delete("q:" + id); // egyszer olvasható
   return new Response(adat, { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
+}
+
+/* ---------------- Látogatószámláló ----------------
+   A böngésző naponta egyszer jelez (POST), így egy látogató egy nap csak egyszer számít.
+   Ha be van kapcsolva a D1 adatbázis (env.DB), azt használjuk (pontos, sok írást bír),
+   különben a KV tárhelyben egyetlen kulcsban tároljuk (kis forgalomra tökéletes). */
+const STAT_KULCS = "beallitas:latogatok";
+const maiNap = () => new Date().toISOString().slice(0, 10);
+
+async function latogatas(request, env) {
+  const szamol = request.method === "POST";
+  if (!szamol && request.method !== "GET") return valasz({ hiba: "Nem támogatott." }, 405);
+  if (env.DB) {
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS latogatas (nap TEXT PRIMARY KEY, db INTEGER NOT NULL DEFAULT 0)").run();
+    if (szamol) await env.DB.prepare("INSERT INTO latogatas (nap, db) VALUES (?, 1) ON CONFLICT(nap) DO UPDATE SET db = db + 1").bind(maiNap()).run();
+    const ossz = await env.DB.prepare("SELECT COALESCE(SUM(db), 0) AS n FROM latogatas").first();
+    const napok = await env.DB.prepare("SELECT nap AS d, db AS n FROM latogatas ORDER BY nap DESC LIMIT 30").all();
+    return statValasz(ossz.n, napok.results);
+  }
+  const stat = (await env.FILES.get(STAT_KULCS, "json")) || { osszes: 0, napok: {} };
+  if (szamol) {
+    const ma = maiNap();
+    stat.osszes++;
+    stat.napok[ma] = (stat.napok[ma] || 0) + 1;
+    for (const d of Object.keys(stat.napok).sort().slice(0, -60)) delete stat.napok[d]; // csak az utolsó 60 nap
+    await env.FILES.put(STAT_KULCS, JSON.stringify(stat));
+  }
+  const napok = Object.entries(stat.napok).sort(([a], [b]) => (a < b ? 1 : -1)).slice(0, 30).map(([d, n]) => ({ d, n }));
+  return statValasz(stat.osszes, napok);
+}
+function statValasz(osszes, napok) {
+  const ma = napok.find((x) => x.d === maiNap());
+  return valasz({ osszes, ma: ma ? ma.n : 0, napok });
+}
+
+/* ---------------- Üzenőfal (privát, titkosított postaláda) ----------------
+   - A tulajdonos első belépéskor készít egy ECDH kulcspárt: a nyilvános kulcs itt bárki számára
+     elérhető, a titkos kulcsot a saját jelszavas kulcsával titkosítva tároljuk.
+   - A látogató böngészője a nyilvános kulccsal titkosítja az üzenetet – a szerver nem tudja elolvasni.
+   - Spamvédelem: méretkorlát, rejtett mező (robotcsapda), és naponta max. 5 üzenet egy IP-címről. */
+const UZENET_KULCS = "beallitas:uzenetkulcs";
+const UZENET_NAPI_MAX = 5;
+
+async function uzenetKulcsLekeres(env) {
+  const k = await env.FILES.get(UZENET_KULCS, "json");
+  if (!k) return valasz({ hiba: "Az üzenőfal még nincs beállítva." }, 404);
+  return valasz({ pub: k.pub }, 200, 300);
+}
+
+async function uzenetKulcsBeallitas(request, env) {
+  const adat = await request.json().catch(() => null);
+  if (!adat || typeof adat.pub !== "string" || typeof adat.privTitkos !== "string" || adat.pub.length > 200 || adat.privTitkos.length > 1000) {
+    return valasz({ hiba: "Hibás kulcs." }, 400);
+  }
+  await env.FILES.put(UZENET_KULCS, JSON.stringify({ pub: adat.pub, privTitkos: adat.privTitkos }));
+  return valasz({ ok: true });
+}
+
+async function uzenetKuldes(request, env) {
+  const szoveg = await request.text();
+  if (szoveg.length > 12000) return valasz({ hiba: "Túl hosszú üzenet." }, 413);
+  let adat;
+  try { adat = JSON.parse(szoveg); } catch { return valasz({ hiba: "Hibás kérés." }, 400); }
+  if (adat.web) return valasz({ ok: true }); // robotcsapda: a rejtett mezőt csak a robotok töltik ki
+  if (![adat.epub, adat.iv, adat.ct].every((x) => typeof x === "string" && x.length > 0)) return valasz({ hiba: "Hibás kérés." }, 400);
+  const ip = request.headers.get("CF-Connecting-IP") || "ismeretlen";
+  const limitKulcs = `uzip:${ip}:${maiNap()}`;
+  const eddig = parseInt((await env.FILES.get(limitKulcs)) || "0", 10);
+  if (eddig >= UZENET_NAPI_MAX) return valasz({ hiba: "Ma már túl sok üzenetet küldtél." }, 429);
+  await env.FILES.put(limitKulcs, String(eddig + 1), { expirationTtl: 86400 });
+  const ido = Date.now();
+  // A kulcs időrendben rendezhető: u:<fordított idő> → a legújabb van elöl a listában
+  await env.FILES.put(`u:${String(9e15 - ido).padStart(16, "0")}:${crypto.randomUUID().slice(0, 8)}`,
+    JSON.stringify({ epub: adat.epub, iv: adat.iv, ct: adat.ct, ido }), { metadata: { ido } });
+  return valasz({ ok: true }, 201);
+}
+
+async function uzenetekKezelese(request, env, id) {
+  if (request.method === "GET" && !id) {
+    const kulcs = await env.FILES.get(UZENET_KULCS, "json");
+    const r = await env.FILES.list({ prefix: "u:", limit: 200 });
+    const uzenetek = await Promise.all(r.keys.map(async (k) => ({ id: k.name.slice(2), ...(await env.FILES.get(k.name, "json")) })));
+    return valasz({ kulcs, uzenetek: uzenetek.filter((u) => u.ct) });
+  }
+  if (request.method === "DELETE" && id && /^[0-9a-f:-]{20,40}$/.test(id)) {
+    await env.FILES.delete("u:" + id);
+    return valasz({ ok: true });
+  }
+  return valasz({ hiba: "Nem támogatott művelet." }, 405);
 }
 
 // A titkosítás "sója": egy véletlen szám, egyszer jön létre, utána mindig ugyanaz.

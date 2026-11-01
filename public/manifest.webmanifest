@@ -1,6 +1,6 @@
 {
-  "name": "Rodom – Excel központ",
-  "short_name": "Rodom",
+  "name": "rodom – Excel központ",
+  "short_name": "rodom",
   "description": "Titkosított fájltároló, Excel súgó, eszközök és kalkulátorok",
   "lang": "hu",
   "start_url": "/#/kezdolap",
