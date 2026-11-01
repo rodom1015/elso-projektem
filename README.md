@@ -9,11 +9,11 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 🏠 **Kezdőlap** igazi weboldal felépítéssel: nyitókép, animált számlálók, szolgáltatások, újdonságok, lábléc
 - 👥 **Látogatószámláló** (napi egyedi látogatók, 30 napos grafikon; D1 adatbázissal vagy anélkül)
 - ✉️ **Üzenőfal**: privát, titkosított postaláda – a látogatók írhatnak, csak a tulajdonos olvashatja
-- 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 26 makró és 15 tipp – közös keresővel
+- 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 36 makró és 15 tipp – közös keresővel
 - 🧮 Kalkulátorok (fülekre rendezve): pénzváltó, százalék, munkaidő, munkanapok (ünnepnapokkal), Excel segéd – mindegyikhez Excel képlettel
 - 📅 Naptár magyar és szlovák ünnepnapokkal
 - 🔄 **Power Query súgó**: alapok lépésről lépésre, 10 recept kattintásról kattintásra, 12 tipp, 30 kész M kód (mappa egyesítése, összes munkalap, SharePoint, fuzzy összefésülés, pivot, naptártábla, élő árfolyam…), 46 M függvény, 8 gyakori hiba megoldással
-- 📄 Word súgó: 63 billentyűparancs, 12 tipp és 12 kész Word makró
+- 📄 Word súgó: 63 billentyűparancs, 12 tipp és 18 kész Word makró
 - 📧 **Outlook súgó**: 27 billentyűparancs, 12 beállítás lépésről lépésre (külön a klasszikus és az új/webes Outlookhoz: aláírás, szabadság, szabályok, késleltetett küldés…), 10 tipp, 7 makró, 8 gyakori probléma
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
@@ -42,7 +42,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/app.js` | a böngésző oldali logika: menü, nyelvváltás, titkosítás, előnézet (JavaScript) |
 | `public/i18n.js` | a felület szövegei magyarul, szlovákul és angolul |
 | `public/excel-adatok.js` | az Excel súgó tartalma: függvények, billentyűparancsok |
-| `public/makrok.js` | a kész VBA makrók és a használati útmutató |
+| `public/makrok.js`, `public/makrok-bovites.js` | a kész VBA makrók (Excel és a Word bővítés) és a használati útmutató |
 | `public/kalkulator.js` | a kalkulátorok számolása |
 | `public/word-adatok.js` | a Word súgó tartalma |
 | `public/word-makrok.js` | a kész Word VBA makrók |

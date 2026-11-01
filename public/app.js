@@ -1207,7 +1207,9 @@ function makroKartya(m) {
     <pre class="makro-kod" hidden><code></code></pre>`;
   kartya.querySelector(".makro-ikon").textContent = m.ikon;
   kartya.querySelector("h2").textContent = m.cim[nyelv];
-  kartya.querySelector(".makro-nev").textContent = [...m.kod.matchAll(/^(?:Sub|Function) (\w+)/gm)].map((x) => x[1]).join(" · ");
+  const nevek = [...m.kod.matchAll(/^(?:Sub|Function) (\w+)/gm)].map((x) => x[1]);
+  if (!nevek.length) nevek.push(...[...m.kod.matchAll(/^Private (?:Sub|Function) (\w+)/gm)].map((x) => x[1]));
+  kartya.querySelector(".makro-nev").textContent = nevek.join(" · ");
   kartya.querySelector(".makro-leiras").textContent = m.leiras[nyelv];
   kartya.querySelector("pre code").textContent = kod;
   kartya.querySelector(".masol-makro span").textContent = t("copy_macro");
