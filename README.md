@@ -14,6 +14,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📅 Naptár magyar és szlovák ünnepnapokkal
 - 🔄 **Power Query súgó**: alapok lépésről lépésre, 12 tipp, 15 kész M kód (mappa egyesítése, összefésülés, unpivot, naptártábla, élő árfolyam…), 46 M függvény, 8 gyakori hiba megoldással
 - 📄 Word súgó: 63 billentyűparancs, 12 tipp és 12 kész Word makró
+- 📧 **Outlook súgó**: 27 billentyűparancs, 12 beállítás lépésről lépésre (külön a klasszikus és az új/webes Outlookhoz: aláírás, szabadság, szabályok, késleltetett küldés…), 10 tipp, 7 makró, 8 gyakori probléma
 - 🕒 Felső sáv élő órával, dátummal és a hét számával
 - 📎 Word, PDF, PowerPoint és szöveges fájlok tárolása is
 - 📱 **Belépés QR kóddal**: a gépen QR kód, a telefonon jóváhagyás (ECDH titkosítással, ellenőrző kóddal) – a munkahelyi gépen nem kell beírni a jelszót
@@ -45,6 +46,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/kalkulator.js` | a kalkulátorok számolása |
 | `public/word-adatok.js` | a Word súgó tartalma |
 | `public/word-makrok.js` | a kész Word VBA makrók |
+| `public/outlook-adatok.js`, `public/outlook-oldal.js` | az Outlook súgó tartalma és megjelenítése |
 | `public/powerquery.js`, `public/pq-oldal.js` | a Power Query súgó tartalma és megjelenítése |
 | `public/unnepnapok.js` | magyar és szlovák ünnepnapok (húsvét számítással) |
 | `public/eszkozok.js` | képletfordító és Excel eszközök |

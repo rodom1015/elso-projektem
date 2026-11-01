@@ -14,6 +14,9 @@ const NYELVEK = {
 
 const SZOVEGEK = {
   hu: {
+    nav_outlook: "Outlook", ol_title: "Outlook súgó", ol_card: "Beállítások, billentyűk, makrók", ol_tab_set: "⚙️ Beállítások", ol_tab_fix: "🩺 Problémák", cp_outlook: "Outlook",
+    ol_search: "Keresés: pl. aláírás, szabály, Ctrl+R…", ol_sub: "{b} billentyűparancs, {s} beállítás lépésről lépésre, {t} tipp, {m} makró és {h} gyakori probléma megoldással.",
+    ol_classic: "Klasszikus Outlook", ol_new: "Új Outlook / web", ol_where_outlook: "Outlookban fut", ol_where_excel: "Excelben fut", ol_where_tos: "ThisOutlookSession",
     th_theme: "Téma", th_bg: "Háttér", th_bg_plain: "Sima", th_bg_pattern: "Minta", th_bg_gradient: "Átmenet", th_size: "Betűméret", th_size_normal: "Normál", th_size_large: "Nagy", th_compact: "Tömör nézet (több fér el)",
     hero_title: "Excel, Power Query és Office – egy helyen, érthetően.", hero_sub2: "Függvények, makrók, M kódok, kalkulátorok és eszközök magyarul, szlovákul és angolul. Ingyenes, reklám nélkül.",
     hero_btn_excel: "Excel súgó", hero_btn_write: "Írj nekem",
@@ -165,6 +168,9 @@ const SZOVEGEK = {
   },
 
   sk: {
+    nav_outlook: "Outlook", ol_title: "Pomocník pre Outlook", ol_card: "Nastavenia, skratky, makrá", ol_tab_set: "⚙️ Nastavenia", ol_tab_fix: "🩺 Problémy", cp_outlook: "Outlook",
+    ol_search: "Hľadať: napr. podpis, pravidlo, Ctrl+R…", ol_sub: "{b} klávesových skratiek, {s} nastavení krok za krokom, {t} tipov, {m} makier a {h} častých problémov s riešením.",
+    ol_classic: "Klasický Outlook", ol_new: "Nový Outlook / web", ol_where_outlook: "Beží v Outlooku", ol_where_excel: "Beží v Exceli", ol_where_tos: "ThisOutlookSession",
     th_theme: "Téma", th_bg: "Pozadie", th_bg_plain: "Jednoduché", th_bg_pattern: "Vzor", th_bg_gradient: "Prechod", th_size: "Veľkosť písma", th_size_normal: "Normálna", th_size_large: "Veľká", th_compact: "Kompaktné zobrazenie",
     hero_title: "Excel, Power Query a Office – na jednom mieste, zrozumiteľne.", hero_sub2: "Funkcie, makrá, kódy M, kalkulačky a nástroje po maďarsky, slovensky a anglicky. Zadarmo, bez reklám.",
     hero_btn_excel: "Pomocník pre Excel", hero_btn_write: "Napíš mi",
@@ -316,6 +322,9 @@ const SZOVEGEK = {
   },
 
   en: {
+    nav_outlook: "Outlook", ol_title: "Outlook help", ol_card: "Settings, shortcuts, macros", ol_tab_set: "⚙️ Settings", ol_tab_fix: "🩺 Problems", cp_outlook: "Outlook",
+    ol_search: "Search: e.g. signature, rule, Ctrl+R…", ol_sub: "{b} keyboard shortcuts, {s} step-by-step settings, {t} tips, {m} macros and {h} common problems with fixes.",
+    ol_classic: "Classic Outlook", ol_new: "New Outlook / web", ol_where_outlook: "Runs in Outlook", ol_where_excel: "Runs in Excel", ol_where_tos: "ThisOutlookSession",
     th_theme: "Theme", th_bg: "Background", th_bg_plain: "Plain", th_bg_pattern: "Pattern", th_bg_gradient: "Gradient", th_size: "Text size", th_size_normal: "Normal", th_size_large: "Large", th_compact: "Compact view (fit more)",
     hero_title: "Excel, Power Query and Office – in one place, made simple.", hero_sub2: "Functions, macros, M code, calculators and tools in Hungarian, Slovak and English. Free, no ads.",
     hero_btn_excel: "Excel help", hero_btn_write: "Write to me",

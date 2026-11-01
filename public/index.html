@@ -75,6 +75,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z M14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 12.5l1.3 5 1.7-4 1.7 4 1.3-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span data-i18n="nav_word">Word</span>
       </a>
+      <a href="#/outlook" data-oldal="outlook" class="menu-pont">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span data-i18n="nav_outlook">Outlook</span>
+      </a>
     </nav>
 
     <div class="oldalsav-alja">
@@ -197,6 +201,7 @@
           <a href="#/excel" class="szolg-kartya"><span class="szolg-ikon zold">X</span><strong data-i18n="excel_title"></strong><span id="gyors-excel-sub"></span><em>→</em></a>
           <a href="#/powerquery" class="szolg-kartya"><span class="szolg-ikon narancs">PQ</span><strong data-i18n="pq_title"></strong><span data-i18n="svc_pq"></span><em>→</em></a>
           <a href="#/word" class="szolg-kartya"><span class="szolg-ikon kek">W</span><strong data-i18n="word_title"></strong><span data-i18n="quick_word_sub"></span><em>→</em></a>
+          <a href="#/outlook" class="szolg-kartya"><span class="szolg-ikon kek">O</span><strong data-i18n="ol_title"></strong><span data-i18n="ol_card"></span><em>→</em></a>
           <a href="#/excel/makrok" class="szolg-kartya"><span class="szolg-ikon lila">⚙️</span><strong data-i18n="nav_macros"></strong><span id="gyors-mac-sub"></span><em>→</em></a>
           <a href="#/eszkozok" class="szolg-kartya"><span class="szolg-ikon lila">🧰</span><strong data-i18n="tools_title"></strong><span data-i18n="quick_tools_sub"></span><em>→</em></a>
           <a href="#/szamolas" class="szolg-kartya"><span class="szolg-ikon zold">🧮</span><strong data-i18n="calc_title"></strong><span data-i18n="quick_calc_sub"></span><em>→</em></a>
@@ -747,6 +752,40 @@
       <p class="halvany-szoveg kozep" id="word-ures" hidden data-i18n="sc_none"></p>
     </section>
 
+    <section class="oldal" id="oldal-outlook" hidden>
+      <header class="oldal-fej">
+        <div>
+          <h1 data-i18n="ol_title"></h1>
+          <p class="hos-alcim" id="ol-alcim"></p>
+        </div>
+      </header>
+      <div class="eszkoztar szabad word-eszkoztar">
+        <div class="kapcsolo word-fulek" id="ol-fulek">
+          <button type="button" class="aktiv" data-ful="billentyuk" data-i18n="word_tab_sc"></button>
+          <button type="button" data-ful="beallitasok" data-i18n="ol_tab_set"></button>
+          <button type="button" data-ful="tippek" data-i18n="word_tab_tips"></button>
+          <button type="button" data-ful="makrok" data-i18n="word_tab_macros"></button>
+          <button type="button" data-ful="hibak" data-i18n="ol_tab_fix"></button>
+        </div>
+        <div class="kereso szeles">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="search" id="ol-kereses" data-i18n-ph="ol_search">
+        </div>
+      </div>
+      <div class="billentyu-racs" id="ol-billentyuk"></div>
+      <div id="ol-beallitasok" class="ol-beall-lista" hidden></div>
+      <div class="tipp-racs" id="ol-tippek" hidden></div>
+      <div id="ol-makrok-doboz" hidden>
+        <div class="kartya ol-mac-utmutato">
+          <div class="kartya-fej"><h2 data-i18n="mac_howto"></h2></div>
+          <ol class="lepesek" id="ol-mac-lepesek"></ol>
+        </div>
+        <div class="makro-lista" id="ol-makro-lista"></div>
+      </div>
+      <div id="ol-hibak" class="pq-hiba-lista" hidden></div>
+      <p class="halvany-szoveg kozep" id="ol-ures" hidden data-i18n="sc_none"></p>
+    </section>
+
     <!-- ========== LÁBLÉC ========== -->
     <footer class="lablec">
       <div class="lablec-felso">
@@ -758,6 +797,7 @@
           <a href="#/excel" data-i18n="nav_excel"></a>
           <a href="#/powerquery" data-i18n="nav_pq"></a>
           <a href="#/word" data-i18n="nav_word"></a>
+          <a href="#/outlook" data-i18n="nav_outlook"></a>
           <a href="#/eszkozok" data-i18n="nav_tools"></a>
           <a href="#/szamolas" data-i18n="nav_calc"></a>
           <a href="#/fajlok" data-i18n="nav_files"></a>
@@ -840,6 +880,7 @@
 <script src="powerquery.js"></script>
 <script src="unnepnapok.js"></script>
 <script src="makrok.js"></script>
+<script src="outlook-adatok.js"></script>
 <script src="app.js"></script>
 <script src="kalkulator.js"></script>
 <script src="tema.js"></script>
@@ -847,6 +888,7 @@
 <script src="megosztas.js"></script>
 <script src="eszkozok.js"></script>
 <script src="pq-oldal.js"></script>
+<script src="outlook-oldal.js"></script>
 <script src="paletta.js"></script>
 <script src="vendor/qrcode-1.4.4.js"></script>
 <script src="qr.js"></script>

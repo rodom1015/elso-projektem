@@ -16,7 +16,7 @@ function palettaElemek() {
     if (mezo) setTimeout(() => { $(mezo).value = ertek; $(mezo).dispatchEvent(new Event("input")); }, 30);
   };
 
-  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W" };
+  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W", outlook: "O" };
   for (const o of OLDALAK) add("cp_pages", ikonok[o], t(OLDAL_NEVEK[o]), "", t(OLDAL_NEVEK[o]) + " " + o, ugras(o));
 
   if (titkositoKulcs) for (const f of fajlok)
@@ -69,6 +69,13 @@ function palettaElemek() {
   };
   billentyuk(BILLENTYUK, "cp_shortcuts", "excel/billentyuk", "excel-kereses");
   billentyuk(WORD_BILLENTYUK, "cp_word", "word", "word-kereses");
+  billentyuk(OUTLOOK_BILLENTYUK, "cp_outlook", "outlook/billentyuk", "ol-kereses");
+  for (const b of OUTLOOK_BEALLITASOK)
+    add("cp_outlook", b.ikon, b.cim[nyelv], t("ol_tab_set"), "outlook " + b.cim[nyelv], ugras("outlook/beallitasok", "ol-kereses", b.cim[nyelv]));
+  for (const m of OUTLOOK_MAKROK)
+    add("cp_outlook", m.ikon, m.cim[nyelv], m.leiras[nyelv], "outlook makro macro " + m.cim[nyelv] + " " + m.leiras[nyelv], ugras("outlook/makrok", "ol-kereses", m.cim[nyelv]));
+  for (const h of OUTLOOK_HIBAK)
+    add("cp_outlook", "🩺", h.hiba[nyelv], t("ol_tab_fix"), "outlook " + h.hiba[nyelv], ugras("outlook/hibak", "ol-kereses", h.hiba[nyelv]));
   return elemek;
 }
 
@@ -89,7 +96,7 @@ function palettaKeres() {
     talalat = talalat.filter((e) => (db[e.csoport] = (db[e.csoport] || 0) + 1) <= 6).slice(0, 30);
   }
   // csoportok sorrendje
-  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_word_macros", "cp_pq", "cp_shortcuts", "cp_word"];
+  const sorrend = ["cp_pages", "cp_files", "cp_functions", "cp_macros", "cp_word_macros", "cp_pq", "cp_shortcuts", "cp_word", "cp_outlook"];
   talalat.sort((a, b) => sorrend.indexOf(a.csoport) - sorrend.indexOf(b.csoport) || (a.pont ?? 0) - (b.pont ?? 0));
   palettaTalalatok = talalat;
   palettaKijelolt = 0;

@@ -8,6 +8,7 @@
 */
 
 const UJDONSAGOK = [
+  ["2026-11-01", { hu: "Outlook súgó: beállítások lépésről lépésre (klasszikus és új Outlook), billentyűk, makrók, problémák; 9 új téma", sk: "Pomocník pre Outlook: nastavenia krok za krokom (klasický aj nový Outlook), skratky, makrá, problémy; 9 nových tém", en: "Outlook help: step-by-step settings (classic and new Outlook), shortcuts, macros, problems; 9 new themes" }],
   ["2026-11-01", { hu: "Új kezdőlap, nagy időjárás 7 napos előrejelzéssel, üzenőfal és látogatószámláló", sk: "Nová úvodná stránka, veľké počasie na 7 dní, odkazovač a počítadlo návštev", en: "New home page, big 7-day weather, message board and visitor counter" }],
   ["2026-10-31", { hu: "Power Query súgó: 15 M kód, 46 függvény, tippek és hibák", sk: "Pomocník Power Query: 15 kódov M, 46 funkcií, tipy a chyby", en: "Power Query help: 15 M scripts, 46 functions, tips and errors" }],
   ["2026-10-31", { hu: "Excel súgó egy oldalon: függvények, billentyűk, makrók, tippek", sk: "Pomocník pre Excel na jednej stránke: funkcie, skratky, makrá, tipy", en: "Excel help on one page: functions, shortcuts, macros, tips" }],
@@ -69,7 +70,7 @@ let szamlalokLatszanak = false;
 function szamlaloErtekek() {
   return {
     fv: FUGGVENYEK.length,
-    makro: MAKROK.length + WORD_MAKROK.length,
+    makro: MAKROK.length + WORD_MAKROK.length + OUTLOOK_MAKROK.length,
     mkod: PQ_PELDAK.length,
     latogato: latogatoAdat ? latogatoAdat.osszes : 0,
   };
