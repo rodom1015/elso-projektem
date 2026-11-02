@@ -222,6 +222,32 @@ const aiAutoMagassag = () => {
   be.style.height = Math.min(240, be.scrollHeight) + "px";
 };
 
+/* ---------- Ellenőrzött háttérinfó a kérdésben említett függvényekről ----------
+   A kis AI modellek a magyar függvényneveket és a paraméterek sorrendjét gyakran rosszul tudják.
+   Ezért a kérdésben szereplő függvényeket kikeressük a saját (ellenőrzött) szótárunkból, és elküldjük. */
+let aiFvMinta = null;
+function aiFuggvenyKontextus(szoveg) {
+  if (typeof FUGGVENYEK === "undefined") return [];
+  if (!aiFvMinta) {
+    const nevek = [...new Set(FUGGVENYEK.flatMap((f) => [f.hu, f.en]).filter((n) => n && n.length > 1))]
+      .sort((a, b) => b.length - a.length)
+      .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    aiFvMinta = new RegExp(`(?<![\\p{L}\\p{N}.])(${nevek.join("|")})(?![\\p{L}\\p{N}.])`, "giu");
+  }
+  const talalt = new Map();
+  // Ezek köznapi szavak is (pl. „és”, „ma”) – csak zárójellel együtt számítanak függvénynek
+  const SZAVAK = new Set(["ÉS", "VAGY", "NEM", "HA", "MA", "NAP", "ÉV", "ÓRA", "PERC", "HÉT", "LAP", "LAPOK", "KÓD", "CÍM", "KÉP", "SOROK", "AND", "OR", "NOT", "IF", "DAY", "YEAR", "NOW", "HOUR", "MINUTE", "SHEET", "SHEETS", "IMAGE", "ROWS", "CODE", "TODAY", "TEXT", "VALUE", "MONTH", "INDEX", "HÓNAP", "SZÖVEG", "ÉRTÉK", "MATCH", "LOOKUP", "KERES", "SUM", "MIN", "MAX"]);
+  const s = String(szoveg);
+  for (const m of s.matchAll(aiFvMinta)) {
+    const nev = m[1].toUpperCase();
+    if (SZAVAK.has(nev) && s[m.index + m[1].length] !== "(" && !(nev === m[1] && nev.length > 3)) continue;
+    const fv = FUGGVENYEK.find((f) => f.hu === nev || f.en === nev);
+    if (fv && !talalt.has(fv.en)) talalt.set(fv.en, fv);
+    if (talalt.size >= 8) break;
+  }
+  return [...talalt.values()].map((f) => ({ hu: f.hu, en: f.en, parHu: f.parHu, parEn: f.parEn, leiras: f.leiras[nyelv] || f.leiras.hu }));
+}
+
 /* ---------- Kérdés küldése (streaming válasz) ---------- */
 async function aiKuld() {
   const kerdes = $("ai-be").value.trim();
@@ -256,7 +282,7 @@ async function aiKuld() {
     if (belepesiKulcs) fejlec["X-Kulcs"] = belepesiKulcs;
     const v = await fetch("/api/ai", {
       method: "POST", headers: fejlec, signal: aiFolyamat.signal,
-      body: JSON.stringify({ mod: aiMod, kerdes, nyelv, elozmeny }),
+      body: JSON.stringify({ mod: aiMod, kerdes, nyelv, elozmeny, kontextus: aiFuggvenyKontextus(kerdes + " " + (elozmeny.at(-1)?.szoveg || "")) }),
     });
     if (!v.ok) {
       let adat = {};

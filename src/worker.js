@@ -366,6 +366,7 @@ function aiRendszer(mod, nyelv) {
     AI_MODOK[mod] || AI_MODOK.altalanos,
     "Use Markdown: short paragraphs, numbered steps, and fenced code blocks with a language tag (excel, vba, powerquery). Never invent functions that do not exist. If the request is unclear, make a sensible assumption and say it.",
     "Politely refuse anything unrelated to office work, or anything harmful (e.g. malware, password cracking, hiding macros).",
+    "Accuracy matters more than length: if you are not sure how a function works, say so instead of guessing. Key facts: XLOOKUP/XKERES returns a VALUE from the return_array (not a position); MATCH/HOL.VAN returns the position; VLOOKUP/FKERES needs the column number and FALSE/HAMIS (or 0) for exact match.",
   ].join("\n");
 }
 
@@ -405,11 +406,20 @@ async function ai(request, env, ctx) {
     await env.FILES.put(kulcs, String(eddig + 1), { expirationTtl: 86400 });
   }
 
-  const messages = [{ role: "system", content: aiRendszer(mod, nyelv) }, ...elozmeny, { role: "user", content: kerdes }];
+  // A böngésző által küldött, ellenőrzött függvényleírások (a súgó saját szótárából)
+  const kontextus = (Array.isArray(adat.kontextus) ? adat.kontextus : []).slice(0, 8)
+    .filter((f) => f && typeof f.hu === "string" && typeof f.en === "string")
+    .map((f) => `- ${f.hu.slice(0, 40)} (English name: ${f.en.slice(0, 40)}) – Hungarian arguments: ${String(f.parHu || "").slice(0, 200)}; English arguments: ${String(f.parEn || "").slice(0, 200)}; what it does: ${String(f.leiras || "").slice(0, 400)}`);
+  let rendszer = aiRendszer(mod, nyelv);
+  if (kontextus.length) {
+    rendszer += "\n\nVERIFIED REFERENCE from the site's Excel function dictionary. These facts are correct – trust them over your own memory, and use exactly these names and argument orders:\n" + kontextus.join("\n");
+  }
+
+  const messages = [{ role: "system", content: rendszer }, ...elozmeny, { role: "user", content: kerdes }];
   const modell = AI_MODELLEK[b.modell] || AI_MODELLEK.okos;
   ctx.waitUntil(statNovel(env, "ai", tulaj ? "tulaj" : "latogato"));
   try {
-    const folyam = await env.AI.run(modell, { messages, stream: true, max_tokens: 2048, temperature: 0.3 });
+    const folyam = await env.AI.run(modell, { messages, stream: true, max_tokens: 2048, temperature: 0.2 });
     return new Response(folyam, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store" } });
   } catch (e) {
     console.error(e);
