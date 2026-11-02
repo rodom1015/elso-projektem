@@ -104,10 +104,12 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "powerquery", "word", "outlook"];
+const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "powerquery", "word", "outlook", "ai", "tabla", "elemzo", "pdf", "admin"];
+// Az új modulok (AI, elemző…) ide teszik, mi fusson le, amikor megnyílik az oldaluk
+const oldalHookok = {};
 // A régi címek (pl. a gyorskeresőből) az Excel oldal megfelelő fülére visznek
 const OLDAL_ALIASOK = { fuggvenyek: ["excel", "fuggvenyek"], billentyuk: ["excel", "billentyuk"], makrok: ["excel", "makrok"] };
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", powerquery: "pq_title", word: "word_title", outlook: "ol_title", eszkozok: "tools_title", megosztas: "sh_page_title" };
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", powerquery: "pq_title", word: "word_title", outlook: "ol_title", ai: "nav_ai", tabla: "nav_sheet", elemzo: "nav_analyze", pdf: "nav_pdf", admin: "nav_admin", eszkozok: "tools_title", megosztas: "sh_page_title" };
 
 // A többi modul (időjárás, eszközök…) ide teszi a függvényét, ami nyelvváltáskor lefut
 const forditasHookok = [];
@@ -146,7 +148,9 @@ function oldalValtas() {
   aktivOldal = oldal;
   $("morzsa-oldal").textContent = t(OLDAL_NEVEK[oldal]);
   OLDALAK.forEach((o) => ($("oldal-" + o).hidden = o !== oldal));
-  document.querySelectorAll(".menu-pont").forEach((a) => a.classList.toggle("aktiv", a.dataset.oldal === oldal));
+  document.querySelectorAll(".menu-pont, .also-menu a").forEach((a) => a.classList.toggle("aktiv", a.dataset.oldal === oldal));
+  if (typeof menuOldalUtan === "function") menuOldalUtan(oldal);
+  if (oldalHookok[oldal]) oldalHookok[oldal](al);
   if (oldal === "fajlok" && !titkositoKulcs) setTimeout(() => $("jelszo").focus(), 50);
   window.scrollTo(0, 0);
 }
@@ -181,9 +185,10 @@ async function szamolNyersKulcs(jelszo, so) {
 const kulcsNyersbol = (nyers) => crypto.subtle.importKey("raw", nyers, "AES-GCM", false, ["encrypt", "decrypt"]);
 
 // Közös belépés: jelszóból vagy QR kódból kapott kulcsokkal
-async function belepesKulcsokkal(bk, nyersVagyJelszo) {
+async function belepesKulcsokkal(bk, nyersVagyJelszo, mod = "jelszo") {
   belepesiKulcs = bk;
-  const adat = await (await api("files")).json();
+  // Az X-Belepes fejléc miatt ez a hívás bekerül a belépési naplóba
+  const adat = await (await api("files", { headers: { "X-Belepes": mod } })).json();
   nyersKulcs = typeof nyersVagyJelszo === "string" ? await szamolNyersKulcs(nyersVagyJelszo, adat.so) : nyersVagyJelszo;
   titkositoKulcs = await kulcsNyersbol(nyersKulcs);
   await listaFeldolgoz(adat.fajlok);
@@ -295,6 +300,8 @@ function belepesAllapot(bent) {
   $("statok-zar").hidden = true;
   $("privat-blokk").hidden = !bent;
   if (!bent) { $("megosztasok-kartya").hidden = true; }
+  $("menu-admin").hidden = !bent;
+  if (typeof belepesValtozott === "function") belepesValtozott(bent);
   $("allapot").classList.toggle("belepve", bent);
   $("allapot-szoveg").textContent = bent ? t("status_in") : t("status_locked");
 }
@@ -1219,7 +1226,7 @@ function makroKartya(m) {
     pre.hidden = !pre.hidden;
     kodGomb.querySelector("span").textContent = pre.hidden ? t("show_code") : t("hide_code");
   });
-  kartya.querySelector(".masol-makro").addEventListener("click", () => masol(kod, "macro_copied"));
+  kartya.querySelector(".masol-makro").addEventListener("click", () => { masol(kod, "macro_copied"); if (typeof esemenyKuld === "function") esemenyKuld("masol", m.cim.hu); });
   return kartya;
 }
 

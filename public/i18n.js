@@ -475,3 +475,23 @@ const SZOVEGEK = {
     today: "today", yesterday: "yesterday", language: "Language",
   },
 };
+
+/* Új menürendszer és oldalak – feliratok */
+Object.assign(SZOVEGEK.hu, {
+  nav_new: "új", nav_menu: "Menü", nav_ai: "AI asszisztens", nav_sheet: "Táblázatszerkesztő", nav_analyze: "Elemző és grafikon", nav_pdf: "PDF eszközök", nav_admin: "Admin",
+  nav_g_work: "Munkaterület", nav_g_help: "Súgók", nav_g_tools: "Eszközök", nav_g_admin: "Admin",
+  svc_ai: "Kérdezz, és kész képletet, makrót, M kódot kapsz", svc_sheet: "Excel fájl szerkesztése a böngészőben", svc_analyze: "Összesítés és grafikon egy kattintással", svc_pdf: "Egyesítés, szétvágás, forgatás, vízjel",
+  svc_g_work: "Munkaterület és AI", svc_g_help: "Súgók és eszközök",
+});
+Object.assign(SZOVEGEK.sk, {
+  nav_new: "nové", nav_menu: "Menu", nav_ai: "AI asistent", nav_sheet: "Tabuľkový editor", nav_analyze: "Analýza a grafy", nav_pdf: "Nástroje PDF", nav_admin: "Admin",
+  nav_g_work: "Pracovný priestor", nav_g_help: "Pomocníci", nav_g_tools: "Nástroje", nav_g_admin: "Admin",
+  svc_ai: "Opýtaj sa a dostaneš hotový vzorec, makro, kód M", svc_sheet: "Úprava súboru Excel v prehliadači", svc_analyze: "Súhrn a graf jedným klikom", svc_pdf: "Spojenie, rozdelenie, otočenie, vodoznak",
+  svc_g_work: "Pracovný priestor a AI", svc_g_help: "Pomocníci a nástroje",
+});
+Object.assign(SZOVEGEK.en, {
+  nav_new: "new", nav_menu: "Menu", nav_ai: "AI assistant", nav_sheet: "Spreadsheet editor", nav_analyze: "Analyse & chart", nav_pdf: "PDF tools", nav_admin: "Admin",
+  nav_g_work: "Workspace", nav_g_help: "Help", nav_g_tools: "Tools", nav_g_admin: "Admin",
+  svc_ai: "Ask and get a ready formula, macro or M code", svc_sheet: "Edit an Excel file in your browser", svc_analyze: "Summary and chart in one click", svc_pdf: "Merge, split, rotate, watermark",
+  svc_g_work: "Workspace and AI", svc_g_help: "Help and tools",
+});

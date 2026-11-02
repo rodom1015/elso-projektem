@@ -1512,3 +1512,267 @@ body.megosztas-mod .lablec { display: none; }
 .csak-latogatok .latogato-szamok span { font-size: .75rem; }
 .csak-latogatok .latogato-grafikon { flex: 1 1 160px; max-width: 260px; height: 26px; padding: 3px 4px; gap: 2px; border-radius: 8px; margin-left: auto; }
 .csak-latogatok .kicsi-szoveg { display: none; }
+
+/* =====================================================
+   ÚJ MENÜRENDSZER – csoportok, alsó sáv telefonon, kihúzható menü
+   ===================================================== */
+.oldalsav .menu { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; align-content: start; gap: 2px; margin: 0 -6px; padding: 0 6px 12px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; }
+.oldalsav .marka { padding-bottom: 18px; }
+.oldalsav .menu-pont { padding: 9px 12px; font-size: .92rem; }
+.menu-csoport { display: grid; gap: 2px; margin-top: 10px; }
+.menu-csoport-fej {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  padding: 6px 12px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--oldalsav-szoveg); opacity: .65; border-radius: 8px;
+}
+.menu-csoport-fej:hover { opacity: 1; background: rgba(255,255,255,.05); }
+.menu-csoport-fej svg { width: 14px; height: 14px; transition: transform .2s; }
+.menu-csoport.csukva .menu-csoport-fej svg { transform: rotate(-90deg); }
+.menu-csoport-test { display: grid; gap: 2px; overflow: hidden; }
+.menu-csoport.csukva .menu-csoport-test { display: none; }
+.menu-csoport.csukva:has(.menu-pont.aktiv) .menu-csoport-test { display: grid; }
+.menu-uj {
+  margin-left: auto; font-style: normal; font-size: .6rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 99px; background: color-mix(in srgb, var(--kiemelo, #3ddc84) 22%, transparent); color: #fff;
+}
+.menu-pont[data-oldal="ai"] { background: linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.02)); margin-top: 2px; }
+.menu-pont[data-oldal="ai"].aktiv { background: rgba(255,255,255,.16); }
+#morzsa-csoport { color: var(--halvany); }
+
+.also-menu, .menu-hatter { display: none; }
+
+@media (max-width: 860px) {
+  /* A teljes menü balról kihúzható fiók */
+  .oldalsav {
+    position: fixed; top: 0; bottom: 0; left: 0; right: auto; z-index: 70;
+    width: min(300px, 86vw); height: 100dvh;
+    flex-direction: column; align-items: stretch;
+    padding: 20px 14px calc(16px + env(safe-area-inset-bottom));
+    border-top: 0; transform: translateX(-105%); transition: transform .25s ease;
+    box-shadow: 20px 0 40px -20px rgba(0,0,0,.5);
+  }
+  body.menu-nyitva .oldalsav { transform: none; }
+  .oldalsav .marka { display: flex; }
+  .oldalsav-alja { display: grid; }
+  .oldalsav .menu { display: grid; width: auto; justify-content: stretch; overflow-x: hidden; }
+  .oldalsav .menu-pont { flex-direction: row; gap: 12px; padding: 11px 12px; font-size: .95rem; min-width: 0; flex: none; }
+  .oldalsav .menu-pont svg { font-size: 20px; }
+  .oldalsav .menu-szam { position: static; padding: 2px 8px; font-size: .72rem; }
+  .menu-hatter { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  body.menu-nyitva .menu-hatter { opacity: 1; pointer-events: auto; }
+  body.menu-nyitva { overflow: hidden; }
+
+  /* Alsó menüsáv: a 4 legfontosabb + Menü */
+  .also-menu {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, var(--sav-a, #0c3b24), var(--sav-b, #082a19));
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .also-menu a, .also-menu button {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 2px; border: 0; background: none; border-radius: 10px; cursor: pointer;
+    color: var(--oldalsav-szoveg); font: inherit; font-size: .66rem; font-weight: 600;
+  }
+  .also-menu svg { width: 22px; height: 22px; }
+  .also-menu .aktiv { color: #fff; background: rgba(255,255,255,.12); }
+  .also-menu .also-ai svg { color: #fff; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--kiemelo, #3ddc84) 70%, transparent)); }
+}
+
+/* =====================================================
+   KÖZÖS: szalag-szerű fülek, kezdőlap csoportok, AI gombok
+   ===================================================== */
+.kapcsolo.szalag, .ai-modok, .pdf-fulek, #ad-fulek { display: flex; flex-wrap: wrap; width: fit-content; max-width: 100%; }
+.ai-modok button, .pdf-fulek button, #ad-fulek button { padding: 8px 14px; white-space: nowrap; }
+.szolg-csoport { margin: 6px 0 -4px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--halvany); }
+.szolgaltatasok.kiemelt { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ai-csempe { background: linear-gradient(135deg, color-mix(in srgb, var(--grad-a) 14%, var(--kartya)), var(--kartya)); border-color: color-mix(in srgb, var(--fo) 30%, transparent); }
+.ai-kerj-gomb { justify-self: start; width: fit-content; margin: 0 0 14px; }
+@media (max-width: 1100px) { .szolgaltatasok.kiemelt { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .szolgaltatasok.kiemelt { grid-template-columns: minmax(0, 1fr); } }
+
+/* =====================================================
+   AI ASSZISZTENS
+   ===================================================== */
+.ai-cim-ikon { display: inline-block; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ai-zar { display: grid; gap: 12px; justify-items: start; padding: 28px; max-width: 640px; }
+.ai-zar h2 { font-size: 1.2rem; }
+.ai-munka { display: grid; gap: 12px; }
+.ai-fej { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.ai-ablak { display: flex; flex-direction: column; min-height: min(68vh, 720px); padding: 0; overflow: hidden; }
+.ai-ures { flex: 1; display: grid; place-content: center; justify-items: center; gap: 18px; padding: 28px 20px; text-align: center; }
+.ai-ures-ikon { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; font-size: 30px; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--grad-a) 70%, transparent); }
+.ai-peldak { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 760px; }
+.ai-peldak > span { width: 100%; font-size: .8rem; font-weight: 700; color: var(--halvany); text-transform: uppercase; letter-spacing: .06em; }
+.ai-pelda { border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); border-radius: 12px; padding: 9px 14px; font: inherit; font-size: .86rem; cursor: pointer; text-align: left; transition: border-color .15s, transform .15s; }
+.ai-pelda:hover { border-color: var(--fo); transform: translateY(-1px); }
+.ai-beszelgetes { flex: 1; overflow-y: auto; padding: 20px; display: grid; gap: 16px; align-content: start; }
+.ai-beszelgetes:empty { display: none; }
+.ai-uzenet { display: grid; gap: 6px; max-width: min(860px, 100%); min-width: 0; }
+.ai-uzenet.en { justify-self: end; }
+.ai-uzenet-fej { display: flex; gap: 8px; align-items: center; font-size: .74rem; font-weight: 700; color: var(--halvany); text-transform: uppercase; letter-spacing: .05em; }
+.ai-uzenet.en .ai-uzenet-fej { justify-content: flex-end; }
+.ai-mod-cimke { text-transform: none; letter-spacing: 0; font-weight: 600; padding: 1px 8px; border-radius: 99px; background: var(--fo-halvany); color: var(--fo); }
+.ai-sajat-szoveg { padding: 12px 16px; border-radius: 16px 16px 4px 16px; background: linear-gradient(135deg, var(--grad-a), var(--grad-b)); color: #fff; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+.ai-uzenet.bot > :last-child { padding: 14px 18px; border-radius: 16px 16px 16px 4px; background: var(--mezo); border: 1px solid var(--mezo-keret); min-width: 0; }
+.ai-gondolkodik { margin: 0; color: var(--halvany); animation: pulzal 1.2s ease-in-out infinite; }
+@keyframes pulzal { 50% { opacity: .4; } }
+.ai-uzenet.ir .ai-md > :last-child::after { content: "▍"; animation: pulzal 1s steps(2) infinite; color: var(--fo); }
+.ai-hiba { margin: 0; color: var(--veszely); font-weight: 600; }
+.ai-md { display: grid; gap: 10px; line-height: 1.6; font-size: .95rem; min-width: 0; }
+.ai-md p, .ai-md h4, .ai-md ul, .ai-md ol { margin: 0; }
+.ai-md h4 { font-size: 1rem; }
+.ai-md ul, .ai-md ol { padding-left: 22px; display: grid; gap: 4px; }
+.ai-md code { padding: 1px 6px; border-radius: 6px; background: var(--kod-hatter); font-size: .86em; }
+.ai-kod { border-radius: 12px; overflow: hidden; border: 1px solid var(--mezo-keret); background: var(--kod-hatter); min-width: 0; }
+.ai-kod-fej { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px 6px 14px; background: color-mix(in srgb, var(--fo) 8%, var(--kod-hatter)); font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--halvany); }
+.ai-kod-fej .gomb { padding: 5px 10px; font-size: .78rem; }
+.ai-kod pre { margin: 0; padding: 14px; overflow-x: auto; font-size: .84rem; line-height: 1.55; }
+.ai-kod code { padding: 0; background: none; font-size: inherit; }
+.ai-urlap { display: flex; gap: 10px; align-items: flex-end; padding: 14px; border-top: 1px solid var(--mezo-keret); background: var(--kartya); }
+.ai-urlap textarea { flex: 1; resize: none; min-height: 48px; max-height: 240px; padding: 13px 16px; border-radius: 14px; border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); font: inherit; line-height: 1.45; outline: none; }
+.ai-urlap textarea:focus { border-color: var(--fo); box-shadow: 0 0 0 4px var(--fo-halvany); }
+.ai-urlap .gomb { height: 48px; }
+.ai-lab { margin: 0; }
+@media (max-width: 860px) {
+  .ai-ablak { min-height: calc(100dvh - 300px); }
+  .ai-urlap .gomb span { display: none; }
+  .ai-modok { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+}
+
+/* =====================================================
+   TÁBLÁZATSZERKESZTŐ
+   ===================================================== */
+.tb-eszkoztar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.tb-eszkoztar .gomb { cursor: pointer; }
+.tb-elvalaszto { width: 1px; height: 26px; background: var(--mezo-keret); margin: 0 4px; }
+.kicsi-select, .tb-eszkoztar select { max-width: 220px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); font: inherit; font-size: .85rem; }
+.tb-kartya { padding: 0; overflow: hidden; display: grid; }
+.tb-fejsor { padding: 10px 14px; border-bottom: 1px solid var(--mezo-keret); font-size: .9rem; }
+.tb-kepletsor { display: flex; align-items: center; border-bottom: 1px solid var(--mezo-keret); background: var(--mezo); }
+.tb-cim { min-width: 84px; padding: 9px 12px; font-family: "JetBrains Mono", monospace; font-size: .82rem; font-weight: 600; border-right: 1px solid var(--mezo-keret); text-align: center; }
+.tb-fx { padding: 0 10px; color: var(--halvany); font-style: italic; font-weight: 700; }
+#tb-keplet { flex: 1; min-width: 0; border: 0; background: transparent; padding: 9px 10px; color: var(--szoveg); font-family: "JetBrains Mono", monospace; font-size: .86rem; outline: none; }
+.tb-racs-doboz { position: relative; overflow: auto; height: min(62vh, 640px); outline: none; background: var(--kartya); }
+.tb-racs { border-collapse: separate; border-spacing: 0; font-size: .84rem; table-layout: fixed; user-select: none; }
+.tb-racs th, .tb-racs td { height: 26px; padding: 0 6px; border-right: 1px solid var(--mezo-keret); border-bottom: 1px solid var(--mezo-keret); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-racs td { width: 104px; min-width: 104px; max-width: 104px; cursor: cell; }
+.tb-racs thead th { position: sticky; top: 0; z-index: 2; background: var(--mezo); color: var(--halvany); font-weight: 600; font-size: .76rem; text-align: center; cursor: s-resize; }
+.tb-racs tbody th { position: sticky; left: 0; z-index: 1; width: 46px; min-width: 46px; background: var(--mezo); color: var(--halvany); font-weight: 600; font-size: .76rem; text-align: center; cursor: e-resize; }
+.tb-racs .tb-sarok { left: 0; z-index: 3; width: 46px; min-width: 46px; }
+.tb-racs td.szam { text-align: right; font-variant-numeric: tabular-nums; }
+.tb-racs td.logikai { text-align: center; }
+.tb-racs td.hiba { color: var(--veszely); font-weight: 600; text-align: center; }
+.tb-racs td.tarolt { color: var(--halvany); font-style: italic; }
+.tb-racs td.kijelolt { background: var(--fo-halvany); }
+.tb-racs td.aktiv-cella { box-shadow: inset 0 0 0 2px var(--fo); background: var(--kartya); }
+.tb-szerk { position: absolute; z-index: 5; padding: 0 6px; border: 2px solid var(--fo); background: var(--kartya); color: var(--szoveg); font: inherit; font-size: .84rem; outline: none; box-shadow: 0 6px 20px -6px rgba(0,0,0,.3); }
+.tb-also { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--mezo-keret); background: var(--mezo); padding: 4px 8px; flex-wrap: wrap; }
+.tb-lapok { display: flex; gap: 2px; overflow-x: auto; max-width: 100%; }
+.tb-lapok button { border: 0; background: none; padding: 6px 14px; border-radius: 8px; font: inherit; font-size: .84rem; color: var(--halvany); cursor: pointer; white-space: nowrap; }
+.tb-lapok button.aktiv { background: var(--kartya); color: var(--fo); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.tb-lapok .tb-lap-plusz { font-weight: 800; font-size: 1rem; }
+.tb-lapok .tb-lap-torol { font-size: .76rem; }
+.tb-allapot { font-size: .8rem; color: var(--halvany); padding: 0 6px; }
+.tb-fv-doboz summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+.tb-fv-doboz p { line-height: 1.7; color: var(--halvany); font-family: "JetBrains Mono", monospace; }
+
+/* =====================================================
+   ELEMZŐ
+   ===================================================== */
+.ez-valaszto { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.ez-valaszto .gomb { cursor: pointer; }
+.ez-valaszto select { padding: 9px 12px; border-radius: 10px; border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); font: inherit; max-width: 260px; }
+.ez-lap-sor { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-left: auto; }
+.ez-ures { padding: 40px 0; }
+#ez-eredmeny { display: grid; gap: 16px; margin-top: 16px; }
+.ez-kartyak { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ez-kartya { display: grid; gap: 2px; padding: 16px 18px; border-radius: 16px; background: var(--kartya); border: 1px solid var(--kartya-keret); box-shadow: var(--arnyek); }
+.ez-kartya strong { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; }
+.ez-kartya span { font-size: .8rem; color: var(--halvany); font-weight: 600; }
+.ez-kartya.veszely strong { color: var(--veszely); }
+.ez-diagram-kartya { display: grid; gap: 14px; }
+.ez-letoltes { display: flex; flex-wrap: wrap; gap: 6px; }
+.ez-beall { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.ez-beall select { width: 100%; }
+.ez-diagram { overflow-x: auto; display: grid; justify-items: center; min-width: 0; }
+.ez-diagram svg { max-width: 100%; height: auto; }
+.ez-megall-doboz { padding: 14px 18px; border-radius: 14px; background: var(--fo-halvany); }
+.ez-megall-doboz h3 { margin: 0 0 6px; font-size: .95rem; }
+.ez-megall-doboz ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; line-height: 1.5; }
+.ez-tabla-doboz { overflow-x: auto; }
+.ez-tabla { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.ez-tabla th { text-align: left; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--halvany); padding: 8px 10px; border-bottom: 1px solid var(--mezo-keret); white-space: nowrap; }
+.ez-tabla td { padding: 8px 10px; border-bottom: 1px solid var(--mezo-keret); white-space: nowrap; }
+.ez-tabla td.szam { text-align: right; font-variant-numeric: tabular-nums; }
+.ez-tipus { padding: 2px 8px; border-radius: 99px; font-size: .74rem; font-weight: 700; background: var(--mezo); }
+.ez-tipus.szam { background: var(--zold-h); color: var(--zold); }
+.ez-tipus.datum { background: var(--kek-h); color: var(--kek); }
+.ez-tipus.szoveg { background: var(--lila-h); color: var(--lila); }
+.ez-kitolt { display: inline-block; width: 60px; height: 6px; border-radius: 9px; background: var(--mezo-keret); vertical-align: middle; margin-right: 6px; overflow: hidden; }
+.ez-kitolt div { height: 100%; background: var(--fo); }
+@media (max-width: 860px) { .ez-kartyak { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ez-lap-sor { margin-left: 0; } }
+
+/* =====================================================
+   PDF ESZKÖZÖK
+   ===================================================== */
+.pdf-fulek { margin-bottom: 14px; }
+.pdf-kartya { display: grid; gap: 14px; }
+.pdf-leiras { margin: 0; color: var(--halvany); }
+.pdf-zona { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; padding: 26px; border: 2px dashed var(--mezo-keret); border-radius: 16px; background: var(--mezo); transition: border-color .15s, background .15s; }
+.pdf-zona.huzas { border-color: var(--fo); background: var(--fo-halvany); }
+.pdf-zona-ikon { font-size: 28px; }
+.pdf-zona .gomb { cursor: pointer; }
+.pdf-zona select { padding: 9px 12px; border-radius: 10px; border: 1px solid var(--mezo-keret); background: var(--kartya); color: var(--szoveg); font: inherit; max-width: 260px; }
+.pdf-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pdf-lista:empty { display: none; }
+.pdf-lista li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--mezo); border: 1px solid var(--mezo-keret); }
+.pdf-lista li > div:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.pdf-lista strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdf-lista small { color: var(--halvany); }
+.pdf-ikon { font-size: 22px; }
+.pdf-sor-gombok { display: flex; gap: 4px; }
+.pdf-beall { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; align-items: end; }
+.pdf-beall:empty { display: none; }
+.pdf-beall input, .pdf-beall select { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); font: inherit; }
+#pdf-futtat { justify-self: start; }
+.pdf-kimenet { display: grid; gap: 10px; padding: 16px; border-radius: 14px; background: var(--fo-halvany); }
+.pdf-kimenet p { margin: 0; font-weight: 700; color: var(--fo); }
+.pdf-kimenet-gombok, .pdf-reszek { display: flex; flex-wrap: wrap; gap: 8px; }
+.pdf-reszek { max-height: 260px; overflow-y: auto; }
+
+/* =====================================================
+   ADMIN
+   ===================================================== */
+.ad-fej { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+#ad-stat, #ad-log, #ad-ai { display: grid; gap: 16px; }
+#ad-stat[hidden], #ad-log[hidden], #ad-ai[hidden] { display: none; }
+.ad-graf h3, .ad-top h3 { margin: 0 0 12px; font-size: 1rem; }
+.ad-graf-svg { overflow-x: auto; display: grid; justify-items: center; }
+.ad-graf-svg svg { max-width: 100%; height: auto; }
+.ad-racs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ad-sorok { display: grid; gap: 8px; }
+.ad-sor { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .88rem; }
+.ad-nev { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-sav { height: 8px; border-radius: 9px; background: var(--mezo); overflow: hidden; }
+.ad-sav div { height: 100%; border-radius: 9px; background: linear-gradient(90deg, var(--grad-a), var(--grad-b)); }
+.ad-figyelem { margin: 0; padding: 12px 16px; border-radius: 12px; background: var(--veszely-halvany); color: var(--veszely); font-weight: 600; }
+.ad-tabla-doboz { padding: 0; overflow-x: auto; }
+.ad-tabla { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.ad-tabla th { text-align: left; padding: 10px 14px; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--halvany); border-bottom: 1px solid var(--mezo-keret); white-space: nowrap; }
+.ad-tabla td { padding: 10px 14px; border-bottom: 1px solid var(--mezo-keret); white-space: nowrap; }
+.ad-tabla tr.hibas td { background: var(--veszely-halvany); }
+.ad-ai-kartya { display: grid; gap: 14px; max-width: 560px; justify-items: start; }
+.ad-ai-kartya .mezo { width: 100%; }
+.ad-ai-kartya input[type=number], .ad-ai-kartya select { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--mezo-keret); background: var(--mezo); color: var(--szoveg); font: inherit; }
+@media (max-width: 860px) { .ad-racs { grid-template-columns: minmax(0, 1fr); } }
+.ai-munka { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 860px) { .ai-fej .ai-modok { flex: 1 1 100%; width: auto; min-width: 0; } }
+/* Grafikonok: a teljes szélességet kitöltik (max. a rajzolt méretig) */
+.ez-diagram, .ad-graf-svg { display: block; overflow-x: auto; }
+.ez-diagram svg, .ad-graf-svg svg { display: block; margin: 0 auto; width: 100%; height: auto; }
+/* Oldalsáv: a menü görgethető, nem csúszik rá az alsó részre */
+.oldalsav .menu { margin-bottom: 10px; mask-image: linear-gradient(180deg, #000 calc(100% - 18px), transparent); }
+.oldalsav .menu-pont { padding: 8px 12px; }
+.menu-csoport { margin-top: 6px; }

@@ -14,3 +14,14 @@ run_worker_first = ["/api/*"]
 [[kv_namespaces]]
 binding = "FILES"
 id = "a0de692d02fd419f827a899563ebe34d"
+
+# AI asszisztens: a Cloudflare Workers AI (ingyenes napi kerettel)
+[ai]
+binding = "AI"
+
+# Adatbázis a statisztikához és a belépési naplóhoz (D1).
+# Ha elkészült a "rodom-db" adatbázis, vedd ki a # jeleket, és írd be az azonosítóját:
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "rodom-db"
+# database_id = "IDE-JÖN-AZ-AZONOSÍTÓ"

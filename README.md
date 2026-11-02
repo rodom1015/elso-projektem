@@ -6,6 +6,12 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - ⬆️ **Fogd és vidd feltöltés**, több fájl egyszerre, max. 20 MB / fájl
 - 🔎 Keresés, rendezés, letöltés, törlés
 - 👁️ **Előnézet**: Excel fájl megnézése a böngészőben, letöltés nélkül (munkalapokkal)
+- 🤖 **AI asszisztens**: leírod, mit szeretnél, és kész Excel képletet, Excel / Word / Outlook makrót vagy Power Query M kódot kapsz magyarázattal (Cloudflare Workers AI; alapból csak belépve, az Admin oldalon a látogatóknak is bekapcsolható napi korláttal)
+- 📝 **Táblázatszerkesztő**: Excel fájl szerkesztése a böngészőben, saját képletmotorral (kb. 90 függvény magyar és angol néven), több munkalap, másolás-beillesztés, visszavonás, mentés .xlsx-be vagy titkosítva a Fájljaimba
+- 📊 **Excel-elemző és grafikonkészítő**: automatikus áttekintés oszloponként, oszlop- / sáv- / vonal- / kör- / fánkdiagram, megállapítások, letöltés PNG / SVG / Excel
+- 📄 **PDF eszközök**: egyesítés, kivonás és szétvágás, forgatás, oldalak törlése, képekből PDF, oldalszámozás, vízjel – a böngészőben (pdf-lib)
+- 🛡️ **Admin oldal**: statisztika (oldalak, országok, eszközök, AI használat), belépési napló (sikeres és hibás próbálkozások), AI beállítások
+- 🧭 **Csoportosított menü** (Munkaterület, Súgók, Eszközök, Admin), telefonon alsó menüsáv és kihúzható menü
 - 🏠 **Kezdőlap** igazi weboldal felépítéssel: nyitókép, animált számlálók, szolgáltatások, újdonságok, lábléc
 - 👥 **Látogatószámláló** (napi egyedi látogatók, 30 napos grafikon; D1 adatbázissal vagy anélkül)
 - 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 36 makró és 15 tipp – közös keresővel
@@ -53,10 +59,16 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/idojaras.js` | időjárás |
 | `public/uzenofal.js` | látogatószámláló, számlálók, újdonságok |
 | `public/tema.js` | témaváltó |
+| `public/menu.js` | csoportosított menü, telefonos menü, névtelen statisztika |
+| `public/ai.js` | AI asszisztens |
+| `public/keplet-motor.js`, `public/tabla.js` | képletmotor és táblázatszerkesztő |
+| `public/elemzo.js` | Excel-elemző és SVG grafikonok |
+| `public/pdf-eszkozok.js` | PDF eszközök |
+| `public/admin.js` | admin oldal: statisztika, belépési napló, AI beállítások |
 | `public/paletta.js` | Ctrl + K gyorskereső |
 | `public/qr.js` | belépés QR kóddal |
 | `public/sw.js`, `public/manifest.webmanifest`, `public/ikonok/` | telepíthető alkalmazás (PWA) |
-| `public/vendor/` | SheetJS (Apache-2.0) és qrcode-generator (MIT) |
+| `public/vendor/` | SheetJS (Apache-2.0), qrcode-generator (MIT), pdf-lib (MIT) |
 | `src/worker.js` | a szerver: tárolja és visszaadja a titkosított fájlokat |
 | `wrangler.toml` | a Cloudflare beállításai |
 

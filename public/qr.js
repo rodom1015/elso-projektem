@@ -81,7 +81,7 @@ async function qrLekerdez() {
     const kozos = await crypto.subtle.deriveKey({ name: "ECDH", public: telPub }, m.kulcspar.privateKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
     const nyitott = JSON.parse(new TextDecoder().decode(
       await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64bol(adat.iv) }, kozos, b64bol(adat.ct))));
-    await belepesKulcsokkal(nyitott.bk, b64bol(nyitott.k));
+    await belepesKulcsokkal(nyitott.bk, b64bol(nyitott.k), "qr");
     $("qr-panel").hidden = true;
     ertesit(t("qr_success"));
   } catch (e) {

@@ -48,6 +48,24 @@ Az oldal címe: **`https://roman.<a-te-fiokneved>.workers.dev`**
 
 Tedd a könyvjelzők közé otthon és a munkahelyen is.
 
+## 7. (Ajánlott) Adatbázis a statisztikához és a naplóhoz – D1
+
+Ingyenes, kb. 5 perc. Enélkül is működik az oldal, de az **Admin → Statisztika** (oldalak, országok, eszközök, AI használat) csak ezzel lesz teljes.
+
+1. Cloudflare bal oldali menü: **Storage & databases** → **D1 SQL database** → **Create database**.
+2. Név: **`rodom-db`** → **Create**.
+3. A megnyíló oldalon másold ki a **Database ID**-t (hosszú betű-szám sor, pl. `1a2b3c4d-…`).
+4. Küldd el nekem (Claude-nak) – ez nem titkos adat –, és beírom a `wrangler.toml` fájlba.
+   *Vagy magad:* a `wrangler.toml` végén vedd ki a `#` jeleket a `[[d1_databases]]` résznél, és a `database_id` helyére írd be.
+5. A következő telepítés után a táblák maguktól létrejönnek.
+
+## 8. AI asszisztens
+
+A `wrangler.toml`-ban már be van kapcsolva (`[ai]` rész) – nincs teendőd.
+- Alapból **csak belépve** használható.
+- Az **Admin → AI beállítások** oldalon bekapcsolhatod a látogatóknak is, napi korláttal.
+- Az ingyenes Cloudflare AI keret naponta kb. **50–150 kérdésre** elég (a válaszok hosszától függ). Ha több kell, válts a „Gyors” modellre.
+
 ---
 
 ### Ha valami nem működik
@@ -58,3 +76,5 @@ Tedd a könyvjelzők közé otthon és a munkahelyen is.
 | A telepítés piros (failed) | Valószínűleg a 3. lépésben rossz az ID. Ellenőrizd, és mentsd újra. |
 | „Túl sok hibás próbálkozás” | 10 rossz jelszó után 15 percig tiltva vagy. Várj, és próbáld újra. |
 | Munkában nem nyílik meg | A céges hálózat tilthatja a `workers.dev` címeket. |
+| „Az AI nincs bekapcsolva” | Nézd meg a Worker **Settings → Bindings** részét: kell lennie egy `AI` (Workers AI) bejegyzésnek. |
+| „Mára elfogyott az ingyenes AI keret” | Másnap (UTC éjfél után) újra működik. Az Admin oldalon válthatsz a „Gyors” modellre. |

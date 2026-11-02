@@ -20,6 +20,11 @@
     GET    /api/s/:id        -> megosztott fájl letöltése (NYILVÁNOS)
     POST   /api/qr/:id       -> QR belépés jóváhagyása a telefonról (bejelentkezve)
     GET    /api/qr/:id       -> a QR-t mutató gép ezzel kérdezi le a jóváhagyást (NYILVÁNOS, egyszer olvasható)
+    POST   /api/ai           -> AI asszisztens (belépve; ha bekapcsolod, látogatóknak is napi korláttal)
+    GET    /api/ai/info      -> elérhető-e az AI (NYILVÁNOS)
+    POST   /api/esemeny      -> névtelen statisztika: oldalmegtekintés, másolás (NYILVÁNOS, csak D1-gyel tárol)
+    GET    /api/admin        -> statisztika és belépési napló (belépve)
+    PUT    /api/admin/ai     -> AI beállítások (belépve)
 
   Megosztásnál a böngésző egy ÚJ, véletlen kulccsal titkosítja újra a fájlt.
   Ez a kulcs csak a linkben van (a # után), azt a böngésző sosem küldi el a szervernek.
@@ -45,7 +50,10 @@ export default {
       if (url.pathname.startsWith("/api/s/") && request.method === "GET") return await megosztottFajl(env, url);
       if (url.pathname.startsWith("/api/qr/") && request.method === "GET") return await qrLekeres(env, url);
       if (url.pathname === "/api/latogatas") return await latogatas(request, env);
-      return await api(request, env, url);
+      if (url.pathname === "/api/esemeny" && request.method === "POST") return await esemeny(request, env);
+      if (url.pathname === "/api/ai/info" && request.method === "GET") return await aiInfo(request, env);
+      if (url.pathname === "/api/ai" && request.method === "POST") return await ai(request, env, ctx);
+      return await api(request, env, url, ctx);
     } catch (e) {
       console.error(e);
       return valasz({ hiba: "Szerverhiba történt." }, 500);
@@ -53,10 +61,12 @@ export default {
   },
 };
 
-async function api(request, env, url) {
-  if (!env.JELSZO) {
-    return valasz({ hiba: "Nincs beállítva a JELSZO titok a Cloudflare-en." }, 500);
-  }
+// Belépési kulcs ellenőrzése, brute force védelemmel.
+// Eredmény: "ok" | "nincs" (nem küldött kulcsot) | Response (hiba: tiltás vagy rossz kulcs)
+async function kulcsEllenoriz(request, env, ctx, { kotelezo = true } = {}) {
+  if (!env.JELSZO) return valasz({ hiba: "Nincs beállítva a JELSZO titok a Cloudflare-en." }, 500);
+  const kapott = request.headers.get("X-Kulcs") || "";
+  if (!kapott && !kotelezo) return "nincs";
 
   // --- Brute force védelem: túl sok rossz próbálkozás után tiltás ---
   const ip = request.headers.get("CF-Connecting-IP") || "ismeretlen";
@@ -68,16 +78,26 @@ async function api(request, env, url) {
 
   // --- Jelszó ellenőrzés ---
   // A böngésző nem a jelszót küldi, hanem egy belőle számolt "belépési kulcsot".
-  const kapott = request.headers.get("X-Kulcs") || "";
   const vart = await belepesiKulcs(env.JELSZO);
   if (!egyenlo(kapott, vart)) {
     await env.FILES.put(tiltasKulcs, String(hibak + 1), { expirationTtl: TILTAS_PERC * 60 });
+    const mod = request.headers.get("X-Belepes");
+    if (mod) ctx.waitUntil(naploIr(request, env, false, mod));
     return valasz({ hiba: "Hibás jelszó." }, 401);
   }
+  return "ok";
+}
+
+async function api(request, env, url, ctx) {
+  const ell = await kulcsEllenoriz(request, env, ctx);
+  if (ell !== "ok") return ell;
+  const mod = request.headers.get("X-Belepes");
+  if (mod) ctx.waitUntil(naploIr(request, env, true, mod));
 
   const resz = url.pathname.split("/").filter(Boolean); // pl. ["api", "files", "abc123"]
   if (resz[1] === "shares") return megosztasok(request, env, resz[2]);
   if (resz[1] === "qr") return qrJovahagyas(request, env, resz[2]);
+  if (resz[1] === "admin") return admin(request, env, resz[2]);
   if (resz[1] !== "files") return valasz({ hiba: "Nincs ilyen oldal." }, 404);
   const id = resz[2];
 
@@ -263,7 +283,12 @@ async function latogatas(request, env) {
   if (!szamol && request.method !== "GET") return valasz({ hiba: "Nem támogatott." }, 405);
   if (env.DB) {
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS latogatas (nap TEXT PRIMARY KEY, db INTEGER NOT NULL DEFAULT 0)").run();
-    if (szamol) await env.DB.prepare("INSERT INTO latogatas (nap, db) VALUES (?, 1) ON CONFLICT(nap) DO UPDATE SET db = db + 1").bind(maiNap()).run();
+    if (szamol) {
+      await env.DB.prepare("INSERT INTO latogatas (nap, db) VALUES (?, 1) ON CONFLICT(nap) DO UPDATE SET db = db + 1").bind(maiNap()).run();
+      const ua = request.headers.get("User-Agent") || "";
+      await statNovel(env, "orszag", (request.cf && request.cf.country) || "?");
+      await statNovel(env, "eszkoz", (mobilE(ua) ? "📱 " : "💻 ") + eszkozNev(ua));
+    }
     const ossz = await env.DB.prepare("SELECT COALESCE(SUM(db), 0) AS n FROM latogatas").first();
     const napok = await env.DB.prepare("SELECT nap AS d, db AS n FROM latogatas ORDER BY nap DESC LIMIT 30").all();
     return statValasz(ossz.n, napok.results);
@@ -282,6 +307,191 @@ async function latogatas(request, env) {
 function statValasz(osszes, napok) {
   const ma = napok.find((x) => x.d === maiNap());
   return valasz({ osszes, ma: ma ? ma.n : 0, napok });
+}
+
+/* ======================================================
+   AI ASSZISZTENS (Cloudflare Workers AI)
+   - Belépve korlátlanul használható (a napi ingyenes keretig).
+   - Az Admin oldalon bekapcsolható, hogy a látogatók is használhassák, napi korláttal.
+   ====================================================== */
+const AI_BEALLITAS = "beallitas:ai";
+const AI_MODELLEK = {
+  okos: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",   // jobb minőség, kevesebb kérdés fér a napi keretbe
+  gyors: "@cf/meta/llama-3.1-8b-instruct-fast",        // gyorsabb, sokkal több kérdés, de gyengébb
+};
+const AI_ALAP = { nyilvanos: false, napi: 3, modell: "okos" };
+const aiBeallitas = async (env) => ({ ...AI_ALAP, ...((await env.FILES.get(AI_BEALLITAS, "json")) || {}) });
+
+const NYELV_NEV = { hu: "Hungarian", sk: "Slovak", en: "English" };
+const KEPLET_SZABALY = {
+  hu: "Excel formulas MUST use the Hungarian Excel function names (e.g. HA, FKERES, XKERES, SZUM, SZUMHA, DARABTELI, ÁTLAG, KEREKÍTÉS, HAHIBA, SZÖVEG, MA, ÉS, VAGY, INDEX, HOL.VAN, SZŰRŐ, EGYEDI) and the semicolon ; as the argument separator, and comma as decimal separator.",
+  sk: "Excel formulas MUST use the English Excel function names (Slovak Excel uses them, e.g. IF, VLOOKUP, XLOOKUP, SUM, SUMIF, COUNTIF) but the semicolon ; as the argument separator and comma as decimal separator.",
+  en: "Excel formulas use English function names and the comma , as the argument separator.",
+};
+const AI_MODOK = {
+  keplet: "The user wants an Excel formula. Give the formula in a code block first, then explain briefly how it works and which cells to adjust.",
+  "excel-makro": "The user wants an Excel VBA macro. Give one complete, working VBA module in a ```vba code block (Option Explicit is welcome, use clear English variable names), then short steps: where to paste it (Alt+F11 → Insert → Module), how to run it, and a warning to test on a copy. Comments and MsgBox texts in the user's language, but avoid characters outside Windows-1250 (no emoji, no arrows).",
+  "word-makro": "The user wants a Microsoft Word VBA macro. Give one complete VBA module in a ```vba code block, then short steps for using it in Word (Alt+F11 → Normal → Insert → Module). Comments and messages in the user's language, no emoji.",
+  "outlook-makro": "The user wants a classic Outlook (Windows desktop) VBA macro. Give a complete VBA module in a ```vba code block, then short steps (Alt+F11, ThisOutlookSession or Module, macro security). Mention it does not work in the new Outlook / web. No emoji in code.",
+  pq: "The user wants Power Query. Give the full M code in a ```powerquery code block (a complete let ... in expression that can be pasted into the Advanced Editor), then explain the steps briefly.",
+  magyaraz: "The user pasted a formula, macro or M code, or an error message. Explain step by step in plain language what it does, point out mistakes and give a corrected version in a code block if needed.",
+  altalanos: "Answer questions about Excel, Power Query, Word, Outlook and office work.",
+};
+
+function aiRendszer(mod, nyelv) {
+  return [
+    "You are the assistant of the rodom website, an expert in Microsoft Excel, VBA macros, Power Query (M), Word and Outlook.",
+    `Always answer in ${NYELV_NEV[nyelv] || "Hungarian"}, friendly and concise, for a beginner-to-intermediate office user.`,
+    KEPLET_SZABALY[nyelv] || KEPLET_SZABALY.hu,
+    AI_MODOK[mod] || AI_MODOK.altalanos,
+    "Use Markdown: short paragraphs, numbered steps, and fenced code blocks with a language tag (excel, vba, powerquery). Never invent functions that do not exist. If the request is unclear, make a sensible assumption and say it.",
+    "Politely refuse anything unrelated to office work, or anything harmful (e.g. malware, password cracking, hiding macros).",
+  ].join("\n");
+}
+
+async function aiInfo(request, env) {
+  const b = await aiBeallitas(env);
+  return valasz({ elerheto: !!env.AI, nyilvanos: b.nyilvanos, napi: b.napi });
+}
+
+async function ai(request, env, ctx) {
+  if (!env.AI) return valasz({ hiba: "Az AI nincs bekapcsolva a Cloudflare-en (AI binding)." }, 503);
+  const ell = await kulcsEllenoriz(request, env, ctx, { kotelezo: false });
+  if (ell instanceof Response) return ell;
+  const tulaj = ell === "ok";
+  const b = await aiBeallitas(env);
+
+  if (!tulaj && !b.nyilvanos) return valasz({ hiba: "Az AI asszisztens csak belépve használható." }, 403);
+
+  const szoveg = await request.text();
+  if (szoveg.length > 20000) return valasz({ hiba: "Túl hosszú kérdés." }, 413);
+  let adat;
+  try { adat = JSON.parse(szoveg); } catch { return valasz({ hiba: "Hibás kérés." }, 400); }
+  const nyelv = ["hu", "sk", "en"].includes(adat.nyelv) ? adat.nyelv : "hu";
+  const mod = AI_MODOK[adat.mod] ? adat.mod : "altalanos";
+  // Az előzmény (legfeljebb az utolsó 6 üzenet) – hogy lehessen visszakérdezni
+  const elozmeny = (Array.isArray(adat.elozmeny) ? adat.elozmeny : [])
+    .filter((u) => u && ["user", "assistant"].includes(u.szerep) && typeof u.szoveg === "string")
+    .slice(-6).map((u) => ({ role: u.szerep, content: u.szoveg.slice(0, 6000) }));
+  const kerdes = String(adat.kerdes || "").trim().slice(0, 6000);
+  if (!kerdes) return valasz({ hiba: "Üres kérdés." }, 400);
+
+  // Látogatói napi korlát (csak érvényes kérdés számít)
+  if (!tulaj) {
+    const ip = request.headers.get("CF-Connecting-IP") || "ismeretlen";
+    const kulcs = `aiip:${ip}:${maiNap()}`;
+    const eddig = parseInt((await env.FILES.get(kulcs)) || "0", 10);
+    if (eddig >= b.napi) return valasz({ hiba: "Mára elfogyott a kérdéskereted.", limit: true }, 429);
+    await env.FILES.put(kulcs, String(eddig + 1), { expirationTtl: 86400 });
+  }
+
+  const messages = [{ role: "system", content: aiRendszer(mod, nyelv) }, ...elozmeny, { role: "user", content: kerdes }];
+  const modell = AI_MODELLEK[b.modell] || AI_MODELLEK.okos;
+  ctx.waitUntil(statNovel(env, "ai", tulaj ? "tulaj" : "latogato"));
+  try {
+    const folyam = await env.AI.run(modell, { messages, stream: true, max_tokens: 2048, temperature: 0.3 });
+    return new Response(folyam, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store" } });
+  } catch (e) {
+    console.error(e);
+    const uzenet = String(e && e.message || e);
+    if (/neuron|quota|limit|4006/i.test(uzenet)) return valasz({ hiba: "Mára elfogyott az ingyenes AI keret. Holnap újra működik.", keret: true }, 429);
+    return valasz({ hiba: "Az AI most nem érhető el. Próbáld újra kicsit később." }, 502);
+  }
+}
+
+/* ======================================================
+   STATISZTIKA ÉS BELÉPÉSI NAPLÓ
+   - Részletes statisztika csak D1 adatbázissal van (a KV-ba naponta csak 1000 írás fér).
+   - A belépési napló D1 nélkül is működik (a KV-ban az utolsó 100 bejegyzés).
+   ====================================================== */
+const NAPLO_KULCS = "beallitas:naplo";
+const ESEMENY_TIPUSOK = ["oldal", "masol"];
+
+let tablakKesz = false;
+async function tablak(env) {
+  if (tablakKesz || !env.DB) return;
+  await env.DB.batch([
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS stat (nap TEXT NOT NULL, tipus TEXT NOT NULL, nev TEXT NOT NULL, db INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (nap, tipus, nev))"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS naplo (id INTEGER PRIMARY KEY AUTOINCREMENT, ido INTEGER NOT NULL, siker INTEGER NOT NULL, mod TEXT, ip TEXT, orszag TEXT, varos TEXT, eszkoz TEXT)"),
+  ]);
+  tablakKesz = true;
+}
+
+async function statNovel(env, tipus, nev) {
+  if (!env.DB) return;
+  await tablak(env);
+  await env.DB.prepare("INSERT INTO stat (nap, tipus, nev, db) VALUES (?, ?, ?, 1) ON CONFLICT(nap, tipus, nev) DO UPDATE SET db = db + 1")
+    .bind(maiNap(), tipus, nev).run();
+}
+
+// Böngésző és rendszer egyszerű felismerése (pl. "Chrome · Windows")
+function eszkozNev(ua = "") {
+  const bongeszo = /Edg\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /Firefox\//.test(ua) ? "Firefox" : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : "?";
+  const rendszer = /Windows/.test(ua) ? "Windows" : /Android/.test(ua) ? "Android" : /iPhone|iPad/.test(ua) ? "iOS" : /Mac OS/.test(ua) ? "macOS" : /Linux/.test(ua) ? "Linux" : "?";
+  return `${bongeszo} · ${rendszer}`;
+}
+const mobilE = (ua = "") => /Mobi|Android|iPhone|iPad/.test(ua);
+
+async function esemeny(request, env) {
+  if (!env.DB) return new Response(null, { status: 204 });
+  const adat = await request.json().catch(() => null);
+  if (!adat || !ESEMENY_TIPUSOK.includes(adat.t) || typeof adat.n !== "string" || !/^[\p{L}\p{N} .,:()/+&–-]{1,80}$/u.test(adat.n)) {
+    return valasz({ hiba: "Hibás kérés." }, 400);
+  }
+  await statNovel(env, adat.t, adat.n);
+  return new Response(null, { status: 204 });
+}
+
+async function naploIr(request, env, siker, mod) {
+  const cf = request.cf || {};
+  const bejegyzes = {
+    ido: Date.now(), siker, mod: String(mod).slice(0, 10),
+    ip: request.headers.get("CF-Connecting-IP") || "", orszag: cf.country || "", varos: cf.city || "",
+    eszkoz: eszkozNev(request.headers.get("User-Agent") || ""),
+  };
+  if (env.DB) {
+    await tablak(env);
+    await env.DB.prepare("INSERT INTO naplo (ido, siker, mod, ip, orszag, varos, eszkoz) VALUES (?, ?, ?, ?, ?, ?, ?)")
+      .bind(bejegyzes.ido, siker ? 1 : 0, bejegyzes.mod, bejegyzes.ip, bejegyzes.orszag, bejegyzes.varos, bejegyzes.eszkoz).run();
+    return;
+  }
+  const lista = (await env.FILES.get(NAPLO_KULCS, "json")) || [];
+  lista.unshift(bejegyzes);
+  await env.FILES.put(NAPLO_KULCS, JSON.stringify(lista.slice(0, 100)));
+}
+
+async function admin(request, env, al) {
+  if (al === "ai" && request.method === "PUT") {
+    const adat = await request.json().catch(() => null);
+    if (!adat) return valasz({ hiba: "Hibás kérés." }, 400);
+    const uj = {
+      nyilvanos: !!adat.nyilvanos,
+      napi: Math.min(50, Math.max(1, parseInt(adat.napi, 10) || 3)),
+      modell: AI_MODELLEK[adat.modell] ? adat.modell : "okos",
+    };
+    await env.FILES.put(AI_BEALLITAS, JSON.stringify(uj));
+    return valasz(uj);
+  }
+  if (al || request.method !== "GET") return valasz({ hiba: "Nem támogatott művelet." }, 405);
+
+  const eredmeny = { db: !!env.DB, ai: { ...(await aiBeallitas(env)), elerheto: !!env.AI } };
+  if (env.DB) {
+    await tablak(env);
+    const tol = new Date(Date.now() - 29 * 864e5).toISOString().slice(0, 10);
+    const top = (tipus, n = 12) => env.DB.prepare("SELECT nev, SUM(db) AS db FROM stat WHERE tipus = ? AND nap >= ? GROUP BY nev ORDER BY db DESC LIMIT ?").bind(tipus, tol, n).all();
+    const [oldalak, masolasok, orszagok, eszkozok, aiNapok, naplo] = await Promise.all([
+      top("oldal"), top("masol", 15), top("orszag"), top("eszkoz"),
+      env.DB.prepare("SELECT nap, SUM(db) AS db FROM stat WHERE tipus = 'ai' AND nap >= ? GROUP BY nap ORDER BY nap").bind(tol).all(),
+      env.DB.prepare("SELECT ido, siker, mod, ip, orszag, varos, eszkoz FROM naplo ORDER BY ido DESC LIMIT 100").all(),
+    ]);
+    Object.assign(eredmeny, {
+      oldalak: oldalak.results, masolasok: masolasok.results, orszagok: orszagok.results, eszkozok: eszkozok.results,
+      aiNapok: aiNapok.results, naplo: naplo.results.map((n) => ({ ...n, siker: !!n.siker })),
+    });
+  } else {
+    eredmeny.naplo = (await env.FILES.get(NAPLO_KULCS, "json")) || [];
+  }
+  return valasz(eredmeny);
 }
 
 // A titkosítás "sója": egy véletlen szám, egyszer jön létre, utána mindig ugyanaz.

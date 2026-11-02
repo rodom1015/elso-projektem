@@ -77,6 +77,8 @@ function pqPeldak() {
   utmutato.className = "panel-megj pq-utmutato";
   utmutato.textContent = "💡 " + t("pq_howto");
   doboz.appendChild(utmutato);
+  const aiGomb = Object.assign(document.createElement("a"), { href: "#/ai/pq", className: "gomb fo ai-kerj-gomb", textContent: t("ai_ask_own_pq") });
+  doboz.appendChild(aiGomb);
   const lista = PQ_PELDAK.filter((p) => pqIllik(p.cim[nyelv], p.leiras[nyelv], p.kod));
   for (const p of lista) {
     const kod = pqKod(p);
