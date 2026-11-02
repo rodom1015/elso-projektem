@@ -19,9 +19,8 @@ id = "a0de692d02fd419f827a899563ebe34d"
 [ai]
 binding = "AI"
 
-# Adatbázis a statisztikához és a belépési naplóhoz (D1).
-# Ha elkészült a "rodom-db" adatbázis, vedd ki a # jeleket, és írd be az azonosítóját:
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "rodom-db"
-# database_id = "IDE-JÖN-AZ-AZONOSÍTÓ"
+# Adatbázis a statisztikához és a belépési naplóhoz (D1) – a táblák maguktól létrejönnek
+[[d1_databases]]
+binding = "DB"
+database_name = "rodom-db"
+database_id = "a75f8011-52a2-4603-9b4a-17f0eb6a7254"

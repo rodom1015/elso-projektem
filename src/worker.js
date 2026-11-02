@@ -283,6 +283,7 @@ async function latogatas(request, env) {
   if (!szamol && request.method !== "GET") return valasz({ hiba: "Nem támogatott." }, 405);
   if (env.DB) {
     await env.DB.prepare("CREATE TABLE IF NOT EXISTS latogatas (nap TEXT PRIMARY KEY, db INTEGER NOT NULL DEFAULT 0)").run();
+    await latogatasAtköltoztet(env);
     if (szamol) {
       await env.DB.prepare("INSERT INTO latogatas (nap, db) VALUES (?, 1) ON CONFLICT(nap) DO UPDATE SET db = db + 1").bind(maiNap()).run();
       const ua = request.headers.get("User-Agent") || "";
@@ -304,6 +305,25 @@ async function latogatas(request, env) {
   const napok = Object.entries(stat.napok).sort(([a], [b]) => (a < b ? 1 : -1)).slice(0, 30).map(([d, n]) => ({ d, n }));
   return statValasz(stat.osszes, napok);
 }
+// Egyszeri átköltöztetés: ha a D1 tábla még üres, a KV-ban eddig gyűjtött napi számokat áthozzuk.
+// (Az utolsó 60 napnál régebbi napok összegét egy "régi" sorba tesszük, hogy az összesen ne vesszen el.)
+let latogatasAtkoltozve = false;
+async function latogatasAtköltoztet(env) {
+  if (latogatasAtkoltozve) return;
+  const van = await env.DB.prepare("SELECT COUNT(*) AS n FROM latogatas").first();
+  if (van.n === 0) {
+    const regi = await env.FILES.get(STAT_KULCS, "json");
+    if (regi && regi.osszes) {
+      const napok = Object.entries(regi.napok || {});
+      const napiOssz = napok.reduce((s, [, n]) => s + n, 0);
+      const parancsok = napok.map(([d, n]) => env.DB.prepare("INSERT OR IGNORE INTO latogatas (nap, db) VALUES (?, ?)").bind(d, n));
+      if (regi.osszes > napiOssz) parancsok.push(env.DB.prepare("INSERT OR IGNORE INTO latogatas (nap, db) VALUES ('0000-regi', ?)").bind(regi.osszes - napiOssz));
+      if (parancsok.length) await env.DB.batch(parancsok);
+    }
+  }
+  latogatasAtkoltozve = true;
+}
+
 function statValasz(osszes, napok) {
   const ma = napok.find((x) => x.d === maiNap());
   return valasz({ osszes, ma: ma ? ma.n : 0, napok });
