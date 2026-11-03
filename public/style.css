@@ -1843,3 +1843,4 @@ body.megosztas-mod .lablec { display: none; }
   .qk-beall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sz-csoport-cim { width: 100%; }
 }
+.ez-bezar { margin-left: 4px; }

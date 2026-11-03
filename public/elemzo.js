@@ -8,6 +8,7 @@
 */
 
 Object.assign(SZOVEGEK.hu, {
+  ez_xl_chart: "Grafikon", ez_xl_all: "Összes adat", ez_xl_file: "kimutatas", ez_close: "Fájl bezárása",
   ez_sub: "Tölts be egy Excel fájlt, és azonnal kapsz áttekintést, összesítést és grafikonokat. Az adat nem hagyja el a gépedet.",
   ez_pick: "Fájl megnyitása", ez_stored: "…vagy a Fájljaimból:", ez_sheet: "Munkalap", ez_header: "Az első sor fejléc", ez_empty: "Válassz egy Excel vagy CSV fájlt a kezdéshez.",
   ez_rows: "sor", ez_cols: "oszlop", ez_filled: "kitöltöttség", ez_numcols: "számoszlop", ez_overview: "📋 Oszlopok áttekintése",
@@ -22,6 +23,7 @@ Object.assign(SZOVEGEK.hu, {
   ez_other: "Egyéb", ez_too_big: "A fájl nagy: az első {n} sort elemzem.",
 });
 Object.assign(SZOVEGEK.sk, {
+  ez_xl_chart: "Graf", ez_xl_all: "Všetky údaje", ez_xl_file: "suhrn", ez_close: "Zavrieť súbor",
   ez_sub: "Načítaj súbor Excel a hneď dostaneš prehľad, súhrny a grafy. Údaje neopustia tvoj počítač.",
   ez_pick: "Otvoriť súbor", ez_stored: "…alebo z Mojich súborov:", ez_sheet: "Hárok", ez_header: "Prvý riadok je hlavička", ez_empty: "Na začiatok vyber súbor Excel alebo CSV.",
   ez_rows: "riadkov", ez_cols: "stĺpcov", ez_filled: "vyplnenosť", ez_numcols: "číselné stĺpce", ez_overview: "📋 Prehľad stĺpcov",
@@ -36,6 +38,7 @@ Object.assign(SZOVEGEK.sk, {
   ez_other: "Ostatné", ez_too_big: "Súbor je veľký: analyzujem prvých {n} riadkov.",
 });
 Object.assign(SZOVEGEK.en, {
+  ez_xl_chart: "Chart", ez_xl_all: "All data", ez_xl_file: "summary", ez_close: "Close file",
   ez_sub: "Load an Excel file and instantly get an overview, summaries and charts. Your data never leaves your computer.",
   ez_pick: "Open a file", ez_stored: "…or from My files:", ez_sheet: "Sheet", ez_header: "First row is a header", ez_empty: "Pick an Excel or CSV file to start.",
   ez_rows: "rows", ez_cols: "columns", ez_filled: "filled", ez_numcols: "numeric columns", ez_overview: "📋 Column overview",
@@ -204,6 +207,7 @@ async function ezMegnyit(bajtok, nev) {
   sel.innerHTML = "";
   ezWb.SheetNames.forEach((n) => sel.add(new Option(n, n)));
   $("ez-lap-sor").hidden = false;
+  $("ez-bezar").hidden = false;
   ezLapBetolt();
 }
 
@@ -339,7 +343,7 @@ function ezCsoportosit() {
   return { lista, datum, muv };
 }
 
-let ezUtolsoSvg = "", ezUtolsoLista = [];
+let ezUtolsoSvg = "", ezUtolsoLista = [], ezUtolsoMutat = [], ezUtolsoCim = "";
 function ezDiagram() {
   if (!ezAdat) return;
   const { lista, datum, muv } = ezCsoportosit();
@@ -357,6 +361,8 @@ function ezDiagram() {
   const szel = Math.max(320, Math.min(900, $("ez-diagram").clientWidth || 760));
   const mag = tipus === "sav" ? Math.max(260, Math.min(900, 40 + mutat.length * 28)) : szel < 500 ? 300 : 380;
   ezUtolsoSvg = diagramSvg(tipus, mutat.map((x) => x.k), mutat.map((x) => x.v), { szelesseg: szel, magassag: mag, cim: `${ert} – ${kat}` });
+  ezUtolsoMutat = mutat;
+  ezUtolsoCim = `${ert} – ${kat}`;
   $("ez-diagram").innerHTML = ezUtolsoSvg;
   ezMegallapitasok(lista, datum, muv);
 }
@@ -400,20 +406,108 @@ $("ez-tarolt").addEventListener("change", async () => {
   try { await ezMegnyit(await fajlTartalom(f), f.nev); } catch (hiba) { hibaKezeles(hiba); }
 });
 $("ez-lap").addEventListener("change", ezLapBetolt);
+// Bezárás: a betöltött fájl eltűnik az oldalról (a fájl csak a böngészőben volt, a szerverre nem került fel)
+$("ez-bezar").addEventListener("click", () => {
+  ezWb = null; ezAdat = null; ezNev = "";
+  ezUtolsoSvg = ""; ezUtolsoLista = []; ezUtolsoMutat = [];
+  $("ez-eredmeny").hidden = true;
+  $("ez-lap-sor").hidden = true;
+  $("ez-bezar").hidden = true;
+  $("ez-ures").hidden = false;
+  $("ez-diagram").innerHTML = "";
+  $("ez-oszlopok").innerHTML = "";
+});
 $("ez-fejlec").addEventListener("change", () => ezWb && ezLapBetolt());
 $("ez-kat").addEventListener("change", () => { ezDatumSor(); ezDiagram(); });
 ["ez-ert", "ez-muv", "ez-tipus", "ez-datum", "ez-rend", "ez-top"].forEach((id) => $(id).addEventListener("change", ezDiagram));
 $("ez-png").addEventListener("click", () => ezUtolsoSvg && svgPngMentes(ezUtolsoSvg, (ezNev || "grafikon") + ".png"));
 $("ez-svg-gomb").addEventListener("click", () => ezUtolsoSvg && mentes(new TextEncoder().encode(ezUtolsoSvg), (ezNev || "grafikon") + ".svg"));
+/* ---------- Excel letöltés IGAZI Excel-grafikonnal ----------
+   A SheetJS nem tud grafikont írni, ezért a kész xlsx fájlba (ami egy zip) mi tesszük bele
+   a grafikon részeit: drawing1.xml + chart1.xml + a hivatkozások. Így Excelben ugyanaz látszik, mint itt. */
+const xmlVed = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[c]));
+
+function grafikonXml(tipus, lapNev, n, cim, sorozatNev, cimkek, ertekek, szin) {
+  const lap = "'" + lapNev.replace(/'/g, "''") + "'";
+  const kat = `<c:cat><c:strRef><c:f>${xmlVed(lap)}!$A$2:$A$${n + 1}</c:f><c:strCache><c:ptCount val="${n}"/>${cimkek.map((k, i) => `<c:pt idx="${i}"><c:v>${xmlVed(k)}</c:v></c:pt>`).join("")}</c:strCache></c:strRef></c:cat>`;
+  const ert = `<c:val><c:numRef><c:f>${xmlVed(lap)}!$B$2:$B$${n + 1}</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${n}"/>${ertekek.map((v, i) => `<c:pt idx="${i}"><c:v>${+v}</c:v></c:pt>`).join("")}</c:numCache></c:numRef></c:val>`;
+  const tx = `<c:tx><c:strRef><c:f>${xmlVed(lap)}!$B$1</c:f><c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>${xmlVed(sorozatNev)}</c:v></c:pt></c:strCache></c:strRef></c:tx>`;
+  const kitoltes = `<c:spPr><a:solidFill><a:srgbClr val="${szin}"/></a:solidFill></c:spPr>`;
+  const cimkezes = (ertek, szazalek) => `<c:dLbls><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="900"/></a:pPr><a:endParaRPr lang="sk-SK"/></a:p></c:txPr><c:showLegendKey val="0"/><c:showVal val="${ertek ? 1 : 0}"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="${szazalek ? 1 : 0}"/><c:showBubbleSize val="0"/></c:dLbls>`;
+  const tengelyek = (forditott) => `
+    <c:catAx><c:axId val="5001"/><c:scaling><c:orientation val="${forditott ? "maxMin" : "minMax"}"/></c:scaling><c:delete val="0"/><c:axPos val="${tipus === "sav" ? "l" : "b"}"/><c:numFmt formatCode="General" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="5002"/><c:crosses val="autoZero"/><c:auto val="1"/><c:lblAlgn val="ctr"/><c:lblOffset val="100"/><c:noMultiLvlLbl val="0"/></c:catAx>
+    <c:valAx><c:axId val="5002"/><c:scaling><c:orientation val="minMax"/>${Math.min(...ertekek) >= 0 ? '<c:min val="0"/>' : ""}</c:scaling><c:delete val="0"/><c:axPos val="${tipus === "sav" ? "b" : "l"}"/><c:majorGridlines><c:spPr><a:ln w="6350"><a:solidFill><a:srgbClr val="E5E7EB"/></a:solidFill></a:ln></c:spPr></c:majorGridlines><c:numFmt formatCode="#,##0" sourceLinked="0"/><c:majorTickMark val="none"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="5001"/><c:crosses val="${forditott ? "max" : "autoZero"}"/><c:crossBetween val="between"/></c:valAx>`;
+  let rajz, jelmagyarazat = "";
+  if (tipus === "kor" || tipus === "fank") {
+    rajz = `<c:${tipus === "kor" ? "pieChart" : "doughnutChart"}><c:varyColors val="1"/><c:ser><c:idx val="0"/><c:order val="0"/>${tx}${cimkezes(false, true)}${kat}${ert}</c:ser><c:firstSliceAng val="0"/>${tipus === "fank" ? '<c:holeSize val="55"/>' : ""}</c:${tipus === "kor" ? "pieChart" : "doughnutChart"}>`;
+    jelmagyarazat = `<c:legend><c:legendPos val="r"/><c:overlay val="0"/></c:legend>`;
+  } else if (tipus === "vonal") {
+    rajz = `<c:lineChart><c:grouping val="standard"/><c:varyColors val="0"/><c:ser><c:idx val="0"/><c:order val="0"/>${tx}<c:spPr><a:ln w="28575" cap="rnd"><a:solidFill><a:srgbClr val="${szin}"/></a:solidFill><a:round/></a:ln></c:spPr><c:marker><c:symbol val="circle"/><c:size val="5"/><c:spPr><a:solidFill><a:srgbClr val="${szin}"/></a:solidFill></c:spPr></c:marker>${n <= 20 ? cimkezes(true, false) : ""}${kat}${ert}<c:smooth val="0"/></c:ser><c:marker val="1"/><c:axId val="5001"/><c:axId val="5002"/></c:lineChart>${tengelyek(false)}`;
+  } else {
+    const sav = tipus === "sav";
+    rajz = `<c:barChart><c:barDir val="${sav ? "bar" : "col"}"/><c:grouping val="clustered"/><c:varyColors val="0"/><c:ser><c:idx val="0"/><c:order val="0"/>${tx}${kitoltes}<c:invertIfNegative val="0"/>${n <= 30 ? cimkezes(true, false) : ""}${kat}${ert}</c:ser><c:gapWidth val="50"/><c:axId val="5001"/><c:axId val="5002"/></c:barChart>${tengelyek(sav)}`;
+  }
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><c:roundedCorners val="0"/><c:chart><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="1400" b="1"/></a:pPr><a:r><a:rPr lang="sk-SK" sz="1400" b="1"/><a:t>${xmlVed(cim)}</a:t></a:r></a:p></c:rich></c:tx><c:overlay val="0"/></c:title><c:autoTitleDeleted val="0"/><c:plotArea><c:layout/>${rajz}</c:plotArea>${jelmagyarazat}<c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart></c:chartSpace>`;
+}
+
+// A kész xlsx (bájtok) első lapjára grafikont tesz; a grafikon a D2 cellától indul
+function xlsxGrafikonnal(bajtok, grafikonXmlSzoveg, sorokSzama) {
+  const C = XLSX.CFB;
+  const cfb = C.read(bajtok, { type: "array" });
+  const olvas = (ut) => new TextDecoder().decode(C.find(cfb, "/" + ut).content);
+  const ir = (ut, szoveg) => {
+    const regi = C.find(cfb, "/" + ut);
+    const adat = new TextEncoder().encode(szoveg);
+    if (regi) regi.content = adat; else C.utils.cfb_add(cfb, "/" + ut, adat);
+  };
+  const vegsor = Math.max(22, Math.min(60, Math.round(sorokSzama * 1.15) + 6));
+  ir("xl/charts/chart1.xml", grafikonXmlSzoveg);
+  ir("xl/drawings/drawing1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>3</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>1</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>14</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${vegsor}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Graf 1"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>`);
+  ir("xl/drawings/_rels/drawing1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/></Relationships>`);
+  // a munkalap hivatkozása a rajzra
+  const relsUt = "xl/worksheets/_rels/sheet1.xml.rels";
+  const rel = `<Relationship Id="rIdGraf1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>`;
+  ir(relsUt, C.find(cfb, "/" + relsUt)
+    ? olvas(relsUt).replace("</Relationships>", rel + "</Relationships>")
+    : `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rel}</Relationships>`);
+  let lap = olvas("xl/worksheets/sheet1.xml");
+  if (!/xmlns:r=/.test(lap.slice(0, 600))) lap = lap.replace("<worksheet ", '<worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ');
+  ir("xl/worksheets/sheet1.xml", lap.replace("</worksheet>", '<drawing r:id="rIdGraf1"/></worksheet>'));
+  ir("[Content_Types].xml", olvas("[Content_Types].xml").replace("</Types>",
+    '<Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>' +
+    '<Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/></Types>'));
+  // a SheetJS saját jelölő bejegyzése nem kell a zip-be
+  const jelolo = cfb.FullPaths.findIndex((p) => /Sh33tJ5$/.test(p));
+  if (jelolo >= 0) { cfb.FullPaths.splice(jelolo, 1); cfb.FileIndex.splice(jelolo, 1); }
+  return new Uint8Array(C.write(cfb, { fileType: "zip", type: "array" }));
+}
+
 $("ez-xlsx").addEventListener("click", async () => {
   if (!ezUtolsoLista.length) return;
   await sheetjsBetolt();
   const fejlec = [$("ez-kat").selectedOptions[0]?.textContent || "", $("ez-ert").value === "-1" ? t("ez_count_rows") : $("ez-ert").selectedOptions[0]?.textContent || ""];
-  const ws = XLSX.utils.aoa_to_sheet([fejlec, ...ezUtolsoLista.map((x) => [x.k, x.v])]);
-  ws["!cols"] = [{ wch: 28 }, { wch: 16 }];
+  const szam = (v) => (Number.isInteger(v) ? v : +v.toFixed(4));
+  // 1. lap: pontosan az, ami a weboldalon a grafikonon látszik (ugyanaz a sorrend és szűrés) + grafikon
+  const grafLap = t("ez_xl_chart"), osszesLap = t("ez_xl_all");
+  const mutat = ezUtolsoMutat.length ? ezUtolsoMutat : ezUtolsoLista;
+  const ws1 = XLSX.utils.aoa_to_sheet([fejlec, ...mutat.map((x) => [x.k, szam(x.v)])]);
+  ws1["!cols"] = [{ wch: 26 }, { wch: 14 }];
+  // 2. lap: minden csoport
+  const ws2 = XLSX.utils.aoa_to_sheet([fejlec, ...ezUtolsoLista.map((x) => [x.k, szam(x.v)])]);
+  ws2["!cols"] = [{ wch: 26 }, { wch: 14 }];
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Kimutatás");
-  mentes(new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx" })), (ezNev || "elemzes") + "_kimutatas.xlsx");
+  XLSX.utils.book_append_sheet(wb, ws1, grafLap);
+  XLSX.utils.book_append_sheet(wb, ws2, osszesLap);
+  let bajtok = new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx" }));
+  try {
+    const szin = (diagramSzinek().fo.match(/^#([0-9a-f]{6})$/i) || [, "107C41"])[1].toUpperCase();
+    const xml = grafikonXml($("ez-tipus").value, grafLap, mutat.length, ezUtolsoCim, fejlec[1], mutat.map((x) => x.k), mutat.map((x) => szam(x.v)), szin);
+    bajtok = xlsxGrafikonnal(bajtok, xml, mutat.length);
+  } catch (e) { console.error(e); } // ha nem sikerül, grafikon nélkül töltjük le
+  mentes(bajtok, (ezNev || "analyza") + "_" + t("ez_xl_file") + ".xlsx");
 });
 let ezAtmeretezes;
 window.addEventListener("resize", () => { clearTimeout(ezAtmeretezes); ezAtmeretezes = setTimeout(() => aktivOldal === "elemzo" && ezDiagram(), 200); });
