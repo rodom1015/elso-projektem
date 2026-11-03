@@ -427,11 +427,12 @@ $("ez-svg-gomb").addEventListener("click", () => ezUtolsoSvg && mentes(new TextE
    a grafikon részeit: drawing1.xml + chart1.xml + a hivatkozások. Így Excelben ugyanaz látszik, mint itt. */
 const xmlVed = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[c]));
 
-function grafikonXml(tipus, lapNev, n, cim, sorozatNev, cimkek, ertekek, szin) {
+function grafikonXml(tipus, lapNev, n, cim, sorozatNev, cimkek, ertekek, szin, fejSor = 1) {
   const lap = "'" + lapNev.replace(/'/g, "''") + "'";
-  const kat = `<c:cat><c:strRef><c:f>${xmlVed(lap)}!$A$2:$A$${n + 1}</c:f><c:strCache><c:ptCount val="${n}"/>${cimkek.map((k, i) => `<c:pt idx="${i}"><c:v>${xmlVed(k)}</c:v></c:pt>`).join("")}</c:strCache></c:strRef></c:cat>`;
-  const ert = `<c:val><c:numRef><c:f>${xmlVed(lap)}!$B$2:$B$${n + 1}</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${n}"/>${ertekek.map((v, i) => `<c:pt idx="${i}"><c:v>${+v}</c:v></c:pt>`).join("")}</c:numCache></c:numRef></c:val>`;
-  const tx = `<c:tx><c:strRef><c:f>${xmlVed(lap)}!$B$1</c:f><c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>${xmlVed(sorozatNev)}</c:v></c:pt></c:strCache></c:strRef></c:tx>`;
+  const r1 = fejSor + 1, r2 = fejSor + n;
+  const kat = `<c:cat><c:strRef><c:f>${xmlVed(lap)}!$A$${r1}:$A$${r2}</c:f><c:strCache><c:ptCount val="${n}"/>${cimkek.map((k, i) => `<c:pt idx="${i}"><c:v>${xmlVed(k)}</c:v></c:pt>`).join("")}</c:strCache></c:strRef></c:cat>`;
+  const ert = `<c:val><c:numRef><c:f>${xmlVed(lap)}!$B$${r1}:$B$${r2}</c:f><c:numCache><c:formatCode>General</c:formatCode><c:ptCount val="${n}"/>${ertekek.map((v, i) => `<c:pt idx="${i}"><c:v>${+v}</c:v></c:pt>`).join("")}</c:numCache></c:numRef></c:val>`;
+  const tx = `<c:tx><c:strRef><c:f>${xmlVed(lap)}!$B$${fejSor}</c:f><c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>${xmlVed(sorozatNev)}</c:v></c:pt></c:strCache></c:strRef></c:tx>`;
   const kitoltes = `<c:spPr><a:solidFill><a:srgbClr val="${szin}"/></a:solidFill></c:spPr>`;
   const cimkezes = (ertek, szazalek) => `<c:dLbls><c:spPr><a:noFill/><a:ln><a:noFill/></a:ln></c:spPr><c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr sz="900"/></a:pPr><a:endParaRPr lang="sk-SK"/></a:p></c:txPr><c:showLegendKey val="0"/><c:showVal val="${ertek ? 1 : 0}"/><c:showCatName val="0"/><c:showSerName val="0"/><c:showPercent val="${szazalek ? 1 : 0}"/><c:showBubbleSize val="0"/></c:dLbls>`;
   const tengelyek = (forditott) => `
@@ -452,7 +453,7 @@ function grafikonXml(tipus, lapNev, n, cim, sorozatNev, cimkek, ertekek, szin) {
 }
 
 // A kész xlsx (bájtok) első lapjára grafikont tesz; a grafikon a D2 cellától indul
-function xlsxGrafikonnal(bajtok, grafikonXmlSzoveg, sorokSzama) {
+function xlsxGrafikonnal(bajtok, grafikonXmlSzoveg, sorokSzama, { tolSor = 1, igSor = null, stilusok = {} } = {}) {
   const C = XLSX.CFB;
   const cfb = C.read(bajtok, { type: "array" });
   const olvas = (ut) => new TextDecoder().decode(C.find(cfb, "/" + ut).content);
@@ -461,10 +462,10 @@ function xlsxGrafikonnal(bajtok, grafikonXmlSzoveg, sorokSzama) {
     const adat = new TextEncoder().encode(szoveg);
     if (regi) regi.content = adat; else C.utils.cfb_add(cfb, "/" + ut, adat);
   };
-  const vegsor = Math.max(22, Math.min(60, Math.round(sorokSzama * 1.15) + 6));
+  const vegsor = igSor ?? tolSor + Math.max(21, Math.min(59, Math.round(sorokSzama * 1.15) + 5));
   ir("xl/charts/chart1.xml", grafikonXmlSzoveg);
   ir("xl/drawings/drawing1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>3</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>1</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>14</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${vegsor}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Graf 1"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>`);
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:twoCellAnchor editAs="oneCell"><xdr:from><xdr:col>3</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${tolSor}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>14</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${vegsor}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Graf 1"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>`);
   ir("xl/drawings/_rels/drawing1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/></Relationships>`);
   // a munkalap hivatkozása a rajzra
@@ -479,33 +480,116 @@ function xlsxGrafikonnal(bajtok, grafikonXmlSzoveg, sorokSzama) {
   ir("[Content_Types].xml", olvas("[Content_Types].xml").replace("</Types>",
     '<Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>' +
     '<Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/></Types>'));
+  // Formázás (a SheetJS ingyenes változata nem ír stílust): cím, félkövér, szürke fejléc, százalék
+  if (Object.keys(stilusok).length) {
+    let st = olvas("xl/styles.xml");
+    const szam = (tag) => +(st.match(new RegExp(`<${tag} count="(\\d+)"`)) || [, 0])[1];
+    const fontId = szam("fonts"), fillId = szam("fills"), xf0 = szam("cellXfs");
+    st = st.replace(/<fonts count="\d+">([\s\S]*?)<\/fonts>/, (m, belso) => `<fonts count="${fontId + 2}">${belso}<font><b/><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font><font><b/><sz val="16"/><color rgb="FF1F2937"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font></fonts>`);
+    st = st.replace(/<fills count="\d+">([\s\S]*?)<\/fills>/, (m, belso) => `<fills count="${fillId + 1}">${belso}<fill><patternFill patternType="solid"><fgColor rgb="FFE5E7EB"/><bgColor indexed="64"/></patternFill></fill></fills>`);
+    const ujXf = [
+      `<xf numFmtId="0" fontId="${fontId + 1}" fillId="0" borderId="0" xfId="0" applyFont="1"/>`,
+      `<xf numFmtId="0" fontId="${fontId}" fillId="0" borderId="0" xfId="0" applyFont="1"/>`,
+      `<xf numFmtId="0" fontId="${fontId}" fillId="${fillId}" borderId="0" xfId="0" applyFont="1" applyFill="1"/>`,
+      `<xf numFmtId="9" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>`,
+      `<xf numFmtId="9" fontId="${fontId}" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1"/>`,
+    ];
+    st = st.replace(/<cellXfs count="\d+">([\s\S]*?)<\/cellXfs>/, (m, belso) => `<cellXfs count="${xf0 + ujXf.length}">${belso}${ujXf.join("")}</cellXfs>`);
+    ir("xl/styles.xml", st);
+    const index = { cim: xf0, felkover: xf0 + 1, fejlec: xf0 + 2, szazalek: xf0 + 3, nagyszazalek: xf0 + 4 };
+    let lx = olvas("xl/worksheets/sheet1.xml");
+    for (const [ref, nev] of Object.entries(stilusok)) {
+      lx = lx.replace(new RegExp(`<c r="${ref}"( s="\\d+")?`), `<c r="${ref}" s="${index[nev]}"`);
+    }
+    ir("xl/worksheets/sheet1.xml", lx);
+  }
   // a SheetJS saját jelölő bejegyzése nem kell a zip-be
   const jelolo = cfb.FullPaths.findIndex((p) => /Sh33tJ5$/.test(p));
   if (jelolo >= 0) { cfb.FullPaths.splice(jelolo, 1); cfb.FileIndex.splice(jelolo, 1); }
   return new Uint8Array(C.write(cfb, { fileType: "zip", type: "array" }));
 }
 
+// Oszloponkénti statisztika nyers számokkal (az Excel exporthoz)
+function ezOszlopStat() {
+  const { fej, sorok, tipusok } = ezAdat;
+  return fej.map((nev, c) => {
+    const ertekek = sorok.map((s) => s[c]).filter((v) => v !== "" && v !== undefined);
+    const tip = tipusok[c];
+    const sor = {
+      nev, tip: t({ szam: "ez_t_num", datum: "ez_t_date", szoveg: "ez_t_text", ures: "ez_t_empty", logikai: "ez_t_bool" }[tip]),
+      kit: sorok.length ? ertekek.length / sorok.length : 0,
+      egyedi: new Set(ertekek.map((v) => (v instanceof Date ? v.getTime() : v))).size,
+      osszeg: "", atlag: "", min: "", max: "",
+    };
+    if (tip === "szam") {
+      const sz = ertekek.filter((v) => typeof v === "number");
+      if (sz.length) {
+        const o = sz.reduce((a, b) => a + b, 0);
+        Object.assign(sor, { osszeg: +o.toFixed(4), atlag: +(o / sz.length).toFixed(4), min: Math.min(...sz), max: Math.max(...sz) });
+      }
+    } else if (tip === "datum") {
+      const d = ertekek.filter((v) => v instanceof Date);
+      if (d.length) { sor.min = new Date(Math.min(...d)); sor.max = new Date(Math.max(...d)); }
+    }
+    return sor;
+  });
+}
+
+// Excel letöltés: ugyanaz, ami az oldalon látszik – összesítő, megállapítások, grafikon, oszlopok áttekintése
 $("ez-xlsx").addEventListener("click", async () => {
-  if (!ezUtolsoLista.length) return;
+  if (!ezUtolsoLista.length || !ezAdat) return;
   await sheetjsBetolt();
+  const { fej: adatFej, sorok, tipusok } = ezAdat;
   const fejlec = [$("ez-kat").selectedOptions[0]?.textContent || "", $("ez-ert").value === "-1" ? t("ez_count_rows") : $("ez-ert").selectedOptions[0]?.textContent || ""];
   const szam = (v) => (Number.isInteger(v) ? v : +v.toFixed(4));
-  // 1. lap: pontosan az, ami a weboldalon a grafikonon látszik (ugyanaz a sorrend és szűrés) + grafikon
-  const grafLap = t("ez_xl_chart"), osszesLap = t("ez_xl_all");
   const mutat = ezUtolsoMutat.length ? ezUtolsoMutat : ezUtolsoLista;
-  const ws1 = XLSX.utils.aoa_to_sheet([fejlec, ...mutat.map((x) => [x.k, szam(x.v)])]);
-  ws1["!cols"] = [{ wch: 26 }, { wch: 14 }];
-  // 2. lap: minden csoport
+  const grafLap = t("ez_xl_chart"), osszesLap = t("ez_xl_all");
+  const enc = (r, c) => XLSX.utils.encode_cell({ r, c });
+  const ikonNelkul = (s) => s.replace(/^\S+\s/, "");
+  const stilus = {};
+
+  // ---- 1. lap ----
+  const aoa = [];
+  const sor = (...cellak) => { aoa.push(cellak); return aoa.length - 1; };
+  stilus[enc(sor(`${t("nav_analyze")}: ${ezNev}${$("ez-lap").value ? " – " + $("ez-lap").value : ""}`), 0)] = "cim";
+  sor();
+  // összesítő kártyák
+  const cellaDb = sorok.length * adatFej.length;
+  const kitoltott = sorok.reduce((s, x) => s + adatFej.filter((_, c) => x[c] !== "" && x[c] !== undefined).length, 0);
+  const kartyaFej = sor(t("ez_rows"), t("ez_cols"), t("ez_filled"), t("ez_numcols"));
+  const kartyaErt = sor(sorok.length, adatFej.length, cellaDb ? kitoltott / cellaDb : 0, tipusok.filter((x) => x === "szam").length);
+  for (let c = 0; c < 4; c++) { stilus[enc(kartyaFej, c)] = "fejlec"; stilus[enc(kartyaErt, c)] = c === 2 ? "nagyszazalek" : "felkover"; }
+  sor();
+  // megállapítások
+  stilus[enc(sor(ikonNelkul(t("ez_insights"))), 0)] = "felkover";
+  [...document.querySelectorAll("#ez-megall li")].forEach((li) => sor("• " + li.textContent));
+  sor();
+  // a grafikon adatai, mellettük a grafikon
+  stilus[enc(sor(ikonNelkul(t("ez_chart")) + ": " + ezUtolsoCim), 0)] = "felkover";
+  const grafFej = sor(...fejlec);
+  stilus[enc(grafFej, 0)] = stilus[enc(grafFej, 1)] = "fejlec";
+  mutat.forEach((x) => sor(x.k, szam(x.v)));
+  const grafVege = grafFej + Math.max(18, Math.min(45, Math.round(mutat.length * 1.15) + 4));
+  while (aoa.length < grafVege + 2) sor();
+  // oszlopok áttekintése
+  stilus[enc(sor(ikonNelkul(t("ez_overview"))), 0)] = "felkover";
+  const statFej = sor(...["ez_col", "ez_type", "ez_filled", "ez_unique", "ez_sum", "ez_avg", "ez_min", "ez_max"].map((k) => t(k)));
+  for (let c = 0; c < 8; c++) stilus[enc(statFej, c)] = "fejlec";
+  for (const o of ezOszlopStat()) stilus[enc(sor(o.nev, o.tip, o.kit, o.egyedi, o.osszeg, o.atlag, o.min, o.max), 2)] = "szazalek";
+
+  const ws1 = XLSX.utils.aoa_to_sheet(aoa, { cellDates: true });
+  ws1["!cols"] = [{ wch: 26 }, { wch: 14 }, { wch: 13 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+  // ---- 2. lap: minden csoport ----
   const ws2 = XLSX.utils.aoa_to_sheet([fejlec, ...ezUtolsoLista.map((x) => [x.k, szam(x.v)])]);
   ws2["!cols"] = [{ wch: 26 }, { wch: 14 }];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws1, grafLap);
   XLSX.utils.book_append_sheet(wb, ws2, osszesLap);
-  let bajtok = new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx" }));
+  let bajtok = new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx", cellDates: true }));
   try {
     const szin = (diagramSzinek().fo.match(/^#([0-9a-f]{6})$/i) || [, "107C41"])[1].toUpperCase();
-    const xml = grafikonXml($("ez-tipus").value, grafLap, mutat.length, ezUtolsoCim, fejlec[1], mutat.map((x) => x.k), mutat.map((x) => szam(x.v)), szin);
-    bajtok = xlsxGrafikonnal(bajtok, xml, mutat.length);
+    const xml = grafikonXml($("ez-tipus").value, grafLap, mutat.length, ezUtolsoCim, fejlec[1], mutat.map((x) => x.k), mutat.map((x) => szam(x.v)), szin, grafFej + 1);
+    bajtok = xlsxGrafikonnal(bajtok, xml, mutat.length, { tolSor: grafFej, igSor: grafVege, stilusok: stilus });
   } catch (e) { console.error(e); } // ha nem sikerül, grafikon nélkül töltjük le
   mentes(bajtok, (ezNev || "analyza") + "_" + t("ez_xl_file") + ".xlsx");
 });
