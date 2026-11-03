@@ -93,6 +93,7 @@ function pqPeldak() {
       </div>
       <pre class="makro-kod" hidden><code></code></pre>`;
     k.querySelector(".makro-ikon").textContent = p.ikon;
+    if (typeof kedvencCsillag === "function") kedvencCsillag(k.querySelector(".makro-fej"), "pq", p.cim.hu);
     k.querySelector("h2").textContent = p.cim[nyelv];
     k.querySelector(".makro-leiras").textContent = p.leiras[nyelv];
     k.querySelector("pre code").textContent = kod;

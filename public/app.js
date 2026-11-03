@@ -25,10 +25,16 @@ const $ = (id) => document.getElementById(id);
    NYELV
    ====================================================== */
 
-let nyelv = "hu";
+// Alapnyelv: szlovák. Az eddig elmentett magyar beállítást EGYSZER átállítjuk szlovákra,
+// utána mindig azt használjuk, amit a látogató a nyelvváltóval választ.
+let nyelv = "sk";
 try {
   const mentett = localStorage.getItem("nyelv");
-  if (NYELVEK[mentett]) nyelv = mentett;
+  if (!localStorage.getItem("nyelvAlapSk")) {
+    localStorage.setItem("nyelvAlapSk", "1");
+    if (mentett === "hu") localStorage.removeItem("nyelv");
+  } else if (NYELVEK[mentett]) nyelv = mentett;
+  if (mentett && mentett !== "hu" && NYELVEK[mentett]) nyelv = mentett;
 } catch {}
 
 // Szöveg lekérése az aktuális nyelven, {valtozo} helyettesítéssel
@@ -824,6 +830,7 @@ function fvKartya(fv) {
     p.textContent = t("fn_unverified");
     div.appendChild(p);
   }
+  if (typeof kedvencCsillag === "function") kedvencCsillag(div.querySelector(".fv-fej"), "fv", fv.en);
   return div;
 }
 
@@ -1226,6 +1233,7 @@ function makroKartya(m) {
     pre.hidden = !pre.hidden;
     kodGomb.querySelector("span").textContent = pre.hidden ? t("show_code") : t("hide_code");
   });
+  if (typeof kedvencCsillag === "function") kedvencCsillag(kartya.querySelector(".makro-fej"), kedvencMakroTipus(m), m.cim.hu);
   kartya.querySelector(".masol-makro").addEventListener("click", () => { masol(kod, "macro_copied"); if (typeof esemenyKuld === "function") esemenyKuld("masol", m.cim.hu); });
   return kartya;
 }

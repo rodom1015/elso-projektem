@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="sk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -237,6 +237,17 @@
         <div><strong class="tabular" data-szam="makro">0</strong><span data-i18n="cnt_macros"></span></div>
         <div><strong class="tabular" data-szam="mkod">0</strong><span data-i18n="cnt_mcode"></span></div>
         <div><strong class="tabular" data-szam="latogato">0</strong><span data-i18n="cnt_visitors"></span></div>
+      </section>
+
+      <!-- Kedvencek és legutóbb használt -->
+      <section class="kartya kedvencek-blokk" id="kedvencek-blokk">
+        <div class="kedv-fej"><h2 data-i18n="kv_title"></h2><span class="halvany-szoveg kicsi-szoveg" data-i18n="kv_device"></span></div>
+        <div class="kedv-lista" id="kedv-lista"></div>
+        <p class="halvany-szoveg kicsi-szoveg" id="kedv-ures" data-i18n="kv_empty"></p>
+        <div class="kedv-legutobb" id="kedv-legutobb-doboz" hidden>
+          <h3 data-i18n="kv_recent"></h3>
+          <div class="kedv-lista" id="kedv-legutobb"></div>
+        </div>
       </section>
 
       <!-- 3. Mit találsz itt? -->
@@ -488,8 +499,15 @@
         </div>
       </header>
 
+      <div class="kapcsolo szalag esz-fulek" id="esz-fulek">
+        <button type="button" data-resz="fordito" data-i18n="esz_t_fordito"></button>
+        <button type="button" data-resz="excel" data-i18n="esz_t_excel"></button>
+        <button type="button" data-resz="szoveg" data-i18n="esz_t_szoveg"></button>
+        <button type="button" data-resz="qr" data-i18n="esz_t_qr"></button>
+      </div>
+
       <!-- Képletfordító -->
-      <article class="kartya forditó" id="kepletforditó">
+      <article class="kartya forditó" id="kepletforditó" data-resz="fordito">
         <div class="kartya-fej"><div><h2 data-i18n="tr_title"></h2><p class="halvany-szoveg" data-i18n="tr_sub"></p></div></div>
         <label class="mezo"><span data-i18n="tr_input"></span>
           <textarea id="tr-be" rows="3" spellcheck="false" data-i18n-ph="tr_ph"></textarea>
@@ -510,18 +528,64 @@
       </article>
 
       <!-- Excel eszközök -->
-      <article class="kartya excel-eszkozok">
+      <article class="kartya excel-eszkozok" data-resz="excel">
         <div class="kartya-fej"><h2 data-i18n="xt_title"></h2></div>
-        <div class="kapcsolo ot" id="xt-fulek">
+        <div class="kapcsolo szalag" id="xt-fulek">
           <button type="button" data-ful="kimutatas" data-i18n="xt_pivot"></button>
           <button type="button" data-ful="osszehasonlitas" data-i18n="xt_compare"></button>
           <button type="button" data-ful="ismetlodes" data-i18n="xt_dupes"></button>
           <button type="button" data-ful="atalakitas" data-i18n="xt_convert"></button>
           <button type="button" data-ful="egyesites" data-i18n="xt_merge"></button>
+          <button type="button" data-ful="tisztito" data-i18n="xt_clean"></button>
+          <button type="button" data-ful="szetvalogat" data-i18n="xt_split"></button>
         </div>
         <p class="halvany-szoveg" id="xt-leiras"></p>
         <div id="xt-panel"></div>
         <div id="xt-eredmeny"></div>
+      </article>
+
+      <!-- Szövegeszközök -->
+      <article class="kartya szoveg-eszkozok" data-resz="szoveg" hidden>
+        <div class="kartya-fej"><div><h2 data-i18n="sz_title"></h2><p class="halvany-szoveg" data-i18n="sz_sub"></p></div></div>
+        <textarea id="sz-be" rows="10" spellcheck="false" data-i18n-ph="sz_ph"></textarea>
+        <div class="sz-statok tabular" id="sz-statok"></div>
+        <div class="sz-csoportok" id="sz-gombok"></div>
+        <div class="sz-osszefuz">
+          <label class="mezo"><span data-i18n="sz_sep"></span><select id="sz-elv"></select></label>
+          <label class="jelolo"><input type="checkbox" id="sz-idezo"><span data-i18n="sz_quote"></span></label>
+          <button type="button" class="gomb masodlagos kicsi" id="sz-fuz" data-i18n="sz_join"></button>
+          <button type="button" class="gomb masodlagos kicsi" id="sz-bont" data-i18n="sz_split"></button>
+        </div>
+        <div class="sz-also">
+          <button type="button" class="gomb masodlagos kicsi" id="sz-vissza">↶ <span data-i18n="tb_undo"></span></button>
+          <button type="button" class="gomb masodlagos kicsi" id="sz-torol" data-i18n="sz_clear"></button>
+          <button type="button" class="gomb fo kicsi" id="sz-masol"><span data-i18n="sz_copy"></span></button>
+        </div>
+      </article>
+
+      <!-- QR-kód készítő -->
+      <article class="kartya qr-keszito" data-resz="qr" hidden>
+        <div class="kartya-fej"><div><h2 data-i18n="qk_title"></h2><p class="halvany-szoveg" data-i18n="qk_sub"></p></div></div>
+        <div class="qk-racs">
+          <div class="qk-bal">
+            <div class="kapcsolo szalag" id="qk-tipus"></div>
+            <div class="qk-mezok" id="qk-mezok"></div>
+            <div class="qk-beall">
+              <label class="mezo"><span data-i18n="qk_color"></span><input type="color" id="qk-szin" value="#111827"></label>
+              <label class="mezo"><span data-i18n="qk_bg"></span><input type="color" id="qk-hatter" value="#ffffff"></label>
+              <label class="mezo"><span data-i18n="qk_size"></span><select id="qk-meret"><option value="256">256 px</option><option value="512" selected>512 px</option><option value="1024">1024 px</option></select></label>
+              <label class="mezo"><span data-i18n="qk_ecl"></span><select id="qk-ecl"><option value="L">L (7%)</option><option value="M" selected>M (15%)</option><option value="Q">Q (25%)</option><option value="H">H (30%)</option></select></label>
+            </div>
+          </div>
+          <div class="qk-jobb">
+            <div class="qk-kep" id="qk-kep"></div>
+            <p class="halvany-szoveg kicsi-szoveg qk-tartalom" id="qk-tartalom"></p>
+            <div class="qk-gombok">
+              <button type="button" class="gomb fo kicsi" id="qk-png">⬇ PNG</button>
+              <button type="button" class="gomb masodlagos kicsi" id="qk-svg">⬇ SVG</button>
+            </div>
+          </div>
+        </div>
       </article>
     </section>
 
@@ -1111,6 +1175,7 @@
 <script src="idojaras.js"></script>
 <script src="megosztas.js"></script>
 <script src="eszkozok.js"></script>
+<script src="eszkozok2.js"></script>
 <script src="pq-oldal.js"></script>
 <script src="outlook-oldal.js"></script>
 <script src="paletta.js"></script>
@@ -1124,5 +1189,6 @@
 <script src="elemzo.js"></script>
 <script src="pdf-eszkozok.js"></script>
 <script src="admin.js"></script>
+<script src="kedvencek.js"></script>
 </body>
 </html>

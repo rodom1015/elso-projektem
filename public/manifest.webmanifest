@@ -2,7 +2,7 @@
   "name": "rodom – Excel központ",
   "short_name": "rodom",
   "description": "Titkosított fájltároló, Excel súgó, eszközök és kalkulátorok",
-  "lang": "hu",
+  "lang": "sk",
   "start_url": "/#/kezdolap",
   "scope": "/",
   "display": "standalone",

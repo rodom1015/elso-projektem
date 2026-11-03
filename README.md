@@ -12,6 +12,10 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📄 **PDF eszközök**: egyesítés, kivonás és szétvágás, forgatás, oldalak törlése, képekből PDF, oldalszámozás, vízjel – a böngészőben (pdf-lib)
 - 🛡️ **Admin oldal**: statisztika (oldalak, országok, eszközök, AI használat), belépési napló (sikeres és hibás próbálkozások), AI beállítások
 - 🧭 **Csoportosított menü** (Munkaterület, Súgók, Eszközök, Admin), telefonon alsó menüsáv és kihúzható menü
+- ⭐ **Kedvencek és legutóbb megnyitott**: csillag az oldalakon, makrókon, M kódokon és függvényeken, a kezdőlapon gyors elérés
+- 📝 **Szövegeszközök**: rendezés, ismétlődések, ékezetek, kis-nagybetű, összefűzés vesszővel, szétbontás, számlálók
+- 🔳 **QR-kód készítő**: link, szöveg, Wi-Fi, névjegy, e-mail – PNG / SVG letöltés, saját színekkel
+- 🧹 **Adattisztító** és ✂️ **Szétválogató** (Excel eszközök): szóközök, szövegként tárolt számok és dátumok, üres sorok, ismétlődések; lap szétbontása oszlop szerint lapokra vagy fájlokra
 - 🏠 **Kezdőlap** igazi weboldal felépítéssel: nyitókép, animált számlálók, szolgáltatások, újdonságok, lábléc
 - 👥 **Látogatószámláló** (napi egyedi látogatók, 30 napos grafikon; D1 adatbázissal vagy anélkül)
 - 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 36 makró és 15 tipp – közös keresővel
@@ -31,7 +35,7 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 🌤️ Időjárás (Open-Meteo): óránkénti grafikon, 7 napos előrejelzés, városválasztás
 - 🎨 Témák: 9 téma (köztük ünnepi hóeséssel), világos/sötét/automatikus mód, háttér, betűméret, tömör nézet
 - ⌨️ **Ctrl + K gyorskereső**: oldalak, függvények, billentyűk, makrók, fájlok – ékezet nélkül is
-- 🌍 Három nyelv: magyar (alap), szlovák, angol
+- 🌍 Három nyelv: szlovák (alap), magyar, angol
 - 🛡️ 10 hibás jelszó után 15 perc tiltás · 15 perc tétlenség után automatikus kilépés
 - 🌙 Sötét mód, telefonon is működik
 - 💸 **Ingyenes** (Cloudflare Workers + KV, bankkártya nélkül)
@@ -64,6 +68,8 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/keplet-motor.js`, `public/tabla.js` | képletmotor és táblázatszerkesztő |
 | `public/elemzo.js` | Excel-elemző és SVG grafikonok |
 | `public/pdf-eszkozok.js` | PDF eszközök |
+| `public/eszkozok2.js` | szövegeszközök, QR-kód készítő, adattisztító, szétválogató |
+| `public/kedvencek.js` | kedvencek és legutóbb megnyitott oldalak |
 | `public/admin.js` | admin oldal: statisztika, belépési napló, AI beállítások |
 | `public/paletta.js` | Ctrl + K gyorskereső |
 | `public/qr.js` | belépés QR kóddal |
