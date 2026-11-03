@@ -16,6 +16,10 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 - 📝 **Szövegeszközök**: rendezés, ismétlődések, ékezetek, kis-nagybetű, összefűzés vesszővel, szétbontás, számlálók
 - 🔳 **QR-kód készítő**: link, szöveg, Wi-Fi, névjegy, e-mail – PNG / SVG letöltés, saját színekkel
 - 🧹 **Adattisztító** és ✂️ **Szétválogató** (Excel eszközök): szóközök, szövegként tárolt számok és dátumok, üres sorok, ismétlődések; lap szétbontása oszlop szerint lapokra vagy fájlokra
+- 🎓 **Excel Akadémia**: 15 interaktív lecke kezdőtől haladóig (SZUM-tól INDEX/HOL.VAN-ig) – a beírt képletet azonnal ellenőrzi
+- 🔍 **Képletmagyarázó és -ellenőrző**: részekre bontja a képletet, és figyelmeztet a tipikus hibákra (hiányzó pontos egyezés, rögzítés, elírt függvény…)
+- ❓ **Kvíz** (függvények, billentyűk, hibaértékek – kezdő és haladó) és ⌨️ **Billentyű-gyakorló** (Excel, Word, Outlook)
+- 📑 **Excel sablonok**: munkaidő-nyilvántartás ünnepnapokkal, szabadság, költségvetés, árajánlat ÁFÁ-val, raktár – képletekkel, formázva
 - 🏠 **Kezdőlap** igazi weboldal felépítéssel: nyitókép, animált számlálók, szolgáltatások, újdonságok, lábléc
 - 👥 **Látogatószámláló** (napi egyedi látogatók, 30 napos grafikon; D1 adatbázissal vagy anélkül)
 - 📚 **Excel súgó** egy oldalon, fülekkel (mint a Word súgó): 114 függvény (köztük 17 új Excel 2024 függvény), 93 billentyűparancs, 36 makró és 15 tipp – közös keresővel
@@ -70,6 +74,9 @@ Saját, jelszóval védett oldal: otthon feltöltöm az Excel fájljaimat, munk�
 | `public/pdf-eszkozok.js` | PDF eszközök |
 | `public/eszkozok2.js` | szövegeszközök, QR-kód készítő, adattisztító, szétválogató |
 | `public/kedvencek.js` | kedvencek és legutóbb megnyitott oldalak |
+| `public/akademia.js`, `public/kviz.js`, `public/gyakorlo.js` | Excel Akadémia, kvíz, billentyű-gyakorló |
+| `public/kepletmagyarazo.js` | képletmagyarázó és -ellenőrző |
+| `public/sablonok.js` | Excel sablonok és közös xlsx-formázó |
 | `public/admin.js` | admin oldal: statisztika, belépési napló, AI beállítások |
 | `public/paletta.js` | Ctrl + K gyorskereső |
 | `public/qr.js` | belépés QR kóddal |

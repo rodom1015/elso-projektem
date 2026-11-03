@@ -74,6 +74,27 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6zM14 3v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 13h8M8 17h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             <span data-i18n="nav_pdf"></span><em class="menu-uj" data-i18n="nav_new"></em>
           </a>
+          <a href="#/sablonok" data-oldal="sablonok" class="menu-pont">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span data-i18n="nav_templates"></span><em class="menu-uj" data-i18n="nav_new"></em>
+          </a>
+        </div>
+      </div>
+      <div class="menu-csoport" data-csoport="tanulas">
+        <button type="button" class="menu-csoport-fej"><span data-i18n="nav_g_learn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <div class="menu-csoport-test">
+          <a href="#/tanulas" data-oldal="tanulas" class="menu-pont">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5M22 9v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span data-i18n="nav_academy"></span><em class="menu-uj" data-i18n="nav_new"></em>
+          </a>
+          <a href="#/kviz" data-oldal="kviz" class="menu-pont">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></svg>
+            <span data-i18n="nav_quiz"></span><em class="menu-uj" data-i18n="nav_new"></em>
+          </a>
+          <a href="#/gyakorlo" data-oldal="gyakorlo" class="menu-pont">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span data-i18n="nav_trainer"></span><em class="menu-uj" data-i18n="nav_new"></em>
+          </a>
         </div>
       </div>
       <div class="menu-csoport" data-csoport="sugo">
@@ -262,6 +283,13 @@
           <a href="#/tabla" class="szolg-kartya"><span class="szolg-ikon zold">📝</span><strong data-i18n="nav_sheet"></strong><span data-i18n="svc_sheet"></span><em>→</em></a>
           <a href="#/elemzo" class="szolg-kartya"><span class="szolg-ikon kek">📊</span><strong data-i18n="nav_analyze"></strong><span data-i18n="svc_analyze"></span><em>→</em></a>
           <a href="#/pdf" class="szolg-kartya"><span class="szolg-ikon narancs">📄</span><strong data-i18n="nav_pdf"></strong><span data-i18n="svc_pdf"></span><em>→</em></a>
+        </div>
+        <h3 class="szolg-csoport" data-i18n="svc_g_learn"></h3>
+        <div class="szolgaltatasok kiemelt">
+          <a href="#/tanulas" class="szolg-kartya"><span class="szolg-ikon zold">🎓</span><strong data-i18n="nav_academy"></strong><span data-i18n="svc_academy"></span><em>→</em></a>
+          <a href="#/eszkozok/magyaraz" class="szolg-kartya"><span class="szolg-ikon kek">🔍</span><strong data-i18n="nav_explain"></strong><span data-i18n="svc_explain"></span><em>→</em></a>
+          <a href="#/kviz" class="szolg-kartya"><span class="szolg-ikon lila">❓</span><strong data-i18n="nav_quiz"></strong><span data-i18n="svc_quiz"></span><em>→</em></a>
+          <a href="#/sablonok" class="szolg-kartya"><span class="szolg-ikon narancs">📑</span><strong data-i18n="nav_templates"></strong><span data-i18n="svc_templates"></span><em>→</em></a>
         </div>
         <h3 class="szolg-csoport" data-i18n="svc_g_help"></h3>
         <div class="szolgaltatasok" id="szolgaltatasok">
@@ -501,6 +529,7 @@
 
       <div class="kapcsolo szalag esz-fulek" id="esz-fulek">
         <button type="button" data-resz="fordito" data-i18n="esz_t_fordito"></button>
+        <button type="button" data-resz="magyaraz" data-i18n="km_tab"></button>
         <button type="button" data-resz="excel" data-i18n="esz_t_excel"></button>
         <button type="button" data-resz="szoveg" data-i18n="esz_t_szoveg"></button>
         <button type="button" data-resz="qr" data-i18n="esz_t_qr"></button>
@@ -542,6 +571,14 @@
         <p class="halvany-szoveg" id="xt-leiras"></p>
         <div id="xt-panel"></div>
         <div id="xt-eredmeny"></div>
+      </article>
+
+      <!-- Képletmagyarázó -->
+      <article class="kartya km-kartya" data-resz="magyaraz" hidden>
+        <div class="kartya-fej"><div><h2 data-i18n="km_title"></h2><p class="halvany-szoveg" data-i18n="km_sub"></p></div></div>
+        <textarea id="km-be" rows="3" spellcheck="false" data-i18n-ph="km_ph"></textarea>
+        <div class="ai-peldak km-peldak" id="km-peldak"></div>
+        <div id="km-ki"></div>
       </article>
 
       <!-- Szövegeszközök -->
@@ -1047,6 +1084,72 @@
       </section>
     </section>
 
+    <!-- ========== EXCEL AKADÉMIA ========== -->
+    <section class="oldal" id="oldal-tanulas" hidden>
+      <header class="oldal-fej"><div><h1 data-i18n="nav_academy"></h1><p class="hos-alcim" data-i18n="ak_sub"></p></div></header>
+      <div class="ak-racs">
+        <aside class="kartya ak-oldal">
+          <div class="ak-haladas"><span id="ak-haladas"></span><div class="ak-haladas-sav"><div id="ak-haladas-sav"></div></div></div>
+          <nav class="ak-lista" id="ak-lista"></nav>
+          <button type="button" class="link-gomb ak-torles" id="ak-torles" data-i18n="ak_reset"></button>
+        </aside>
+        <article class="kartya ak-lecke">
+          <div class="ak-fej"><span class="ak-szint" id="ak-szint"></span><h2 id="ak-cim"></h2></div>
+          <p class="ak-leiras" id="ak-leiras"></p>
+          <div class="ak-szintaxis-doboz" id="ak-szintaxis-doboz"><span data-i18n="ak_syntax"></span><code id="ak-szintaxis"></code></div>
+          <div class="ak-feladat-doboz"><strong data-i18n="ak_task"></strong> <span id="ak-feladat"></span></div>
+          <div class="ak-tabla" id="ak-tabla"></div>
+          <div class="ak-beviteli">
+            <span class="tb-fx">ƒx</span>
+            <input type="text" id="ak-be" spellcheck="false" autocomplete="off">
+            <button type="button" class="gomb fo" id="ak-ellenoriz" data-i18n="ak_check"></button>
+          </div>
+          <p class="ak-visszajelzes" id="ak-visszajelzes" role="status"></p>
+          <div class="ak-gombok">
+            <button type="button" class="gomb masodlagos kicsi" id="ak-tipp">💡 <span data-i18n="ak_hint"></span></button>
+            <button type="button" class="gomb masodlagos kicsi" id="ak-megoldas">👀 <span data-i18n="ak_solution"></span></button>
+            <button type="button" class="gomb fo kicsi" id="ak-kov" hidden data-i18n="ak_next"></button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ========== KVÍZ ========== -->
+    <section class="oldal" id="oldal-kviz" hidden>
+      <header class="oldal-fej"><div><h1 data-i18n="nav_quiz"></h1><p class="hos-alcim" data-i18n="kv2_sub"></p></div></header>
+      <div class="kartya kv2-beall">
+        <label class="mezo"><span data-i18n="kv2_level"></span><div class="kapcsolo szalag" id="kv2-szint"></div></label>
+        <label class="mezo"><span data-i18n="kv2_topic"></span><div class="kapcsolo szalag" id="kv2-tema"></div></label>
+        <span class="halvany-szoveg kicsi-szoveg" id="kv2-legjobb"></span>
+      </div>
+      <section class="kartya kv2-jatek" id="kv2-jatek"></section>
+    </section>
+
+    <!-- ========== BILLENTYŰ-GYAKORLÓ ========== -->
+    <section class="oldal" id="oldal-gyakorlo" hidden>
+      <header class="oldal-fej"><div><h1 data-i18n="nav_trainer"></h1><p class="hos-alcim" data-i18n="gy_sub"></p></div></header>
+      <div class="kartya kv2-beall">
+        <label class="mezo"><span data-i18n="gy_program"></span><div class="kapcsolo szalag" id="gy-prog"></div></label>
+        <label class="mezo"><span data-i18n="gy_count"></span><div class="kapcsolo szalag" id="gy-db"></div></label>
+        <span class="halvany-szoveg kicsi-szoveg" id="gy-legjobb"></span>
+      </div>
+      <section class="kartya kv2-jatek gy-jatek">
+        <div id="gy-jatek"></div>
+        <div class="gy-mezo" id="gy-mezo" tabindex="0" hidden>
+          <span class="gy-allapot" id="gy-allapot"></span>
+          <div class="gy-lenyomva" id="gy-lenyomva"></div>
+          <small class="halvany-szoveg" data-i18n="gy_focus"></small>
+        </div>
+        <p class="halvany-szoveg kicsi-szoveg" data-i18n="gy_note"></p>
+      </section>
+    </section>
+
+    <!-- ========== SABLONOK ========== -->
+    <section class="oldal" id="oldal-sablonok" hidden>
+      <header class="oldal-fej"><div><h1 data-i18n="nav_templates"></h1><p class="hos-alcim" data-i18n="sb_sub"></p></div></header>
+      <div class="sablon-racs" id="sb-lista"></div>
+    </section>
+
     <!-- ========== ADMIN ========== -->
     <section class="oldal" id="oldal-admin" hidden>
       <header class="oldal-fej">
@@ -1191,6 +1294,11 @@
 <script src="elemzo.js"></script>
 <script src="pdf-eszkozok.js"></script>
 <script src="admin.js"></script>
+<script src="sablonok.js"></script>
+<script src="akademia.js"></script>
+<script src="kviz.js"></script>
+<script src="gyakorlo.js"></script>
+<script src="kepletmagyarazo.js"></script>
 <script src="kedvencek.js"></script>
 </body>
 </html>

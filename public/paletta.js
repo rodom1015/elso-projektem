@@ -16,7 +16,7 @@ function palettaElemek() {
     if (mezo) setTimeout(() => { $(mezo).value = ertek; $(mezo).dispatchEvent(new Event("input")); }, 30);
   };
 
-  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W", outlook: "O", ai: "✨", tabla: "📝", elemzo: "📊", pdf: "📄", admin: "🛡️" };
+  const ikonok = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W", outlook: "O", ai: "✨", tabla: "📝", elemzo: "📊", pdf: "📄", admin: "🛡️", tanulas: "🎓", kviz: "❓", gyakorlo: "⌨️", sablonok: "📑" };
   for (const o of OLDALAK) add("cp_pages", ikonok[o], t(OLDAL_NEVEK[o]), "", t(OLDAL_NEVEK[o]) + " " + o, ugras(o));
 
   if (titkositoKulcs) for (const f of fajlok)

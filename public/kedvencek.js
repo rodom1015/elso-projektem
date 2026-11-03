@@ -43,7 +43,7 @@ function kvElem(k) {
   const keres = (lista) => lista.find((x) => x.cim.hu === k.id);
   if (k.t === "oldal") {
     if (!OLDAL_NEVEK[k.id]) return null;
-    const ikon = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W", outlook: "O", ai: "✨", tabla: "📝", elemzo: "📊", pdf: "📄", admin: "🛡️" }[k.id] || "•";
+    const ikon = { kezdolap: "🏠", fajlok: "📁", eszkozok: "🧰", szamolas: "🧮", excel: "X", powerquery: "PQ", word: "W", outlook: "O", ai: "✨", tabla: "📝", elemzo: "📊", pdf: "📄", admin: "🛡️", tanulas: "🎓", kviz: "❓", gyakorlo: "⌨️", sablonok: "📑" }[k.id] || "•";
     return { ikon, cim: t(OLDAL_NEVEK[k.id]), al: t("kv_t_oldal"), nyit: () => (location.hash = "#/" + k.id) };
   }
   if (k.t === "makro" || k.t === "wmakro" || k.t === "omakro") {

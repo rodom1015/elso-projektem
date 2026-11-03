@@ -98,7 +98,7 @@ Object.assign(SZOVEGEK.en, {
 /* ======================================================
    AZ ESZKÖZÖK OLDAL FÜLEI
    ====================================================== */
-const ESZ_RESZEK = ["fordito", "excel", "szoveg", "qr"];
+const ESZ_RESZEK = ["fordito", "magyaraz", "excel", "szoveg", "qr"];
 let eszResz = "fordito";
 try { if (ESZ_RESZEK.includes(localStorage.getItem("eszResz"))) eszResz = localStorage.getItem("eszResz"); } catch {}
 

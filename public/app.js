@@ -110,12 +110,12 @@ function forditasAlkalmaz() {
    MENÜ ÉS OLDALAK
    ====================================================== */
 
-const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "powerquery", "word", "outlook", "ai", "tabla", "elemzo", "pdf", "admin"];
+const OLDALAK = ["kezdolap", "fajlok", "eszkozok", "szamolas", "excel", "powerquery", "word", "outlook", "ai", "tabla", "elemzo", "pdf", "admin", "tanulas", "kviz", "gyakorlo", "sablonok"];
 // Az új modulok (AI, elemző…) ide teszik, mi fusson le, amikor megnyílik az oldaluk
 const oldalHookok = {};
 // A régi címek (pl. a gyorskeresőből) az Excel oldal megfelelő fülére visznek
 const OLDAL_ALIASOK = { fuggvenyek: ["excel", "fuggvenyek"], billentyuk: ["excel", "billentyuk"], makrok: ["excel", "makrok"] };
-const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", powerquery: "pq_title", word: "word_title", outlook: "ol_title", ai: "nav_ai", tabla: "nav_sheet", elemzo: "nav_analyze", pdf: "nav_pdf", admin: "nav_admin", eszkozok: "tools_title", megosztas: "sh_page_title" };
+const OLDAL_NEVEK = { kezdolap: "nav_home", fajlok: "nav_files", szamolas: "calc_title", fuggvenyek: "nav_functions", billentyuk: "nav_shortcuts", makrok: "nav_macros", excel: "excel_title", powerquery: "pq_title", word: "word_title", outlook: "ol_title", ai: "nav_ai", tabla: "nav_sheet", elemzo: "nav_analyze", pdf: "nav_pdf", admin: "nav_admin", tanulas: "nav_academy", kviz: "nav_quiz", gyakorlo: "nav_trainer", sablonok: "nav_templates", eszkozok: "tools_title", megosztas: "sh_page_title" };
 
 // A többi modul (időjárás, eszközök…) ide teszi a függvényét, ami nyelvváltáskor lefut
 const forditasHookok = [];

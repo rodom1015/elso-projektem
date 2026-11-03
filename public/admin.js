@@ -57,7 +57,7 @@ let adAdat = null;
 
 const zaszlo = (kod) => (/^[A-Z]{2}$/.test(kod || "") ? String.fromCodePoint(...[...kod].map((c) => 127397 + c.charCodeAt(0))) : "🌐");
 const orszagNev = (kod) => { try { return new Intl.DisplayNames([locale()], { type: "region" }).of(kod); } catch { return kod; } };
-const OLDAL_IKON = { kezdolap: "🏠", fajlok: "📁", ai: "🤖", tabla: "📝", elemzo: "📊", pdf: "📄", excel: "X", powerquery: "PQ", word: "W", outlook: "O", eszkozok: "🧰", szamolas: "🧮", admin: "🛡️" };
+const OLDAL_IKON = { kezdolap: "🏠", fajlok: "📁", ai: "🤖", tabla: "📝", elemzo: "📊", pdf: "📄", excel: "X", powerquery: "PQ", word: "W", outlook: "O", eszkozok: "🧰", szamolas: "🧮", admin: "🛡️", tanulas: "🎓", kviz: "❓", gyakorlo: "⌨️", sablonok: "📑" };
 
 async function adBetolt() {
   if (!titkositoKulcs) return adRajzol();

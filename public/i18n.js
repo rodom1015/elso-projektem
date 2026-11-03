@@ -495,3 +495,20 @@ Object.assign(SZOVEGEK.en, {
   svc_ai: "Ask and get a ready formula, macro or M code", svc_sheet: "Edit an Excel file in your browser", svc_analyze: "Summary and chart in one click", svc_pdf: "Merge, split, rotate, watermark",
   svc_g_work: "Workspace and AI", svc_g_help: "Help and tools",
 });
+
+/* Tanulás, sablonok – feliratok */
+Object.assign(SZOVEGEK.hu, {
+  nav_g_learn: "Tanulás", nav_academy: "Excel Akadémia", nav_quiz: "Kvíz", nav_trainer: "Billentyű-gyakorló", nav_templates: "Excel sablonok", nav_explain: "Képletmagyarázó",
+  svc_g_learn: "Tanulás és sablonok", svc_academy: "Interaktív leckék kezdőtől haladóig, azonnali ellenőrzéssel", svc_explain: "Bonyolult képlet részenként elmagyarázva + hibakereső",
+  svc_quiz: "Teszteld a tudásod – mindig új kérdésekkel", svc_templates: "Munkaidő, szabadság, költségvetés, árajánlat, raktár",
+});
+Object.assign(SZOVEGEK.sk, {
+  nav_g_learn: "Učenie", nav_academy: "Excel akadémia", nav_quiz: "Kvíz", nav_trainer: "Tréner skratiek", nav_templates: "Šablóny Excel", nav_explain: "Vysvetlenie vzorca",
+  svc_g_learn: "Učenie a šablóny", svc_academy: "Interaktívne lekcie od začiatočníka po pokročilého s okamžitou kontrolou", svc_explain: "Zložitý vzorec vysvetlený po častiach + hľadanie chýb",
+  svc_quiz: "Otestuj si vedomosti – vždy nové otázky", svc_templates: "Dochádzka, dovolenky, rozpočet, cenová ponuka, sklad",
+});
+Object.assign(SZOVEGEK.en, {
+  nav_g_learn: "Learning", nav_academy: "Excel Academy", nav_quiz: "Quiz", nav_trainer: "Shortcut trainer", nav_templates: "Excel templates", nav_explain: "Formula explainer",
+  svc_g_learn: "Learning and templates", svc_academy: "Interactive lessons from beginner to advanced, checked instantly", svc_explain: "A complex formula explained part by part + error finder",
+  svc_quiz: "Test your knowledge – always new questions", svc_templates: "Timesheet, leave, budget, price quote, stock",
+});
