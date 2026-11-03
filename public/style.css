@@ -1844,3 +1844,17 @@ body.megosztas-mod .lablec { display: none; }
   .sz-csoport-cim { width: 100%; }
 }
 .ez-bezar { margin-left: 4px; }
+.ai-keret-figy { margin: 0; padding: 12px 16px; border-radius: 12px; background: color-mix(in srgb, #f59e0b 14%, var(--kartya)); border: 1px solid color-mix(in srgb, #f59e0b 40%, transparent); font-weight: 600; }
+.ai-info-elfogyott { color: var(--veszely); font-weight: 600; }
+.ai-urlap textarea:disabled, .ai-urlap .gomb:disabled { opacity: .5; cursor: not-allowed; }
+.ad-ai-ma { display: grid; gap: 8px; }
+.ad-ai-ma h3 { margin: 0 0 4px; font-size: 1rem; }
+.ad-ai-ma p { margin: 0; }
+.ad-ai-ma.elfogyott { border-color: color-mix(in srgb, var(--veszely) 45%, transparent); }
+.ad-keret-sav { height: 12px; border-radius: 99px; background: var(--mezo); overflow: hidden; }
+.ad-keret-sav div { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--grad-a), var(--grad-b)); transition: width .4s; }
+.ad-keret-sav div.sarga { background: #f59e0b; }
+.ad-keret-sav div.piros { background: var(--veszely); }
+.ad-keret-szoveg { font-weight: 700; }
+.ad-keret-allapot { font-weight: 600; }
+.ad-ai-ma.elfogyott .ad-keret-allapot { color: var(--veszely); }

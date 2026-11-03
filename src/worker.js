@@ -340,6 +340,66 @@ const AI_MODELLEK = {
   gyors: "@cf/meta/llama-3.1-8b-instruct-fast",        // gyorsabb, sokkal több kérdés, de gyengébb
 };
 const AI_ALAP = { nyilvanos: false, napi: 3, modell: "okos" };
+// A Cloudflare ingyenes napi kerete (UTC éjfélkor újraindul) és a modellek ára neuronban / 1 millió token
+const AI_NAPI_NEURON = 10000;
+const AI_NEURON_AR = {
+  okos: { be: 26668, ki: 204805 },   // llama-3.3-70b-instruct-fp8-fast
+  gyors: { be: 4119, ki: 34868 },    // llama-3.1-8b-instruct-fast
+};
+const AI_ATLAG_NEURON = { okos: 160, gyors: 30 }; // becslés egy átlagos kérdésre, ha még nincs mai adat
+const elfogyottKulcs = () => `ai:elfogyott:${maiNap()}`;
+const ipCim = (request) => request.headers.get("CF-Connecting-IP") || "ismeretlen";
+
+// Mai AI használat: kérdések (tulaj / látogató), elhasznált neuron, elfogyott-e
+async function aiMaiHasznalat(env) {
+  const ki = { tulaj: 0, latogato: 0, neuron: 0, elfogyott: await env.FILES.get(elfogyottKulcs()) };
+  if (env.DB) {
+    await tablak(env);
+    const r = await env.DB.prepare("SELECT tipus, nev, db FROM stat WHERE nap = ? AND tipus IN ('ai', 'ai_neuron')").bind(maiNap()).all();
+    for (const x of r.results) {
+      if (x.tipus === "ai" && (x.nev === "tulaj" || x.nev === "latogato")) ki[x.nev] = x.db;
+      if (x.tipus === "ai_neuron") ki.neuron += x.db;
+    }
+  } else {
+    ki.neuron = parseInt((await env.FILES.get(`ai:neuron:${maiNap()}`)) || "0", 10);
+  }
+  return ki;
+}
+
+// A válasz-folyamból kiolvassa a token-felhasználást (vagy a szöveg hosszából becsli), és elmenti neuronban
+async function aiFelhasznalasMent(env, folyam, modellKulcs, bemenetKarakter) {
+  const olvaso = folyam.getReader(), dek = new TextDecoder();
+  let puffer = "", kimenetKarakter = 0, hasznalat = null;
+  for (;;) {
+    const { value, done } = await olvaso.read();
+    if (done) break;
+    puffer += dek.decode(value, { stream: true });
+    const sorok = puffer.split("\n");
+    puffer = sorok.pop();
+    for (const sor of sorok) {
+      if (!sor.startsWith("data:")) continue;
+      const adat = sor.slice(5).trim();
+      if (!adat || adat === "[DONE]") continue;
+      try {
+        const j = JSON.parse(adat);
+        kimenetKarakter += (j.response || "").length;
+        if (j.usage && (j.usage.prompt_tokens || j.usage.completion_tokens)) hasznalat = j.usage;
+      } catch {}
+    }
+  }
+  const ar = AI_NEURON_AR[modellKulcs] || AI_NEURON_AR.okos;
+  const be = hasznalat ? hasznalat.prompt_tokens || 0 : Math.ceil(bemenetKarakter / 3.5);
+  const ki = hasznalat ? hasznalat.completion_tokens || 0 : Math.ceil(kimenetKarakter / 3.5);
+  const neuron = Math.max(1, Math.round((be * ar.be + ki * ar.ki) / 1e6));
+  if (env.DB) {
+    await tablak(env);
+    await env.DB.prepare("INSERT INTO stat (nap, tipus, nev, db) VALUES (?, 'ai_neuron', ?, ?) ON CONFLICT(nap, tipus, nev) DO UPDATE SET db = db + excluded.db")
+      .bind(maiNap(), modellKulcs, neuron).run();
+  } else {
+    const k = `ai:neuron:${maiNap()}`;
+    await env.FILES.put(k, String(parseInt((await env.FILES.get(k)) || "0", 10) + neuron), { expirationTtl: 3 * 86400 });
+  }
+}
 const aiBeallitas = async (env) => ({ ...AI_ALAP, ...((await env.FILES.get(AI_BEALLITAS, "json")) || {}) });
 
 const NYELV_NEV = { hu: "Hungarian", sk: "Slovak", en: "English" };
@@ -372,7 +432,16 @@ function aiRendszer(mod, nyelv) {
 
 async function aiInfo(request, env) {
   const b = await aiBeallitas(env);
-  return valasz({ elerheto: !!env.AI, nyilvanos: b.nyilvanos, napi: b.napi });
+  const [eddig, mai] = await Promise.all([
+    env.FILES.get(`aiip:${ipCim(request)}:${maiNap()}`).then((v) => parseInt(v || "0", 10)),
+    aiMaiHasznalat(env),
+  ]);
+  return valasz({
+    elerheto: !!env.AI, nyilvanos: b.nyilvanos, napi: b.napi,
+    maradt: Math.max(0, b.napi - eddig),                           // ennek a látogatónak (IP) mára
+    elfogyott: !!mai.elfogyott,                                      // az egész oldal napi AI kerete elfogyott
+    keretSzazalek: Math.min(100, Math.round((mai.neuron / AI_NAPI_NEURON) * 100)),
+  });
 }
 
 async function ai(request, env, ctx) {
@@ -398,12 +467,13 @@ async function ai(request, env, ctx) {
   if (!kerdes) return valasz({ hiba: "Üres kérdés." }, 400);
 
   // Látogatói napi korlát (csak érvényes kérdés számít)
+  let maradt = null;
   if (!tulaj) {
-    const ip = request.headers.get("CF-Connecting-IP") || "ismeretlen";
-    const kulcs = `aiip:${ip}:${maiNap()}`;
+    const kulcs = `aiip:${ipCim(request)}:${maiNap()}`;
     const eddig = parseInt((await env.FILES.get(kulcs)) || "0", 10);
-    if (eddig >= b.napi) return valasz({ hiba: "Mára elfogyott a kérdéskereted.", limit: true }, 429);
+    if (eddig >= b.napi) return valasz({ hiba: "Mára elfogyott a kérdéskereted.", limit: true, maradt: 0, napi: b.napi }, 429);
     await env.FILES.put(kulcs, String(eddig + 1), { expirationTtl: 86400 });
+    maradt = b.napi - eddig - 1;
   }
 
   // A böngésző által küldött, ellenőrzött függvényleírások (a súgó saját szótárából)
@@ -420,11 +490,21 @@ async function ai(request, env, ctx) {
   ctx.waitUntil(statNovel(env, "ai", tulaj ? "tulaj" : "latogato"));
   try {
     const folyam = await env.AI.run(modell, { messages, stream: true, max_tokens: 2048, temperature: 0.2 });
-    return new Response(folyam, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store" } });
+    // A folyamot kettéosztjuk: egyik megy a böngészőnek, a másikból megszámoljuk a felhasznált keretet
+    const [bongeszonek, merni] = folyam.tee();
+    const bemenetKarakter = messages.reduce((n, m) => n + m.content.length, 0);
+    ctx.waitUntil(aiFelhasznalasMent(env, merni, AI_MODELLEK[b.modell] ? b.modell : "okos", bemenetKarakter).catch((e) => console.error(e)));
+    const fej = { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-store" };
+    if (maradt !== null) { fej["X-AI-Maradt"] = String(maradt); fej["X-AI-Napi"] = String(b.napi); }
+    return new Response(bongeszonek, { headers: fej });
   } catch (e) {
     console.error(e);
     const uzenet = String(e && e.message || e);
-    if (/neuron|quota|limit|4006/i.test(uzenet)) return valasz({ hiba: "Mára elfogyott az ingyenes AI keret. Holnap újra működik.", keret: true }, 429);
+    if (/neuron|quota|4006|daily free allocation/i.test(uzenet)) {
+      // Megjegyezzük, hogy ma mikor fogyott el (az Admin oldal és a látogatók is látják)
+      if (!(await env.FILES.get(elfogyottKulcs()))) await env.FILES.put(elfogyottKulcs(), String(Date.now()), { expirationTtl: 2 * 86400 });
+      return valasz({ hiba: "Mára elfogyott az ingyenes AI keret. Holnap újra működik.", keret: true }, 429);
+    }
     return valasz({ hiba: "Az AI most nem érhető el. Próbáld újra kicsit később." }, 502);
   }
 }
@@ -504,7 +584,18 @@ async function admin(request, env, al) {
   }
   if (al || request.method !== "GET") return valasz({ hiba: "Nem támogatott művelet." }, 405);
 
-  const eredmeny = { db: !!env.DB, ai: { ...(await aiBeallitas(env)), elerheto: !!env.AI } };
+  const aiB = await aiBeallitas(env);
+  const mai = await aiMaiHasznalat(env);
+  const kerdesMa = mai.tulaj + mai.latogato;
+  const atlag = kerdesMa >= 3 && mai.neuron ? mai.neuron / kerdesMa : AI_ATLAG_NEURON[aiB.modell] || 160;
+  const eredmeny = {
+    db: !!env.DB, ai: { ...aiB, elerheto: !!env.AI },
+    aiMa: {
+      tulaj: mai.tulaj, latogato: mai.latogato, neuron: mai.neuron, keret: AI_NAPI_NEURON,
+      elfogyott: mai.elfogyott ? +mai.elfogyott : null,
+      maradtBecsles: mai.elfogyott ? 0 : Math.max(0, Math.floor((AI_NAPI_NEURON - mai.neuron) / atlag)),
+    },
+  };
   if (env.DB) {
     await tablak(env);
     const tol = new Date(Date.now() - 29 * 864e5).toISOString().slice(0, 10);

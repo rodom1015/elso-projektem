@@ -16,7 +16,8 @@ Object.assign(SZOVEGEK.hu, {
   ai_ph_magyaraz: "Másold be a képletet, makrót vagy hibaüzenetet, amit nem értesz",
   ai_send: "Küldés", ai_stop: "Leállítás", ai_new: "Új beszélgetés", ai_thinking: "Gondolkodom…", ai_copy: "Másolás", ai_copied: "Kód kimásolva",
   ai_locked_title: "🔒 Az AI asszisztens belépés után érhető el", ai_locked_text: "Lépj be a jelszavaddal a Fájljaim oldalon, utána itt kérdezhetsz.", ai_go_login: "Belépés",
-  ai_public_left: "Látogatóként naponta {n} kérdést tehetsz fel.", ai_owner_note: "Belépve korlátlanul kérdezhetsz (a napi ingyenes AI keretig).",
+  ai_public_left: "Látogatóként naponta {n} kérdést tehetsz fel.", ai_left: "Ma még {m} kérdésed maradt a {n}-ből.", ai_left_zero: "Mára elfogyott a {n} kérdésed – holnap újra kérdezhetsz.",
+  ai_quota_banner: "⏳ Mára elfogyott az oldal ingyenes AI kerete. Holnap (01:00 után) újra működik.", ai_quota_owner: "Mai AI keret: kb. {p}% felhasználva.", ai_owner_note: "Belépve korlátlanul kérdezhetsz (a napi ingyenes AI keretig).",
   ai_err_limit: "Mára elfogyott a kérdéskereted. Holnap újra kérdezhetsz!", ai_err_quota: "Mára elfogyott az ingyenes AI keret. Holnap újra működik.",
   ai_err_off: "Az AI még nincs bekapcsolva a Cloudflare-en.", ai_err_generic: "Az AI most nem érhető el. Próbáld újra kicsit később.",
   ai_warning: "⚠️ Az AI tévedhet. A makrókat mindig a fájl másolatán próbáld ki először!",
@@ -32,7 +33,8 @@ Object.assign(SZOVEGEK.sk, {
   ai_ph_magyaraz: "Vlož vzorec, makro alebo chybovú hlášku, ktorej nerozumieš",
   ai_send: "Odoslať", ai_stop: "Zastaviť", ai_new: "Nový rozhovor", ai_thinking: "Premýšľam…", ai_copy: "Kopírovať", ai_copied: "Kód skopírovaný",
   ai_locked_title: "🔒 AI asistent je dostupný po prihlásení", ai_locked_text: "Prihlás sa heslom na stránke Moje súbory, potom sa tu môžeš pýtať.", ai_go_login: "Prihlásiť sa",
-  ai_public_left: "Ako návštevník môžeš položiť {n} otázok denne.", ai_owner_note: "Po prihlásení sa môžeš pýtať bez obmedzenia (do denného bezplatného limitu AI).",
+  ai_public_left: "Ako návštevník môžeš položiť {n} otázok denne.", ai_left: "Dnes ti zostáva ešte {m} z {n} otázok.", ai_left_zero: "Na dnes si využil všetkých {n} otázok – zajtra sa môžeš pýtať znova.",
+  ai_quota_banner: "⏳ Na dnes sa minul bezplatný limit AI tejto stránky. Zajtra (po 01:00) bude znova fungovať.", ai_quota_owner: "Dnešný limit AI: využité asi {p} %.", ai_owner_note: "Po prihlásení sa môžeš pýtať bez obmedzenia (do denného bezplatného limitu AI).",
   ai_err_limit: "Na dnes si vyčerpal limit otázok. Zajtra môžeš znova!", ai_err_quota: "Na dnes sa minul bezplatný limit AI. Zajtra bude znova fungovať.",
   ai_err_off: "AI ešte nie je zapnutá na Cloudflare.", ai_err_generic: "AI teraz nie je dostupná. Skús to o chvíľu.",
   ai_warning: "⚠️ AI sa môže mýliť. Makrá vždy najprv vyskúšaj na kópii súboru!",
@@ -48,7 +50,8 @@ Object.assign(SZOVEGEK.en, {
   ai_ph_magyaraz: "Paste the formula, macro or error message you don't understand",
   ai_send: "Send", ai_stop: "Stop", ai_new: "New chat", ai_thinking: "Thinking…", ai_copy: "Copy", ai_copied: "Code copied",
   ai_locked_title: "🔒 The AI assistant is available after signing in", ai_locked_text: "Sign in with your password on the My files page, then you can ask here.", ai_go_login: "Sign in",
-  ai_public_left: "As a visitor you can ask {n} questions a day.", ai_owner_note: "Signed in you can ask without limits (up to the free daily AI quota).",
+  ai_public_left: "As a visitor you can ask {n} questions a day.", ai_left: "{m} of {n} questions left today.", ai_left_zero: "You've used all {n} questions for today – come back tomorrow.",
+  ai_quota_banner: "⏳ This site's free AI quota is used up for today. It works again tomorrow (after 00:00 UTC).", ai_quota_owner: "Today's AI quota: about {p}% used.", ai_owner_note: "Signed in you can ask without limits (up to the free daily AI quota).",
   ai_err_limit: "You've used up today's questions. Come back tomorrow!", ai_err_quota: "Today's free AI quota is used up. It works again tomorrow.",
   ai_err_off: "AI isn't enabled on Cloudflare yet.", ai_err_generic: "The AI isn't available right now. Try again a bit later.",
   ai_warning: "⚠️ AI can make mistakes. Always test macros on a copy of your file first!",
@@ -151,11 +154,30 @@ function aiHozzaferes() {
   return "zarva";
 }
 
+// Alsó információs sor + figyelmeztetés: hány kérdés maradt, elfogyott-e a napi keret
+function aiInfoSor() {
+  const hozzaferes = aiHozzaferes(), i = aiInfoAdat || {};
+  let szoveg = "";
+  if (hozzaferes === "tulaj") {
+    szoveg = t("ai_owner_note") + (typeof i.keretSzazalek === "number" ? " " + t("ai_quota_owner", { p: i.keretSzazalek }) : "");
+  } else if (aiInfoAdat) {
+    szoveg = typeof i.maradt === "number" ? (i.maradt > 0 ? t("ai_left", { m: i.maradt, n: i.napi }) : t("ai_left_zero", { n: i.napi })) : t("ai_public_left", { n: i.napi });
+  }
+  $("ai-info").textContent = szoveg;
+  $("ai-info").classList.toggle("ai-info-elfogyott", hozzaferes === "latogato" && i.maradt === 0);
+  $("ai-keret-figy").hidden = !i.elfogyott;
+  $("ai-keret-figy").textContent = t("ai_quota_banner");
+  // Látogatónál a küldés gomb letiltva, ha nincs több kérdése vagy elfogyott az oldal kerete
+  const tiltva = hozzaferes === "latogato" && (i.maradt === 0 || i.elfogyott);
+  $("ai-kuld").disabled = tiltva;
+  $("ai-be").disabled = tiltva;
+}
+
 function aiRajzol() {
   const hozzaferes = aiHozzaferes();
   $("ai-zar").hidden = hozzaferes !== "zarva";
   $("ai-munka").hidden = hozzaferes === "zarva";
-  $("ai-info").textContent = hozzaferes === "tulaj" ? t("ai_owner_note") : aiInfoAdat ? t("ai_public_left", { n: aiInfoAdat.napi }) : "";
+  aiInfoSor();
   // módválasztó
   const modok = $("ai-modok");
   modok.innerHTML = "";
@@ -287,10 +309,16 @@ async function aiKuld() {
     if (!v.ok) {
       let adat = {};
       try { adat = await v.json(); } catch {}
+      if (aiInfoAdat && v.status === 429) {
+        if (adat.limit) aiInfoAdat.maradt = 0;
+        if (adat.keret) aiInfoAdat.elfogyott = true;
+        aiInfoSor();
+      }
       throw Object.assign(new Error(
         v.status === 503 ? t("ai_err_off") : v.status === 429 ? (adat.keret ? t("ai_err_quota") : adat.limit ? t("ai_err_limit") : t("too_many"))
           : v.status === 401 ? t("session_expired") : v.status === 403 ? t("ai_locked_title") : t("ai_err_generic")), { status: v.status });
     }
+    if (v.headers.get("X-AI-Maradt") !== null && aiInfoAdat) { aiInfoAdat.maradt = +v.headers.get("X-AI-Maradt"); aiInfoSor(); }
     const olvaso = v.body.getReader();
     const dek = new TextDecoder();
     let puffer = "";
@@ -324,12 +352,14 @@ async function aiKuld() {
     aiGombok(false);
     frissit(true);
     aiMent();
+    setTimeout(aiInfoBetolt, 1500); // a felhasznált keret frissítése
   }
 }
 
 function aiGombok(fut) {
   $("ai-kuld").hidden = fut;
   $("ai-leallit").hidden = !fut;
+  if (!fut) aiInfoSor();
 }
 
 $("ai-urlap").addEventListener("submit", (e) => { e.preventDefault(); aiKuld(); });

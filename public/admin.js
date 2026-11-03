@@ -17,6 +17,9 @@ Object.assign(SZOVEGEK.hu, {
   ad_ai_smart: "Okos (jobb válaszok, kevesebb kérdés naponta)", ad_ai_fast: "Gyors (több kérdés, egyszerűbb válaszok)", ad_save: "Mentés", ad_saved: "Beállítások elmentve",
   ad_ai_off: "⚠️ Az AI nincs bekapcsolva a Cloudflare-en.", ad_ai_note: "Az ingyenes Cloudflare AI keret naponta közösen fogy (a te kérdéseid és a látogatóké is). Ha elfogy, másnap újraindul.",
   ad_refresh: "Frissítés",
+  ad_ai_today: "🤖 Mai AI használat", ad_ai_used: "Felhasznált napi keret: kb. {p}% ({n} / {k} neuron)", ad_ai_q: "Kérdések ma: {o} összesen · te: {t} · látogatók: {l}",
+  ad_ai_left: "Becslés: még kb. {n} kérdés fér bele mára.", ad_ai_out: "⛔ Ma {ido}-kor elfogyott a keret. Holnap 01:00 után (UTC éjfél) újraindul.",
+  ad_ai_ok: "✅ Van még keret.", ad_ai_reset: "A keret minden nap UTC éjfélkor (Szlovákiában télen 01:00, nyáron 02:00) újraindul.",
 });
 Object.assign(SZOVEGEK.sk, {
   ad_sub: "Vidíš iba ty: návštevnosť, prihlásenia a nastavenia AI asistenta.", ad_t_stat: "📈 Štatistika", ad_t_log: "🔐 Denník prihlásení", ad_t_ai: "🤖 Nastavenia AI",
@@ -29,6 +32,9 @@ Object.assign(SZOVEGEK.sk, {
   ad_ai_smart: "Múdry (lepšie odpovede, menej otázok denne)", ad_ai_fast: "Rýchly (viac otázok, jednoduchšie odpovede)", ad_save: "Uložiť", ad_saved: "Nastavenia uložené",
   ad_ai_off: "⚠️ AI nie je zapnutá na Cloudflare.", ad_ai_note: "Bezplatný denný limit Cloudflare AI sa míňa spoločne (tvoje otázky aj otázky návštevníkov). Keď sa minie, ďalší deň sa obnoví.",
   ad_refresh: "Obnoviť",
+  ad_ai_today: "🤖 Dnešné využitie AI", ad_ai_used: "Využitý denný limit: asi {p} % ({n} / {k} neurónov)", ad_ai_q: "Otázky dnes: {o} spolu · ty: {t} · návštevníci: {l}",
+  ad_ai_left: "Odhad: dnes sa zmestí ešte asi {n} otázok.", ad_ai_out: "⛔ Dnes o {ido} sa limit minul. Zajtra po 01:00 (polnoc UTC) sa obnoví.",
+  ad_ai_ok: "✅ Limit ešte nie je vyčerpaný.", ad_ai_reset: "Limit sa obnovuje každý deň o polnoci UTC (na Slovensku v zime 01:00, v lete 02:00).",
 });
 Object.assign(SZOVEGEK.en, {
   ad_sub: "Only you can see this: traffic, sign-ins and the AI assistant settings.", ad_t_stat: "📈 Statistics", ad_t_log: "🔐 Sign-in log", ad_t_ai: "🤖 AI settings",
@@ -41,6 +47,9 @@ Object.assign(SZOVEGEK.en, {
   ad_ai_smart: "Smart (better answers, fewer questions a day)", ad_ai_fast: "Fast (more questions, simpler answers)", ad_save: "Save", ad_saved: "Settings saved",
   ad_ai_off: "⚠️ AI isn't enabled on Cloudflare.", ad_ai_note: "The free Cloudflare AI quota is shared each day (your questions and visitors'). When it runs out, it resets the next day.",
   ad_refresh: "Refresh",
+  ad_ai_today: "🤖 AI usage today", ad_ai_used: "Daily quota used: about {p}% ({n} / {k} neurons)", ad_ai_q: "Questions today: {o} in total · you: {t} · visitors: {l}",
+  ad_ai_left: "Estimate: about {n} more questions fit in today.", ad_ai_out: "⛔ The quota ran out today at {ido}. It resets after 00:00 UTC.",
+  ad_ai_ok: "✅ There is quota left.", ad_ai_reset: "The quota resets every day at midnight UTC.",
 });
 
 let adFul = "stat";
@@ -92,6 +101,27 @@ function adToplista(cim, lista, nevFn) {
   return k;
 }
 
+// Mai AI használat kártya (Statisztika és AI beállítások fülön is)
+function adAiMaKartya() {
+  const m = adAdat.aiMa;
+  const k = document.createElement("section");
+  k.className = "kartya ad-ai-ma" + (m && m.elfogyott ? " elfogyott" : "");
+  if (!m) return k;
+  const p = Math.min(100, Math.round((m.neuron / m.keret) * 100));
+  k.innerHTML = `<h3></h3><div class="ad-keret-sav"><div></div></div><p class="ad-keret-szoveg"></p><p class="ad-keret-kerdes"></p><p class="ad-keret-allapot"></p><p class="halvany-szoveg kicsi-szoveg ad-keret-megj"></p>`;
+  k.querySelector("h3").textContent = t("ad_ai_today");
+  const sav = k.querySelector(".ad-keret-sav div");
+  sav.style.width = (m.elfogyott ? 100 : p) + "%";
+  sav.className = m.elfogyott || p >= 90 ? "piros" : p >= 70 ? "sarga" : "";
+  k.querySelector(".ad-keret-szoveg").textContent = t("ad_ai_used", { p: m.elfogyott ? 100 : p, n: m.neuron.toLocaleString(locale()), k: m.keret.toLocaleString(locale()) });
+  k.querySelector(".ad-keret-kerdes").textContent = t("ad_ai_q", { o: m.tulaj + m.latogato, t: m.tulaj, l: m.latogato });
+  k.querySelector(".ad-keret-allapot").textContent = m.elfogyott
+    ? t("ad_ai_out", { ido: new Date(m.elfogyott).toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" }) })
+    : t("ad_ai_ok") + " " + t("ad_ai_left", { n: m.maradtBecsles });
+  k.querySelector(".ad-keret-megj").textContent = t("ad_ai_reset");
+  return k;
+}
+
 function adStatisztika() {
   const d = $("ad-stat");
   d.innerHTML = "";
@@ -110,6 +140,7 @@ function adStatisztika() {
     kartyak.appendChild(k);
   }
   d.appendChild(kartyak);
+  d.appendChild(adAiMaKartya());
   if (hibak24 >= 3) { const w = document.createElement("p"); w.className = "ad-figyelem"; w.textContent = t("ad_warn", { n: hibak24 }); d.appendChild(w); }
 
   // 30 napos látogatói grafikon
@@ -180,6 +211,7 @@ function adAi() {
       <p class="halvany-szoveg kicsi-szoveg" id="ad-ai-megj"></p>
       <button type="button" class="gomb fo" id="ad-ai-ment"></button>
     </section>`;
+  d.prepend(adAiMaKartya());
   $("ad-ai-ki").hidden = !!b.elerheto;
   $("ad-ai-ki").textContent = t("ad_ai_off");
   d.querySelector(".jelolo span").textContent = t("ad_ai_public");
